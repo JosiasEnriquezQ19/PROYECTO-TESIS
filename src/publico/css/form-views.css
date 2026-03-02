@@ -1,0 +1,484 @@
+/* ========================================
+   FORM VIEWS CSS - Linear / Notion Style
+   ======================================== */
+
+.form-card {
+    background: #ffffff;
+    border-radius: 1.25rem;
+    padding: 2rem;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04), 0 0 0 1px rgba(0, 0, 0, 0.03);
+    border: 1px solid rgba(0, 0, 0, 0.06);
+    margin-bottom: 2rem;
+    max-width: 100%;
+    box-sizing: border-box;
+}
+
+/* ========================================
+   FORM SECTION BLOCKS (Proformas/Facturas)
+   ======================================== */
+.main-card {
+    background: #ffffff;
+    border-radius: 1.25rem;
+    padding: 2rem 2.25rem;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04), 0 0 0 1px rgba(0, 0, 0, 0.03);
+    border: 1px solid rgba(0, 0, 0, 0.06);
+    margin-bottom: 2rem;
+}
+
+.main-card .card-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 1.75rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    letter-spacing: -0.01em;
+}
+
+.main-card .card-title i {
+    color: var(--primary);
+    font-size: 1.15rem;
+}
+
+.form-section {
+    background: rgba(255, 255, 255, 0.8);
+    border: 1px solid rgba(0, 0, 0, 0.06);
+    border-radius: 1rem;
+    padding: 1.75rem;
+    margin-bottom: 1.5rem;
+    transition: border-color 0.2s ease;
+}
+
+.form-section:hover {
+    border-color: rgba(59, 73, 223, 0.12);
+}
+
+.form-section:last-child {
+    margin-bottom: 0;
+}
+
+.section-title {
+    font-size: 1rem;
+    font-weight: 650;
+    color: var(--text-primary);
+    margin-top: 0;
+    margin-bottom: 1.25rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding-bottom: 0.875rem;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+    letter-spacing: -0.01em;
+}
+
+.section-title i {
+    color: var(--primary);
+    font-size: 1.05rem;
+    opacity: 0.85;
+}
+
+/* Input-icon wrapper for form fields */
+.input-icon {
+    position: relative;
+}
+
+.input-icon>i {
+    position: absolute;
+    left: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-muted);
+    font-size: 0.95rem;
+    pointer-events: none;
+    z-index: 2;
+}
+
+.input-icon>.form-control-modern,
+.input-icon>input {
+    padding-left: 2.75rem;
+}
+
+/* Totals summary block */
+.totals-section {
+    background: linear-gradient(135deg, rgba(59, 73, 223, 0.03), rgba(59, 73, 223, 0.06));
+    border: 1px solid rgba(59, 73, 223, 0.1);
+    border-radius: 1rem;
+    padding: 1.5rem;
+}
+
+.total-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem 0;
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+}
+
+.total-row.total-final {
+    border-top: 2px solid rgba(59, 73, 223, 0.15);
+    margin-top: 0.5rem;
+    padding-top: 0.875rem;
+    font-size: 1.125rem;
+    font-weight: 700;
+    color: var(--primary);
+}
+
+/* Products table in forms */
+.products-table {
+    border-radius: 0.75rem;
+    overflow: hidden;
+    border: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+.products-table thead th {
+    background: rgba(59, 73, 223, 0.04);
+    color: var(--text-secondary);
+    font-weight: 600;
+    font-size: 0.8125rem;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    padding: 0.875rem 0.75rem;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+.products-table tbody td {
+    padding: 0.875rem 0.75rem;
+    vertical-align: middle;
+    font-size: 0.875rem;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.04);
+}
+
+.products-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.products-table tbody tr:hover {
+    background: rgba(59, 73, 223, 0.02);
+}
+
+/* Top navbar for form views */
+.top-navbar {
+    height: var(--navbar-height);
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 24px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.top-navbar .navbar-brand {
+    font-weight: 700;
+    font-size: 1.0625rem;
+    color: var(--text-primary);
+    letter-spacing: -0.01em;
+}
+
+.form-header-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 2rem;
+    padding-bottom: 1.25rem;
+    border-bottom: 1px solid var(--border-light, rgba(0, 0, 0, 0.08));
+}
+
+.form-avatar-section {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    margin-bottom: 2.5rem;
+    padding-bottom: 2rem;
+    border-bottom: 1px solid var(--border-light);
+}
+
+.form-avatar-wrapper {
+    position: relative;
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    overflow: hidden;
+    background: var(--primary-light);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.form-avatar-wrapper img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.form-avatar-icon {
+    font-size: 2rem;
+    color: var(--primary);
+}
+
+.avatar-edit-btn {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 30%;
+    background: rgba(0, 0, 0, 0.6);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.avatar-edit-btn:hover {
+    background: rgba(0, 0, 0, 0.8);
+}
+
+/* Form Grid */
+.form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+}
+
+@media (max-width: 991px) {
+    .form-grid {
+        gap: 1rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .form-card {
+        padding: 1.25rem;
+        border-radius: 1rem;
+    }
+
+    .form-buttons {
+        flex-direction: column;
+    }
+
+    .form-buttons .btn-form {
+        width: 100%;
+        justify-content: center;
+    }
+}
+
+/* Form Group */
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-group-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.6rem;
+}
+
+.form-label {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--text-secondary);
+    margin: 0;
+}
+
+.form-action-text {
+    font-size: 0.8125rem;
+    color: var(--text-muted);
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+.form-action-text:hover {
+    color: var(--primary);
+}
+
+.form-action-text i {
+    font-size: 0.875rem;
+}
+
+.form-action-text.success {
+    color: var(--success);
+    font-weight: 600;
+}
+
+.form-action-text.success i {
+    color: var(--success);
+}
+
+/* Input Fields */
+.input-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.form-control-modern {
+    width: 100%;
+    padding: 0.85rem 1.25rem;
+    border: 1px solid var(--border);
+    border-radius: 0.75rem;
+    background: #ffffff;
+    font-family: inherit;
+    font-size: 0.9375rem;
+    color: var(--text-primary);
+    transition: all 0.3s ease;
+}
+
+.form-control-modern:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px var(--primary-light);
+}
+
+.form-control-modern:disabled,
+.form-control-modern[readonly] {
+    background-color: var(--bg-page);
+    color: var(--text-secondary);
+    cursor: not-allowed;
+}
+
+.form-select-modern {
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%236B7280' class='bi bi-chevron-down' viewBox='0 0 16 16'%3E%3Cpath fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 1.25rem center;
+    background-size: 16px 12px;
+}
+
+.input-icon {
+    position: absolute;
+    right: 1.25rem;
+    color: var(--text-muted);
+    font-size: 1.15rem;
+    pointer-events: none;
+}
+
+/* Ensure padding when icon exists */
+.has-icon .form-control-modern {
+    padding-right: 3rem;
+}
+
+/* Textarea specifically */
+textarea.form-control-modern {
+    resize: vertical;
+    min-height: 120px;
+    line-height: 1.6;
+}
+
+/* Form Buttons */
+.form-buttons {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--border-light);
+}
+
+.btn-form {
+    padding: 0.8rem 2.5rem;
+    border-radius: 0.75rem;
+    font-weight: 600;
+    font-size: 0.9375rem;
+    transition: all 0.3s;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    border: none;
+    cursor: pointer;
+}
+
+.btn-form-cancel {
+    background: #ffffff;
+    color: var(--text-secondary);
+    border: 1px solid var(--border);
+}
+
+.btn-form-cancel:hover {
+    background: var(--bg-page);
+    color: var(--text-primary);
+}
+
+.btn-form-primary {
+    background: var(--primary);
+    color: #ffffff;
+    box-shadow: 0 4px 12px rgba(59, 73, 223, 0.25);
+}
+
+.btn-form-primary:hover {
+    background: var(--primary-dark);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(59, 73, 223, 0.3);
+    color: #ffffff;
+}
+
+/* Fix for Bootstrap Input Groups with Modern Controls */
+.input-group>.form-control-modern,
+.input-group>.form-select-modern {
+    position: relative;
+    flex: 1 1 auto;
+    width: 1%;
+    min-width: 0;
+}
+
+.input-group>.form-control-modern:not(:last-child),
+.input-group>.form-select-modern:not(:last-child) {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+}
+
+.input-group>.btn-form,
+.input-group>.btn {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+    margin-left: -1px;
+    z-index: 2;
+}
+
+/* Fixes for dynamically generated classes */
+.btn-form-primary-modern {
+    background: var(--primary);
+    color: #ffffff;
+    box-shadow: 0 4px 12px rgba(59, 73, 223, 0.25);
+    border: none;
+}
+
+.btn-form-primary-modern:hover {
+    background: var(--primary-dark);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(59, 73, 223, 0.3);
+    color: #ffffff;
+}
+
+.btn-form-cancel-modern {
+    background: #ffffff;
+    color: var(--text-secondary);
+    border: 1px solid var(--border);
+}
+
+.btn-form-cancel-modern:hover {
+    background: var(--bg-page);
+    color: var(--text-primary);
+}
+
+/* For full width items in grid */
+.full-width {
+    grid-column: 1 / -1;
+}

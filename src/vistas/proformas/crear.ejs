@@ -8,398 +8,9 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="/publico/css/layout.css">
-    <style>
-        :root {
-            --primary-color: #0056b3;
-            --primary-dark: #003366;
-            --secondary-color: #6c757d;
-            --success-color: #28a745;
-            --danger-color: #dc3545;
-            --light-color: #f8f9fa;
-            --dark-color: #343a40;
-            --border-radius: 0.5rem;
-            --box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-            --transition: all 0.3s ease;
-        }
-
-        /* Sidebar mejorado */
-        .sidebar-heading {
-            font-size: 1.5rem;
-            font-weight: 700;
-            letter-spacing: 1px;
-            color: #fff;
-            padding: 1rem 1.5rem;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-            margin-bottom: 1rem;
-        }
-
-        .company-slogan {
-            font-size: 0.85rem;
-            color: rgba(255, 255, 255, 0.7);
-            font-weight: 300;
-            margin-top: 0.25rem;
-        }
-
-        .menu-item {
-            color: rgba(255, 255, 255, 0.85);
-            padding: 0.75rem 1.5rem;
-            border-radius: 0.5rem;
-            margin: 0.25rem 1rem;
-            display: flex;
-            align-items: center;
-            gap: 0.8rem;
-            text-decoration: none;
-            font-weight: 500;
-            transition: var(--transition);
-            position: relative;
-        }
-
-        .menu-item:hover {
-            background: rgba(255, 255, 255, 0.1);
-            color: #fff;
-            transform: translateX(5px);
-        }
-
-        .menu-item.active {
-            background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
-            color: #fff;
-            box-shadow: 0 4px 12px rgba(0, 86, 179, 0.2);
-        }
-
-        .menu-item i {
-            font-size: 1.1rem;
-        }
-
-        .logout-item {
-            color: #ff6b6b;
-            background: rgba(255, 107, 107, 0.1);
-        }
-
-        .logout-item:hover {
-            background: rgba(255, 107, 107, 0.2);
-            color: #ff6b6b;
-        }
-
-        /* Main content */
-        .main-content {
-            margin-left: 280px;
-            min-height: 100vh;
-            transition: var(--transition);
-        }
-
-        /* Navbar superior */
-        .top-navbar {
-            background: #fff;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-            padding: 0.75rem 1.5rem;
-            border-bottom: 1px solid #e9ecef;
-        }
-
-        .navbar-brand {
-            font-weight: 600;
-            color: var(--primary-dark);
-        }
-
-        .user-avatar {
-            background: var(--primary-dark);
-            color: #fff;
-            border-radius: 50%;
-            width: 38px;
-            height: 38px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 600;
-            font-size: 1.1rem;
-            transition: var(--transition);
-        }
-
-        .user-avatar:hover {
-            transform: scale(1.05);
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        }
-
-        /* Botón toggle sidebar */
-        .sidebar.hide+
-
-        /* Contenedor principal */
-        .container-fluid {
-            padding: 2rem;
-        }
-
-        /* Secciones del formulario */
-        .form-section {
-            background: #fff;
-            border-radius: var(--border-radius);
-            box-shadow: var(--box-shadow);
-            padding: 2rem;
-            margin-bottom: 2rem;
-            transition: var(--transition);
-        }
-
-        .form-section:hover {
-            box-shadow: 0 6px 24px rgba(0, 0, 0, 0.1);
-        }
-
-        .section-title {
-            color: var(--primary-dark);
-            font-weight: 700;
-            margin-bottom: 1.5rem;
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            font-size: 1.25rem;
-        }
-
-        .section-title i {
-            font-size: 1.4rem;
-            color: var(--primary-color);
-        }
-
-        /* Formularios */
-        .form-label {
-            font-weight: 600;
-            color: var(--primary-dark);
-            margin-bottom: 0.5rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .form-label i {
-            font-size: 1rem;
-            color: var(--primary-color);
-        }
-
-        .form-control,
-        .form-select {
-            border: 1px solid #e0e6ed;
-            border-radius: var(--border-radius);
-            padding: 0.75rem 1rem;
-            transition: var(--transition);
-            font-size: 0.95rem;
-        }
-
-        .form-control:focus,
-        .form-select:focus {
-            border-color: var(--primary-color);
-            box-shadow: 0 0 0 0.2rem rgba(0, 86, 179, 0.15);
-        }
-
-        .input-icon {
-            position: relative;
-        }
-
-        .input-icon i {
-            position: absolute;
-            left: 1rem;
-            top: 50%;
-            transform: translateY(-50%);
-            color: var(--secondary-color);
-            font-size: 1rem;
-        }
-
-        .input-icon .form-control,
-        .input-icon .form-select {
-            padding-left: 2.5rem;
-        }
-
-        /* Botones */
-        .btn {
-            font-weight: 500;
-            padding: 0.75rem 1.5rem;
-            border-radius: var(--border-radius);
-            transition: var(--transition);
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0.5rem;
-        }
-
-        .btn-primary {
-            background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
-            border: none;
-        }
-
-        .btn-primary:hover {
-            background: linear-gradient(135deg, var(--primary-dark), #001f3f);
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0, 86, 179, 0.2);
-        }
-
-        .btn-success {
-            background: linear-gradient(135deg, var(--success-color), #20c997);
-            border: none;
-        }
-
-        .btn-success:hover {
-            background: linear-gradient(135deg, #218838, #1aa179);
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(40, 167, 69, 0.2);
-        }
-
-        .btn-outline-primary {
-            border: 1px solid var(--primary-color);
-            color: var(--primary-color);
-        }
-
-        .btn-outline-primary:hover {
-            background: var(--primary-color);
-            color: #fff;
-        }
-
-        .btn-sm {
-            padding: 0.5rem 1rem;
-            font-size: 0.875rem;
-        }
-
-        /* Tabla de productos */
-        .table-responsive {
-            border-radius: var(--border-radius);
-            overflow: hidden;
-        }
-
-        .table {
-            margin-bottom: 0;
-            border-collapse: separate;
-            border-spacing: 0;
-        }
-
-        .table thead th {
-            background: var(--primary-dark);
-            color: #fff;
-            border: none;
-            font-weight: 600;
-            padding: 1rem;
-            position: sticky;
-            top: 0;
-        }
-
-        .table tbody td {
-            padding: 1rem;
-            vertical-align: middle;
-            background: #fff;
-            border-bottom: 1px solid #e9ecef;
-        }
-
-        .table tbody tr:last-child td {
-            border-bottom: none;
-        }
-
-        .table tbody tr:hover td {
-            background-color: rgba(0, 86, 179, 0.03);
-        }
-
-        /* Alertas */
-        .alert {
-            border-radius: var(--border-radius);
-            border: none;
-            box-shadow: var(--box-shadow);
-        }
-
-        .alert i {
-            margin-right: 0.5rem;
-        }
-
-        /* Responsive */
-        @media (max-width: 992px) {
-            .sidebar.show {
-                transform: translateX(0);
-            }
-
-            .main-content {
-                margin-left: 0;
-            }
-        }
-
-        @media (max-width: 768px) {
-            .container-fluid {
-                padding: 1rem;
-            }
-
-            .form-section {
-                padding: 1.5rem;
-            }
-
-            .section-title {
-                font-size: 1.1rem;
-            }
-        }
-
-        /* Efectos especiales */
-        .floating {
-            animation: floating 3s ease-in-out infinite;
-        }
-
-        @keyframes floating {
-            0% {
-                transform: translateY(0px);
-            }
-
-            50% {
-                transform: translateY(-5px);
-            }
-
-            100% {
-                transform: translateY(0px);
-            }
-        }
-
-        /* Mejoras para selects de productos */
-        .producto-select {
-            min-width: 220px;
-        }
-
-        /* Estilos para los totales */
-        .total-field {
-            font-weight: 600;
-            background-color: #f8f9fa;
-        }
-
-        /* Mejoras para los botones de acción */
-        .action-buttons {
-            display: flex;
-            gap: 1rem;
-            flex-wrap: wrap;
-            justify-content: flex-end;
-        }
-
-        /* Efecto hover para los botones de la tabla */
-        .btn-remove-row {
-            transition: var(--transition);
-        }
-
-        .btn-remove-row:hover {
-            transform: scale(1.1);
-        }
-
-        /* Placeholder mejorado */
-        ::placeholder {
-            color: #adb5bd !important;
-            opacity: 1;
-        }
-
-        /* Scrollbar personalizado */
-        ::-webkit-scrollbar {
-            width: 8px;
-            height: 8px;
-        }
-
-        ::-webkit-scrollbar-track {
-            background: #f1f1f1;
-            border-radius: 10px;
-        }
-
-        ::-webkit-scrollbar-thumb {
-            background: var(--primary-color);
-            border-radius: 10px;
-        }
-
-        ::-webkit-scrollbar-thumb:hover {
-            background: var(--primary-dark);
-        }
-    </style>
+    <link rel="stylesheet" href="/publico/css/layout.css?v=1772427290146">
+    <link rel="stylesheet" href="/publico/css/form-views.css?v=1772427290146">
+    
 </head>
 
 <body>
@@ -458,7 +69,7 @@
                                                     </label>
                                                     <div class="input-icon">
                                                         <i class="bi bi-hash"></i>
-                                                        <input type="text" name="Codigo" class="form-control"
+                                                        <input type="text" name="Codigo" class="form-control-modern"
                                                             placeholder="PRO-001" required>
                                                     </div>
                                                 </div>
@@ -467,7 +78,7 @@
                                                         <i class="bi bi-people"></i>
                                                         Cliente
                                                     </label>
-                                                    <select name="IdCliente" class="form-select" required>
+                                                    <select name="IdCliente" class="form-control-modern form-select-modern" required>
                                                         <option value="">Seleccionar Cliente</option>
                                                         <% if (typeof clientes !=='undefined' && clientes &&
                                                             clientes.length> 0) { %>
@@ -488,7 +99,7 @@
                                                         <i class="bi bi-person-circle"></i>
                                                         Usuario
                                                     </label>
-                                                    <select name="IdUsuario" class="form-select" required>
+                                                    <select name="IdUsuario" class="form-control-modern form-select-modern" required>
                                                         <option value="">Seleccionar Usuario</option>
                                                         <% if (typeof usuarios !=='undefined' && usuarios &&
                                                             usuarios.length> 0) { %>
@@ -511,7 +122,7 @@
                                                         <i class="bi bi-building"></i>
                                                         Empresa
                                                     </label>
-                                                    <select name="IdEmpresa" class="form-select" required>
+                                                    <select name="IdEmpresa" class="form-control-modern form-select-modern" required>
                                                         <option value="">Seleccionar Empresa</option>
                                                         <% if (typeof empresas !=='undefined' && empresas &&
                                                             empresas.length> 0) { %>
@@ -533,7 +144,7 @@
                                                     </label>
                                                     <div class="input-icon">
                                                         <i class="bi bi-calendar"></i>
-                                                        <input type="date" name="FechaEmision" class="form-control"
+                                                        <input type="date" name="FechaEmision" class="form-control-modern"
                                                             required>
                                                     </div>
                                                 </div>
@@ -544,7 +155,7 @@
                                                     </label>
                                                     <div class="input-icon">
                                                         <i class="bi bi-tag"></i>
-                                                        <input type="text" name="Referencia" class="form-control"
+                                                        <input type="text" name="Referencia" class="form-control-modern"
                                                             placeholder="REF-001">
                                                     </div>
                                                 </div>
@@ -555,7 +166,7 @@
                                                     </label>
                                                     <div class="input-icon">
                                                         <i class="bi bi-clock"></i>
-                                                        <input type="number" name="ValidezOferta" class="form-control"
+                                                        <input type="number" name="ValidezOferta" class="form-control-modern"
                                                             value="10" min="1" required>
                                                     </div>
                                                 </div>
@@ -564,7 +175,7 @@
                                                         <i class="bi bi-check-circle"></i>
                                                         Estado
                                                     </label>
-                                                    <select name="Estado" class="form-select">
+                                                    <select name="Estado" class="form-control-modern form-select-modern">
                                                         <option value="PENDIENTE" selected>PENDIENTE</option>
                                                         <option value="APROBADA">APROBADA</option>
                                                         <option value="RECHAZADA">RECHAZADA</option>
@@ -587,7 +198,7 @@
                                                     </label>
                                                     <div class="input-icon">
                                                         <i class="bi bi-truck"></i>
-                                                        <input type="text" name="TiempoEntrega" class="form-control"
+                                                        <input type="text" name="TiempoEntrega" class="form-control-modern"
                                                             placeholder="15 días hábiles">
                                                     </div>
                                                 </div>
@@ -598,7 +209,7 @@
                                                     </label>
                                                     <div class="input-icon">
                                                         <i class="bi bi-geo-alt"></i>
-                                                        <input type="text" name="LugarEntrega" class="form-control"
+                                                        <input type="text" name="LugarEntrega" class="form-control-modern"
                                                             placeholder="Lima, Perú">
                                                     </div>
                                                 </div>
@@ -609,7 +220,7 @@
                                                     </label>
                                                     <div class="input-icon">
                                                         <i class="bi bi-shield-check"></i>
-                                                        <input type="text" name="Garantia" class="form-control"
+                                                        <input type="text" name="Garantia" class="form-control-modern"
                                                             placeholder="12 meses">
                                                     </div>
                                                 </div>
@@ -620,7 +231,7 @@
                                                     </label>
                                                     <div class="input-icon">
                                                         <i class="bi bi-credit-card"></i>
-                                                        <input type="text" name="FormaPago" class="form-control"
+                                                        <input type="text" name="FormaPago" class="form-control-modern"
                                                             placeholder="50% adelanto, 50% contra entrega">
                                                     </div>
                                                 </div>
@@ -629,7 +240,7 @@
                                                         <i class="bi bi-chat-left-text"></i>
                                                         Observaciones
                                                     </label>
-                                                    <textarea name="Observaciones" class="form-control" rows="2"
+                                                    <textarea name="Observaciones" class="form-control-modern" rows="2"
                                                         placeholder="Notas adicionales..."></textarea>
                                                 </div>
                                             </div>
@@ -650,7 +261,7 @@
                                                     <div class="input-icon">
                                                         <i class="bi bi-percent"></i>
                                                         <input type="number" step="0.01" name="PorcentajeIGV"
-                                                            class="form-control" value="18.00" min="0" max="100"
+                                                            class="form-control-modern" value="18.00" min="0" max="100"
                                                             required>
                                                     </div>
                                                 </div>
@@ -662,7 +273,7 @@
                                                     <div class="input-icon">
                                                         <i class="bi bi-currency-dollar"></i>
                                                         <input type="number" step="0.01" name="SubTotal"
-                                                            class="form-control total-field" readonly>
+                                                            class="form-control-modern total-field" readonly>
                                                     </div>
                                                 </div>
                                                 <div class="col-md-3">
@@ -673,7 +284,7 @@
                                                     <div class="input-icon">
                                                         <i class="bi bi-currency-dollar"></i>
                                                         <input type="number" step="0.01" name="TotalIGV"
-                                                            class="form-control total-field" readonly>
+                                                            class="form-control-modern total-field" readonly>
                                                     </div>
                                                 </div>
                                                 <div class="col-md-3">
@@ -684,7 +295,7 @@
                                                     <div class="input-icon">
                                                         <i class="bi bi-currency-dollar"></i>
                                                         <input type="number" step="0.01" name="Total"
-                                                            class="form-control total-field" readonly>
+                                                            class="form-control-modern total-field" readonly>
                                                     </div>
                                                 </div>
                                             </div>
@@ -718,7 +329,7 @@
                                                         <tr>
                                                             <td>
                                                                 <select name="detalle[0][IdProducto]"
-                                                                    class="form-select form-select-sm producto-select"
+                                                                    class="form-control-modern form-select-modern form-control-modern form-select-modern-sm producto-select"
                                                                     required>
                                                                     <option value="">Seleccionar Producto</option>
                                                                     <% if (typeof productos !=='undefined' && productos
@@ -739,26 +350,26 @@
                                                             </td>
                                                             <td><input type="number" step="0.01"
                                                                     name="detalle[0][Cantidad]"
-                                                                    class="form-control form-control-sm" placeholder="1"
+                                                                    class="form-control-modern form-control-modern-sm" placeholder="1"
                                                                     min="0.01" step="0.01" required></td>
                                                             <td><input type="text" name="detalle[0][UnidadMedida]"
-                                                                    class="form-control form-control-sm" value="UNID"
+                                                                    class="form-control-modern form-control-modern-sm" value="UNID"
                                                                     required readonly></td>
                                                             <td><input type="number" step="0.01"
                                                                     name="detalle[0][PrecioUnitario]"
-                                                                    class="form-control form-control-sm"
+                                                                    class="form-control-modern form-control-modern-sm"
                                                                     placeholder="0.00" min="0" step="0.01" required>
                                                             </td>
                                                             <td><input type="number" step="0.01"
                                                                     name="detalle[0][Total]"
-                                                                    class="form-control form-control-sm total-field"
+                                                                    class="form-control-modern form-control-modern-sm total-field"
                                                                     placeholder="0.00" readonly></td>
                                                             <td><input type="text"
                                                                     name="detalle[0][DescripcionAdicional]"
-                                                                    class="form-control form-control-sm"
+                                                                    class="form-control-modern form-control-modern-sm"
                                                                     placeholder="Descripción adicional"></td>
                                                             <td class="text-center"><button type="button"
-                                                                    class="btn btn-danger btn-sm btn-remove-row"><i
+                                                                    class="btn-form btn-form-cancel btn-sm btn-remove-row"><i
                                                                         class="bi bi-trash"></i></button></td>
                                                         </tr>
                                                     </tbody>
@@ -768,12 +379,12 @@
 
                                         <!-- Botones de Acción -->
                                         <div class="d-flex justify-content-between align-items-center mt-4">
-                                            <a href="/proformas" class="btn btn-outline-secondary">
+                                            <a href="/proformas" class="btn btn-form btn-form-cancel">
                                                 <i class="bi bi-arrow-left me-2"></i>Volver
                                             </a>
                                             <div class="action-buttons">
 
-                                                <button type="submit" class="btn btn-primary">
+                                                <button type="submit" class="btn-form btn-form-primary">
                                                     <i class="bi bi-save me-2"></i>Registrar Proforma
                                                 </button>
                                             </div>
@@ -873,7 +484,7 @@
                 const row = document.createElement('tr');
                 row.innerHTML = `
                 <td>
-                    <select name="detalle[${rowIdx}][IdProducto]" class="form-select form-select-sm producto-select" required>
+                    <select name="detalle[${rowIdx}][IdProducto]" class="form-control-modern form-select-modern form-control-modern form-select-modern-sm producto-select" required>
                         <option value="">Seleccionar Producto</option>
                         <% if (typeof productos !== 'undefined' && productos.length > 0) { %>
                             <% productos.forEach(producto => { %>
@@ -884,12 +495,12 @@
                         <% } %>
                     </select>
                 </td>
-                <td><input type="number" step="0.01" name="detalle[${rowIdx}][Cantidad]" class="form-control form-control-sm" placeholder="1" min="0.01" required></td>
-                <td><input type="text" name="detalle[${rowIdx}][UnidadMedida]" class="form-control form-control-sm" value="UNID" required readonly></td>
-                <td><input type="number" step="0.01" name="detalle[${rowIdx}][PrecioUnitario]" class="form-control form-control-sm" placeholder="0.00" min="0" required></td>
-                <td><input type="number" step="0.01" name="detalle[${rowIdx}][Total]" class="form-control form-control-sm total-field" placeholder="0.00" readonly></td>
-                <td><input type="text" name="detalle[${rowIdx}][DescripcionAdicional]" class="form-control form-control-sm" placeholder="Descripción adicional"></td>
-                <td class="text-center"><button type="button" class="btn btn-danger btn-sm btn-remove-row"><i class="bi bi-trash"></i></button></td>
+                <td><input type="number" step="0.01" name="detalle[${rowIdx}][Cantidad]" class="form-control-modern form-control-modern-sm" placeholder="1" min="0.01" required></td>
+                <td><input type="text" name="detalle[${rowIdx}][UnidadMedida]" class="form-control-modern form-control-modern-sm" value="UNID" required readonly></td>
+                <td><input type="number" step="0.01" name="detalle[${rowIdx}][PrecioUnitario]" class="form-control-modern form-control-modern-sm" placeholder="0.00" min="0" required></td>
+                <td><input type="number" step="0.01" name="detalle[${rowIdx}][Total]" class="form-control-modern form-control-modern-sm total-field" placeholder="0.00" readonly></td>
+                <td><input type="text" name="detalle[${rowIdx}][DescripcionAdicional]" class="form-control-modern form-control-modern-sm" placeholder="Descripción adicional"></td>
+                <td class="text-center"><button type="button" class="btn-form btn-form-cancel btn-sm btn-remove-row"><i class="bi bi-trash"></i></button></td>
             `;
                 detalleBody.appendChild(row);
                 rowIdx++;
@@ -1041,7 +652,7 @@
             });
         });
     </script>
-    <script src="/publico/js/layout.js"></script>
+    <script src="/publico/js/layout.js?v=1772427290146"></script>
 </body>
 
 </html>

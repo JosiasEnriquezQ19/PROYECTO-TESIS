@@ -1,0 +1,211 @@
+
+@media (max-width: 768px) {
+}
+.config-card {
+            background: rgba(255,255,255,0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(0,86,179,0.1);
+            border-radius: 1.5rem;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.08);
+            overflow: hidden;
+            transition: all 0.3s;
+        }
+        .config-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 40px rgba(0,0,0,0.15);
+        }
+        .config-header {
+            background: linear-gradient(135deg, #003366 0%, #0056b3 50%, #0d6efd 100%);
+            color: #fff;
+            padding: 3rem 2rem 2rem 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+        .config-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse"><path d="M 10 0 L 0 0 0 10" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="0.5"/></pattern></defs><rect width="100" height="100" fill="url(%23grid)"/></svg>');
+            opacity: 0.3;
+        }
+        .company-logo-section {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+            position: relative;
+            z-index: 1;
+        }
+        .company-logo-placeholder {
+            width: 100px;
+            height: 100px;
+            background: rgba(255,255,255,0.2);
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255,255,255,0.3);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            color: #fff;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+        }
+        .company-details h2 {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+        .company-details .ruc-badge {
+            background: rgba(255,255,255,0.2);
+            backdrop-filter: blur(10px);
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            font-weight: 600;
+            display: inline-block;
+            margin-bottom: 0.5rem;
+        }
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            padding: 2.5rem;
+        }
+        .info-section {
+            background: linear-gradient(135deg, #f8fafc 0%, #fff 100%);
+            border-radius: 1rem;
+            padding: 2rem;
+            border: 1px solid rgba(0,86,179,0.1);
+            transition: all 0.3s;
+        }
+        .info-section:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+        }
+        .section-title {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #003366;
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.8rem;
+            border-bottom: 2px solid rgba(0,86,179,0.1);
+        }
+        .section-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #0056b3, #0d6efd);
+            color: #fff;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+        }
+        .info-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.8rem;
+            margin-bottom: 1rem;
+            padding: 0.8rem;
+            border-radius: 0.8rem;
+            transition: all 0.3s;
+        }
+        .info-item:hover {
+            background: rgba(0,86,179,0.05);
+        }
+        .info-item i {
+            color: #0056b3;
+            font-size: 1.1rem;
+            margin-top: 0.2rem;
+            min-width: 20px;
+        }
+        .info-content {
+            flex: 1;
+        }
+        .info-label {
+            font-size: 0.85rem;
+            color: #6c757d;
+            font-weight: 500;
+            margin-bottom: 0.2rem;
+        }
+        .info-value {
+            font-size: 1rem;
+            color: #003366;
+            font-weight: 600;
+            word-break: break-word;
+        }
+        .empty-value {
+            color: #9ca3af;
+            font-style: italic;
+            font-weight: 400;
+        }
+        .action-buttons {
+            padding: 0 2.5rem 2.5rem 2.5rem;
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+        }
+        .btn-config {
+            padding: 1rem 2rem;
+            font-weight: 600;
+            border-radius: 0.8rem;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.8rem;
+            text-decoration: none;
+            border: none;
+            font-size: 1.1rem;
+        }
+        .btn-config:hover {
+            transform: translateY(-2px);
+        }
+        .btn-primary-config {
+            background: linear-gradient(135deg, #0056b3, #0d6efd);
+            color: #fff;
+            box-shadow: 0 4px 15px rgba(0,86,179,0.3);
+        }
+        .btn-primary-config:hover {
+            background: linear-gradient(135deg, #003d82, #0b5ed7);
+            box-shadow: 0 6px 20px rgba(0,86,179,0.4);
+            color: #fff;
+        }
+        .btn-secondary-config {
+            background: rgba(108,117,125,0.1);
+            color: #6c757d;
+            border: 2px solid rgba(108,117,125,0.2);
+        }
+        .btn-secondary-config:hover {
+            background: #6c757d;
+            color: #fff;
+            border-color: #6c757d;
+        }
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+        .status-active {
+            background: rgba(40,167,69,0.1);
+            color: #28a745;
+            border: 1px solid rgba(40,167,69,0.2);
+        }
+        .presentation-text {
+            background: rgba(0,86,179,0.05);
+            border-left: 4px solid #0056b3;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            font-style: italic;
+            color: #003366;
+            margin-top: 0.5rem;
+        }
+    

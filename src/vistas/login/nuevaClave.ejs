@@ -1,136 +1,848 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
-  <meta charset="UTF-8">
-  <title>Registrar Nueva Contraseña | CARSIL Equipos y Servicios</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <style>
-    :root {
-      --primary-color: #003366;
-      --secondary-color: #0077b6;
-      --accent-color: #FF6B00;
-      --light-gray: #f8f9fa;
-    }
-    body {
-      min-height: 100vh;
-      margin: 0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-family: 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
-      background: url('https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?ixlib=rb-4.0.3') center/cover no-repeat;
-    }
-    .overlay {
-      position: fixed;
-      width: 100%;
-      height: 100%;
-      background-color: rgba(0, 51, 102, 0.7);
-      top: 0; left: 0;
-      z-index: -1;
-    }
-    .auth-container {
-      max-width: 500px;
-      width: 100%;
-      margin: 2rem;
-      background: rgba(255, 255, 255, 0.3);
-      backdrop-filter: blur(12px);
-      border-radius: 12px;
-      box-shadow: 0 10px 40px rgba(0,0,0,0.15);
-      padding: 2rem 2.5rem;
-      color: #fff; /* Texto principal en blanco */
-    }
-    .brand-header {
-      text-align: center;
-      margin-bottom: 1.5rem;
-    }
-    .brand-logo {
-      height: 80px;
-      width: auto;
-      margin-bottom: 0.5rem;
-    }
-    .auth-title {
-      margin-bottom: 1.5rem;
-      font-weight: 600;
-      font-size: 1.4rem;
-      text-align: center;
-      color: #fff; /* Título en blanco */
-    }
-    .form-label {
-      font-weight: 500;
-      margin-bottom: 0.5rem;
-      color: #fff; /* Etiquetas en blanco */
-    }
-    .form-control {
-      padding: 0.7rem 1rem;
-      border-radius: 8px;
-      border: 1px solid #ced4da;
-      transition: all 0.3s;
-      color: #232323; /* Mantener texto interno oscuro para contraste */
-      background-color: #fafafa;
-    }
-    .form-control:focus {
-      border-color: var(--primary-color);
-      box-shadow: 0 0 0 0.25rem rgba(0,83,161,0.25);
-    }
-    .btn-primary {
-      background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
-      border: none;
-      border-radius: 8px;
-      padding: 0.7rem 1.5rem;
-      font-size: 1rem;
-      font-weight: 500;
-      transition: all 0.3s;
-      color: #fff; /* Botón con texto en blanco */
-    }
-    .btn-primary:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 5px 15px rgba(0,83,161,0.3);
-    }
-    .footer {
-      margin-top: 2rem;
-      color: #f8f9fa;
-      text-align: center;
-      font-size: 0.95rem;
-      opacity: 0.8;
-    }
-    a.text-decoration-none.fw-semibold {
-      color: #fff; /* Enlace en blanco */
-      transition: all 0.2s;
-    }
-    a.text-decoration-none.fw-semibold:hover {
-      color: var(--secondary-color); /* Hover en color secundario */
-      text-decoration: underline;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nueva Contraseña | CARSIL Equipos y Servicios</title>
+    <meta name="description" content="Recupera el acceso a tu cuenta del sistema CARSIL.">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --primary: #3B49DF;
+            --primary-dark: #2d38b0;
+            --accent: #7C3AED;
+            --accent2: #06b6d4;
+            --navy: #0f172a;
+            --panel-bg: #1e2a4a;
+            --panel-bg2: #162040;
+            --white: #ffffff;
+            --gray-100: #f8fafc;
+            --gray-200: #e2e8f0;
+            --gray-400: #94a3b8;
+            --gray-600: #475569;
+            --gray-800: #1e293b;
+            --success: #10b981;
+            --warning: #f59e0b;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: var(--gray-200);
+            background-image:
+                radial-gradient(ellipse at 0% 0%, rgba(59, 73, 223, 0.12) 0px, transparent 50%),
+                radial-gradient(ellipse at 100% 0%, rgba(139, 92, 246, 0.10) 0px, transparent 50%),
+                radial-gradient(ellipse at 100% 100%, rgba(16, 185, 129, 0.08) 0px, transparent 50%),
+                radial-gradient(ellipse at 0% 100%, rgba(245, 158, 11, 0.08) 0px, transparent 50%);
+            background-attachment: fixed;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        /* ===================== MAIN CARD ===================== */
+        .login-card {
+            width: min(960px, 98vw);
+            min-height: 600px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            border-radius: 24px;
+            overflow: hidden;
+            box-shadow: 0 32px 80px rgba(15, 23, 42, 0.25), 0 0 0 1px rgba(255, 255, 255, 0.08);
+            background: var(--white);
+        }
+
+        /* ===================== LEFT PANEL ===================== */
+        .left-panel {
+            padding: 3rem 3rem 2.5rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            background: var(--white);
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 2.5rem;
+        }
+
+        .brand-logo {
+            height: 44px;
+            width: auto;
+            object-fit: contain;
+        }
+
+        /* Icon circle */
+        .icon-circle {
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, rgba(59, 73, 223, 0.1), rgba(124, 58, 237, 0.12));
+            border: 1.5px solid rgba(59, 73, 223, 0.15);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .icon-circle i {
+            font-size: 1.5rem;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .form-area h1 {
+            font-size: 1.75rem;
+            font-weight: 800;
+            color: var(--gray-800);
+            margin-bottom: 0.4rem;
+            letter-spacing: -0.5px;
+        }
+
+        .form-area .subtitle {
+            font-size: 0.875rem;
+            color: var(--gray-400);
+            margin-bottom: 2rem;
+            line-height: 1.6;
+        }
+
+        /* Alert info */
+        .alert-info-custom {
+            background: linear-gradient(135deg, rgba(59, 73, 223, 0.07), rgba(124, 58, 237, 0.07));
+            border: 1px solid rgba(59, 73, 223, 0.2);
+            border-radius: 10px;
+            padding: 0.85rem 1rem;
+            font-size: 0.85rem;
+            color: var(--primary-dark);
+            margin-bottom: 1.25rem;
+            display: flex;
+            align-items: flex-start;
+            gap: 0.6rem;
+            line-height: 1.5;
+        }
+
+        .alert-info-custom i {
+            margin-top: 1px;
+            flex-shrink: 0;
+            color: var(--primary);
+        }
+
+        /* Alert error */
+        .alert-error {
+            background: #fef2f2;
+            border: 1px solid #fecaca;
+            border-radius: 10px;
+            padding: 0.75rem 1rem;
+            font-size: 0.85rem;
+            color: #b91c1c;
+            margin-bottom: 1.25rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .field-label {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--gray-600);
+            margin-bottom: 0.45rem;
+            display: block;
+        }
+
+        .field-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .input-wrapper {
+            position: relative;
+        }
+
+        .input-wrapper .field-icon {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--gray-400);
+            font-size: 0.9rem;
+            pointer-events: none;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 0.75rem 1rem 0.75rem 2.75rem;
+            border: 1.5px solid var(--gray-200);
+            border-radius: 10px;
+            font-size: 0.92rem;
+            font-family: 'Inter', sans-serif;
+            color: var(--gray-800);
+            background: var(--white);
+            transition: border-color 0.2s, box-shadow 0.2s;
+            outline: none;
+        }
+
+        .form-input::placeholder {
+            color: #cbd5e1;
+        }
+
+        .form-input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(59, 73, 223, 0.12);
+        }
+
+        .btn-submit {
+            width: 100%;
+            padding: 0.85rem;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+            border: none;
+            border-radius: 10px;
+            color: var(--white);
+            font-size: 0.95rem;
+            font-weight: 700;
+            font-family: 'Inter', sans-serif;
+            letter-spacing: 0.3px;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            position: relative;
+            overflow: hidden;
+            margin-bottom: 1.25rem;
+        }
+
+        .btn-submit::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.15) 0%, transparent 60%);
+            pointer-events: none;
+        }
+
+        .btn-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 28px rgba(59, 73, 223, 0.4);
+        }
+
+        .btn-submit:active {
+            transform: translateY(0);
+        }
+
+        .btn-submit i {
+            margin-right: 0.5rem;
+        }
+
+        .back-link {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.4rem;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--gray-600);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .back-link:hover {
+            color: var(--primary);
+        }
+
+        .back-link i {
+            font-size: 0.8rem;
+        }
+
+        /* Steps info */
+        .steps-box {
+            background: var(--gray-100);
+            border-radius: 12px;
+            padding: 1rem 1.1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .steps-box-title {
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: var(--gray-600);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 0.75rem;
+        }
+
+        .step-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.65rem;
+            margin-bottom: 0.55rem;
+        }
+
+        .step-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .step-num {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            color: white;
+            font-size: 0.65rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            margin-top: 1px;
+        }
+
+        .step-text {
+            font-size: 0.8rem;
+            color: var(--gray-600);
+            line-height: 1.4;
+        }
+
+        .footer-left {
+            text-align: center;
+            font-size: 0.78rem;
+            color: var(--gray-400);
+            margin-top: 1.5rem;
+        }
+
+        /* ===================== RIGHT PANEL ===================== */
+        .right-panel {
+            background: linear-gradient(150deg, var(--panel-bg) 0%, var(--panel-bg2) 100%);
+            padding: 2.5rem 2.25rem 2rem;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .right-panel::before {
+            content: '';
+            position: absolute;
+            width: 320px;
+            height: 320px;
+            background: radial-gradient(circle, rgba(124, 58, 237, 0.35) 0%, transparent 70%);
+            top: -80px;
+            right: -80px;
+            border-radius: 50%;
+            pointer-events: none;
+        }
+
+        .right-panel::after {
+            content: '';
+            position: absolute;
+            width: 220px;
+            height: 220px;
+            background: radial-gradient(circle, rgba(6, 182, 212, 0.2) 0%, transparent 70%);
+            bottom: 60px;
+            left: -60px;
+            border-radius: 50%;
+            pointer-events: none;
+        }
+
+        .right-panel-text h2 {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--white);
+            line-height: 1.3;
+            margin-bottom: 0.6rem;
+            letter-spacing: -0.4px;
+        }
+
+        .right-panel-text p {
+            font-size: 0.85rem;
+            color: rgba(255, 255, 255, 0.55);
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+        }
+
+        /* AI badge */
+        .ai-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            background: linear-gradient(135deg, rgba(124, 58, 237, 0.3), rgba(59, 73, 223, 0.3));
+            border: 1px solid rgba(124, 58, 237, 0.4);
+            border-radius: 20px;
+            padding: 0.3rem 0.75rem;
+            font-size: 0.7rem;
+            font-weight: 600;
+            color: #c4b5fd;
+            margin-bottom: 0.75rem;
+            width: fit-content;
+        }
+
+        .ai-badge i {
+            font-size: 0.75rem;
+        }
+
+        /* ===== SECURITY ILLUSTRATION ===== */
+        .dash-container {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 14px;
+            padding: 1.25rem;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 0.85rem;
+            backdrop-filter: blur(4px);
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Security header */
+        .sec-header {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding-bottom: 0.85rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+        }
+
+        .sec-icon-wrap {
+            width: 42px;
+            height: 42px;
+            border-radius: 10px;
+            background: linear-gradient(135deg, rgba(124, 58, 237, 0.4), rgba(59, 73, 223, 0.4));
+            border: 1px solid rgba(124, 58, 237, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .sec-icon-wrap i {
+            font-size: 1.1rem;
+            color: #c4b5fd;
+        }
+
+        .sec-header-text .sec-title {
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: var(--white);
+        }
+
+        .sec-header-text .sec-sub {
+            font-size: 0.68rem;
+            color: rgba(255, 255, 255, 0.45);
+        }
+
+        /* Process steps */
+        .process-steps {
+            display: flex;
+            flex-direction: column;
+            gap: 0.6rem;
+        }
+
+        .proc-step {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.07);
+            border-radius: 10px;
+            padding: 0.65rem 0.85rem;
+            transition: background 0.2s;
+        }
+
+        .proc-step.active {
+            background: rgba(59, 73, 223, 0.2);
+            border-color: rgba(59, 73, 223, 0.35);
+        }
+
+        .proc-step.done {
+            background: rgba(16, 185, 129, 0.1);
+            border-color: rgba(16, 185, 129, 0.2);
+        }
+
+        .proc-step-icon {
+            width: 30px;
+            height: 30px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            font-size: 0.8rem;
+        }
+
+        .proc-step.idle .proc-step-icon {
+            background: rgba(255, 255, 255, 0.08);
+            color: rgba(255, 255, 255, 0.4);
+        }
+
+        .proc-step.active .proc-step-icon {
+            background: rgba(59, 73, 223, 0.3);
+            color: #a5b4fc;
+        }
+
+        .proc-step.done .proc-step-icon {
+            background: rgba(16, 185, 129, 0.25);
+            color: #6ee7b7;
+        }
+
+        .proc-step-info {
+            flex: 1;
+        }
+
+        .proc-step-label {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 1px;
+        }
+
+        .proc-step-desc {
+            font-size: 0.62rem;
+            color: rgba(255, 255, 255, 0.38);
+        }
+
+        .proc-step-badge {
+            font-size: 0.58rem;
+            font-weight: 600;
+            padding: 2px 7px;
+            border-radius: 20px;
+        }
+
+        .badge-active {
+            background: rgba(59, 73, 223, 0.3);
+            color: #a5b4fc;
+        }
+
+        .badge-done {
+            background: rgba(16, 185, 129, 0.2);
+            color: #6ee7b7;
+        }
+
+        .badge-pend {
+            background: rgba(255, 255, 255, 0.08);
+            color: rgba(255, 255, 255, 0.35);
+        }
+
+        /* Security tip */
+        .sec-tip {
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.12), rgba(234, 88, 12, 0.06));
+            border: 1px solid rgba(245, 158, 11, 0.2);
+            border-radius: 10px;
+            padding: 0.7rem 0.85rem;
+            display: flex;
+            gap: 0.6rem;
+            align-items: flex-start;
+        }
+
+        .sec-tip i {
+            color: #fcd34d;
+            font-size: 0.85rem;
+            margin-top: 1px;
+            flex-shrink: 0;
+        }
+
+        .sec-tip-text {
+            font-size: 0.68rem;
+            color: rgba(255, 255, 255, 0.5);
+            line-height: 1.5;
+        }
+
+        .sec-tip-text strong {
+            color: #fcd34d;
+            font-weight: 600;
+        }
+
+        /* Floating dots */
+        @keyframes floatDot {
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-8px);
+            }
+        }
+
+        .float-dot {
+            position: absolute;
+            border-radius: 50%;
+            opacity: 0.18;
+            pointer-events: none;
+        }
+
+        .fd1 {
+            width: 10px;
+            height: 10px;
+            background: #a78bfa;
+            top: 20%;
+            left: 15%;
+            animation: floatDot 3.5s ease-in-out infinite;
+        }
+
+        .fd2 {
+            width: 6px;
+            height: 6px;
+            background: #67e8f9;
+            top: 60%;
+            right: 12%;
+            animation: floatDot 4s ease-in-out infinite 0.8s;
+        }
+
+        .fd3 {
+            width: 14px;
+            height: 14px;
+            background: #3B49DF;
+            bottom: 20%;
+            left: 30%;
+            animation: floatDot 5s ease-in-out infinite 1.5s;
+        }
+
+        /* ===================== ANIMATIONS ===================== */
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(18px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .left-panel {
+            animation: fadeUp 0.55s ease both;
+        }
+
+        .right-panel {
+            animation: fadeUp 0.65s ease both 0.1s;
+        }
+
+        .dash-container {
+            animation: fadeUp 0.7s ease both 0.25s;
+        }
+
+        /* Pulse on active step */
+        @keyframes pulse {
+
+            0%,
+            100% {
+                box-shadow: 0 0 0 0 rgba(59, 73, 223, 0.4);
+            }
+
+            50% {
+                box-shadow: 0 0 0 5px rgba(59, 73, 223, 0);
+            }
+        }
+
+        .proc-step.active .proc-step-icon {
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        /* ===================== RESPONSIVE ===================== */
+        @media (max-width: 730px) {
+            body {
+                overflow-y: auto;
+                align-items: flex-start;
+            }
+
+            .login-card {
+                grid-template-columns: 1fr;
+                border-radius: 0;
+                min-height: 100vh;
+                width: 100%;
+            }
+
+            .right-panel {
+                display: none;
+            }
+
+            .left-panel {
+                padding: 2.5rem 1.75rem;
+                min-height: 100vh;
+            }
+        }
+
+        @media (max-width: 900px) and (min-width: 731px) {
+            .login-card {
+                grid-template-columns: 1.1fr 0.9fr;
+            }
+
+            .left-panel {
+                padding: 2.5rem 2rem;
+            }
+
+            .right-panel {
+                padding: 2rem 1.5rem;
+            }
+
+            .right-panel-text h2 {
+                font-size: 1.2rem;
+            }
+        }
+    </style>
 </head>
+
 <body>
-  <div class="overlay"></div>
-  <div class="container d-flex flex-column justify-content-center align-items-center min-vh-100">
-    <div class="auth-container">
-      <div class="brand-header">
-        <img src="/img/Carsil.png" alt="Logo" class="brand-logo">
-      </div>
-      <h5 class="mb-4 text-center auth-title">Ingresa tu nueva contraseña</h5>
-      <form method="POST" action="/nueva-clave" autocomplete="off">
-        <input type="hidden" name="correo" value="<%= correo %>">
-        <input type="hidden" name="usuarioId" value="<%= usuarioId %>">
-        <div class="mb-3">
-          <label for="nuevaClave" class="form-label">Nueva contraseña</label>
-          <input type="password" class="form-control" id="nuevaClave" name="nuevaClave" required>
+
+    <div class="login-card">
+
+        <!-- ==================== LEFT PANEL ==================== -->
+        <div class="left-panel">
+            <div>
+                <!-- Brand -->
+                <div class="brand">
+                    <img src="/img/Carsil.png" alt="Logo CARSIL" class="brand-logo">
+                </div>
+
+                <!-- Form area -->
+                <div class="form-area">
+                    <div class="icon-circle">
+                        <i class="fas fa-key"></i>
+                    </div>
+
+                    <h1>Nueva Contraseña</h1>
+                    <p class="subtitle">
+                        Ingresa una nueva contraseña segura para tu cuenta.
+                    </p>
+
+                    <% if (typeof error !=='undefined' && error) { %>
+                        <div class="alert-error" role="alert">
+                            <i class="fas fa-exclamation-circle"></i>
+                            <%= error %>
+                        </div>
+                    <% } %>
+
+                    <form method="POST" action="/nueva-clave" autocomplete="off">
+                        <input type="hidden" name="correo" value="<%= correo %>">
+                        <input type="hidden" name="usuarioId" value="<%= usuarioId %>">
+
+                        <div class="field-group">
+                            <label class="field-label" for="nuevaClave">Nueva Contraseña</label>
+                            <div class="input-wrapper">
+                                <i class="fas fa-lock field-icon"></i>
+                                <input type="password" class="form-input" id="nuevaClave" name="nuevaClave" required
+                                    autofocus placeholder="••••••••">
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn-submit" id="btn-submit">
+                            <i class="fas fa-save"></i> Guardar nueva contraseña
+                        </button>
+                    </form>
+
+                    <a href="/login" class="back-link">
+                        <i class="fas fa-arrow-left"></i> Volver al inicio de sesión
+                    </a>
+                </div>
+            </div>
+
+            <!-- Footer -->
+            <div class="footer-left">
+                &copy; <%= new Date().getFullYear() %> CARSIL Equipos y Servicios. Todos los derechos reservados.
+            </div>
         </div>
-        <button type="submit" class="btn btn-primary w-100 py-2">Guardar contraseña</button>
-      </form>
-      <div class="text-center mt-3">
-        <a href="/login" class="text-decoration-none fw-semibold">
-          Volver al login
-        </a>
-      </div>
-    </div>
-    <div class="footer">
-      &copy; <%= new Date().getFullYear() %> CARSIL Equipos y Servicios. Todos los derechos reservados.
-    </div>
-  </div>
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+        <!-- ==================== RIGHT PANEL ==================== -->
+        <div class="right-panel">
+            <div class="float-dot fd1"></div>
+            <div class="float-dot fd2"></div>
+            <div class="float-dot fd3"></div>
+
+            <div class="right-panel-text">
+                <div class="ai-badge">
+                    <i class="fas fa-shield-halved"></i> Recuperación segura
+                </div>
+                <h2>Tu seguridad es nuestra prioridad.</h2>
+                <p>El proceso de recuperación está protegido con verificación de identidad y enlace de un solo uso para
+                    garantizar tu acceso seguro.</p>
+            </div>
+
+            <!-- Security process visualization -->
+            <div class="dash-container">
+
+                <!-- Header -->
+                <div class="sec-header">
+                    <div class="sec-icon-wrap">
+                        <i class="fas fa-shield-halved"></i>
+                    </div>
+                    <div class="sec-header-text">
+                        <div class="sec-title">Proceso de recuperación</div>
+                        <div class="sec-sub">Verificación en 3 pasos</div>
+                    </div>
+                </div>
+
+                <!-- Process steps -->
+                <div class="process-steps">
+                    <div class="proc-step active">
+                        <div class="proc-step-icon">
+                            <i class="fas fa-envelope"></i>
+                        </div>
+                        <div class="proc-step-info">
+                            <div class="proc-step-label">Validar correo</div>
+                            <div class="proc-step-desc">Verificamos que el correo esté registrado</div>
+                        </div>
+                        <span class="proc-step-badge badge-active">En curso</span>
+                    </div>
+
+                    <div class="proc-step idle">
+                        <div class="proc-step-icon">
+                            <i class="fas fa-link"></i>
+                        </div>
+                        <div class="proc-step-info">
+                            <div class="proc-step-label">Enviar enlace único</div>
+                            <div class="proc-step-desc">Link con expiración de 30 minutos</div>
+                        </div>
+                        <span class="proc-step-badge badge-pend">Pendiente</span>
+                    </div>
+
+                    <div class="proc-step idle">
+                        <div class="proc-step-icon">
+                            <i class="fas fa-lock"></i>
+                        </div>
+                        <div class="proc-step-info">
+                            <div class="proc-step-label">Nueva contraseña</div>
+                            <div class="proc-step-desc">Crea una contraseña segura y única</div>
+                        </div>
+                        <span class="proc-step-badge badge-pend">Pendiente</span>
+                    </div>
+                </div>
+
+                <!-- Security tip -->
+                <div class="sec-tip">
+                    <i class="fas fa-triangle-exclamation"></i>
+                    <div class="sec-tip-text">
+                        <strong>Consejo de seguridad:</strong> Nunca compartas el enlace de recuperación. Si no
+                        solicitaste este proceso, ignora el correo. El enlace expira en <strong>30 minutos</strong>.
+                    </div>
+                </div>
+
+            </div><!-- /dash-container -->
+        </div><!-- /right-panel -->
+
+    </div><!-- /login-card -->
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Loading state on submit
+        document.querySelector('form').addEventListener('submit', function () {
+            const btn = document.getElementById('btn-submit');
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Enviando...';
+            btn.disabled = true;
+        });
+    </script>
 </body>
+
 </html>

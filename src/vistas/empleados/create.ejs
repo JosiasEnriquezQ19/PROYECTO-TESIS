@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,177 +8,205 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="/publico/css/layout.css">
-    <style>
-@media (max-width: 768px) {
-}
-.card-custom {
-            border: 0;
-            border-radius: 1.2rem;
-            box-shadow: 0 6px 32px rgba(0,0,0,0.10);
-            max-width: 700px;
-            width: 100%;
-            margin: 0 auto;
-        }
-        .form-section {
-            background: #fff;
-            border-radius: 0.5rem;
-            padding: 1.5rem;
-            margin-bottom: 1.5rem;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-        }
-        .form-section-title {
-            font-size: 1.1rem;
-            font-weight: 600;
-            color: #003366;
-            margin-bottom: 1.2rem;
-            padding-bottom: 0.5rem;
-            border-bottom: 1px solid #eee;
-        }
-        @media (max-width: 991px) {
-            .main-content { margin-left: 0; }
-            .card-custom { max-width: 98vw; }
-        }
-        @media (max-width: 768px) {
-            .main-content { margin-left: 0; }
-            .card-custom { max-width: 100vw; border-radius: 0.7rem; }
-        }
-    </style>
+    <link rel="stylesheet" href="/publico/css/layout.css?v=<%= Date.now() %>">
+    <link rel="stylesheet" href="/publico/css/form-views.css?v=<%= Date.now() %>">
 </head>
+
 <body>
     <div class="wrapper">
         <%- include("../parciales/sidebar") %>
-        <!-- Botón para ocultar/mostrar barra -->
-        <!-- Main Content -->
-        <div class="main-content" id="main-content">
-            <nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom w-100">
-                <div class="container-fluid">
-                    <span class="navbar-brand ms-3">Nuevo Empleado</span>
-                    <div class="user-profile ms-auto">
-                        <span><%= user && user.Nombres ? user.Nombres : 'Administrador' %></span>
-                        <div class="user-avatar"><%= user && user.Nombres ? user.Nombres.charAt(0) : 'A' %></div>
-                    </div>
-                </div>
-            </nav>
-            <div class="card card-custom my-5">
-                <div class="card-header bg-white border-bottom">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <h5 class="card-title mb-0">
-                            <i class="bi bi-person-plus me-2"></i>Registrar Nuevo Trabajador
+            <!-- Main Content -->
+            <div class="main-content" id="main-content">
+                <nav class="navbar navbar-expand-lg navbar-top border-bottom">
+                    <div class="container-fluid">
+                        <h5 class="page-title mb-0">
+                            <i class="bi bi-person-plus"></i>
+                            Nuevo Empleado
                         </h5>
-                        <a href="/empleados" class="btn btn-outline-secondary">
-                            <i class="bi bi-arrow-left me-2"></i>Volver
-                        </a>
+                        <div class="user-profile ms-auto">
+                            <span>
+                                <%= user && user.Nombres ? user.Nombres : 'Administrador' %>
+                            </span>
+                            <div class="user-avatar">
+                                <%= user && user.Nombres ? user.Nombres.charAt(0) : 'A' %>
+                            </div>
+                        </div>
                     </div>
-                </div>
-                <div class="card-body">
-                    <!-- Mensaje de error eliminado según solicitud del usuario -->
-                    
-                    <form action="/empleados" method="POST">
-                        <!-- Sección de Información Personal -->
-                        <div class="form-section">
-                            <h6 class="form-section-title">
-                                <i class="bi bi-person-lines-fill me-2"></i>Información Personal
-                            </h6>
-                            <div class="row g-3">
-                                <div class="col-md-6">
-                                    <label for="IdUsuario" class="form-label">Usuario Asociado</label>
-                                    <select class="form-select" id="IdUsuario" name="IdUsuario" required>
-                                        <option value="">Seleccionar usuario...</option>
-                                        <% usuarios.forEach(u => { %>
-                                            <option value="<%= u.IdUsuario %>"><%= u.Nombres %> <%= u.Apellidos %> (<%= u.Correo %>)</option>
-                                        <% }); %>
-                                    </select>
-                                </div>
-                                <div class="col-md-6">
-                                    <label for="Cargo" class="form-label">Cargo</label>
-                                    <input type="text" class="form-control" id="Cargo" name="Cargo" required>
-                                </div>
-                                <div class="col-md-6">
-                                    <label for="Area" class="form-label">Área</label>
-                                    <input type="text" class="form-control" id="Area" name="Area">
-                                </div>
-                                <div class="col-md-6">
-                                    <label for="FechaContratacion" class="form-label">Fecha de Contratación</label>
-                                    <input type="date" class="form-control" id="FechaContratacion" name="FechaContratacion" required>
-                                </div>
-                                <div class="col-md-6">
-                                    <label for="TipoContrato" class="form-label">Tipo de Contrato</label>
-                                    <select class="form-select" id="TipoContrato" name="TipoContrato">
-                                        <option value="INDEFINIDO" selected>Indefinido</option>
-                                        <option value="TEMPORAL">Temporal</option>
-                                        <option value="PRACTICAS">Prácticas</option>
-                                        <option value="OBRA_DETERMINADA">Obra determinada</option>
-                                    </select>
-                                </div>
-                                <div class="col-md-6">
-                                    <label for="SueldoBase" class="form-label">Sueldo Base (S/)</label>
-                                    <input type="number" step="0.01" class="form-control" id="SueldoBase" name="SueldoBase" required>
-                                </div>
-                            </div>
+                </nav>
+
+                <div class="form-container">
+                    <div class="form-card">
+                        <div class="form-header-title">
+                            <i class="bi bi-person-plus"></i> Registrar Nuevo Trabajador
                         </div>
 
-                        <!-- Sección de Información Bancaria -->
-                        <div class="form-section">
-                            <h6 class="form-section-title">
-                                <i class="bi bi-bank me-2"></i>Información Bancaria
-                            </h6>
-                            <div class="row g-3">
-                                <div class="col-md-6">
-                                    <label for="Banco" class="form-label">Banco</label>
-                                    <input type="text" class="form-control" id="Banco" name="Banco">
+                        <div class="form-body">
+                            <form action="/empleados" method="POST">
+                                <!-- Sección de Información Personal -->
+                                <div class="form-section">
+                                    <h5 class="section-title">
+                                        <i class="bi bi-person-lines-fill"></i> Información Personal
+                                    </h5>
+                                    <div class="row g-3">
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label for="IdUsuario" class="form-label">
+                                                    <i class="bi bi-person-badge"></i> Usuario Asociado
+                                                </label>
+                                                <select class="form-control-modern form-select-modern" id="IdUsuario"
+                                                    name="IdUsuario" required>
+                                                    <option value="">Seleccionar usuario...</option>
+                                                    <% usuarios.forEach(u=> { %>
+                                                        <option value="<%= u.IdUsuario %>">
+                                                            <%= u.Nombres %>
+                                                                <%= u.Apellidos %> (<%= u.Correo %>)
+                                                        </option>
+                                                        <% }); %>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label for="Cargo" class="form-label">
+                                                    <i class="bi bi-briefcase"></i> Cargo
+                                                </label>
+                                                <input type="text" class="form-control-modern" id="Cargo" name="Cargo"
+                                                    placeholder="Ej: Técnico, Ingeniero..." required>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label for="Area" class="form-label">
+                                                    <i class="bi bi-building"></i> Área
+                                                    <span class="optional-badge">Opcional</span>
+                                                </label>
+                                                <input type="text" class="form-control-modern" id="Area" name="Area"
+                                                    placeholder="Ej: Producción, Ventas...">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label for="FechaContratacion" class="form-label">
+                                                    <i class="bi bi-calendar-event"></i> Fecha de Contratación
+                                                </label>
+                                                <input type="date" class="form-control-modern" id="FechaContratacion"
+                                                    name="FechaContratacion" required>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label for="TipoContrato" class="form-label">
+                                                    <i class="bi bi-file-earmark-text"></i> Tipo de Contrato
+                                                </label>
+                                                <select class="form-control-modern form-select-modern" id="TipoContrato"
+                                                    name="TipoContrato">
+                                                    <option value="INDEFINIDO" selected>Indefinido</option>
+                                                    <option value="TEMPORAL">Temporal</option>
+                                                    <option value="PRACTICAS">Prácticas</option>
+                                                    <option value="OBRA_DETERMINADA">Obra determinada</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label for="SueldoBase" class="form-label">
+                                                    <i class="bi bi-cash-coin"></i> Sueldo Base (S/)
+                                                </label>
+                                                <input type="number" step="0.01" class="form-control-modern"
+                                                    id="SueldoBase" name="SueldoBase" placeholder="0.00" required>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div class="col-md-6">
-                                    <label for="NumeroCuenta" class="form-label">Número de Cuenta</label>
-                                    <input type="text" class="form-control" id="NumeroCuenta" name="NumeroCuenta">
-                                </div>
-                                <div class="col-md-6">
-                                    <label for="TipoCuenta" class="form-label">Tipo de Cuenta</label>
-                                    <select class="form-select" id="TipoCuenta" name="TipoCuenta">
-                                        <option value="AHORROS" selected>Ahorros</option>
-                                        <option value="CORRIENTE">Corriente</option>
-                                        <option value="NOMINA">Nómina</option>
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
 
-                        <!-- Sección de Estado -->
-                        <div class="form-section">
-                            <h6 class="form-section-title">
-                                <i class="bi bi-info-circle me-2"></i>Estado del Empleado
-                            </h6>
-                            <div class="row g-3">
-                                <div class="col-md-6">
-                                    <label for="Estado" class="form-label">Estado</label>
-                                    <select class="form-select" id="Estado" name="Estado">
-                                        <option value="ACTIVO" selected>Activo</option>
-                                        <option value="INACTIVO">Inactivo</option>
-                                        <option value="VACACIONES">Vacaciones</option>
-                                        <option value="LICENCIA">Licencia</option>
-                                    </select>
+                                <!-- Sección de Información Bancaria -->
+                                <div class="form-section">
+                                    <h5 class="section-title">
+                                        <i class="bi bi-bank"></i> Información Bancaria
+                                    </h5>
+                                    <div class="row g-3">
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label for="Banco" class="form-label">
+                                                    <i class="bi bi-bank2"></i> Banco
+                                                    <span class="optional-badge">Opcional</span>
+                                                </label>
+                                                <input type="text" class="form-control-modern" id="Banco" name="Banco"
+                                                    placeholder="Ej: BCP, Interbank...">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label for="NumeroCuenta" class="form-label">
+                                                    <i class="bi bi-credit-card"></i> Número de Cuenta
+                                                    <span class="optional-badge">Opcional</span>
+                                                </label>
+                                                <input type="text" class="form-control-modern" id="NumeroCuenta"
+                                                    name="NumeroCuenta" placeholder="Número de cuenta bancaria">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label for="TipoCuenta" class="form-label">
+                                                    <i class="bi bi-wallet2"></i> Tipo de Cuenta
+                                                </label>
+                                                <select class="form-control-modern form-select-modern" id="TipoCuenta"
+                                                    name="TipoCuenta">
+                                                    <option value="AHORROS" selected>Ahorros</option>
+                                                    <option value="CORRIENTE">Corriente</option>
+                                                    <option value="NOMINA">Nómina</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
-                            </div>
-                        </div>
 
-                        <div class="d-flex justify-content-end mt-4">
-                            <button type="submit" class="btn btn-primary">
-                                <i class="bi bi-save me-2"></i>Guardar Empleado
-                            </button>
+                                <!-- Sección de Estado -->
+                                <div class="form-section">
+                                    <h5 class="section-title">
+                                        <i class="bi bi-info-circle"></i> Estado del Empleado
+                                    </h5>
+                                    <div class="row g-3">
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label for="Estado" class="form-label">
+                                                    <i class="bi bi-toggle-on"></i> Estado
+                                                </label>
+                                                <select class="form-control-modern form-select-modern" id="Estado"
+                                                    name="Estado">
+                                                    <option value="ACTIVO" selected>Activo</option>
+                                                    <option value="INACTIVO">Inactivo</option>
+                                                    <option value="VACACIONES">Vacaciones</option>
+                                                    <option value="LICENCIA">Licencia</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="form-buttons">
+                                    <a href="/empleados" class="btn btn-form btn-form-cancel">
+                                        <i class="bi bi-arrow-left me-2"></i> Cancelar
+                                    </a>
+                                    <button type="submit" class="btn btn-form-primary">
+                                        <i class="bi bi-save me-2"></i> Guardar Empleado
+                                    </button>
+                                </div>
+                            </form>
                         </div>
-                    </form>
+                    </div>
                 </div>
             </div>
-        </div>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        // Toggle sidebar// Establecer fecha actual como predeterminada para contratación
-        const today = new Date().toISOString().split('T')[0];
-        document.getElementById('FechaContratacion').value = today;
-    });
+        document.addEventListener('DOMContentLoaded', function () {
+            // Establecer fecha actual como predeterminada para contratación
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('FechaContratacion').value = today;
+        });
     </script>
-    <script src="/publico/js/layout.js"></script>
+    <script src="/publico/js/layout.js?v=<%= Date.now() %>"></script>
 </body>
+
 </html>

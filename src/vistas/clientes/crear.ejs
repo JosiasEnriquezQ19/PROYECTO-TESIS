@@ -7,150 +7,9 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="/publico/css/layout.css">
-    <style>
-@media (max-width: 768px) {
-}
-/* Nuevos estilos para el formulario */
-        .form-container {
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 2rem;
-        }
-        
-        .form-card {
-            border: none;
-            border-radius: 12px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
-            overflow: hidden;
-            background: white;
-        }
-        
-        .form-header {
-            background: linear-gradient(135deg, #0056b3, #003366);
-            color: white;
-            padding: 1.5rem;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        
-        .form-header h2 {
-            font-weight: 600;
-            margin: 0;
-            display: flex;
-            align-items: center;
-            gap: 0.8rem;
-        }
-        
-        .form-body {
-            padding: 2rem;
-        }
-        
-        .form-section {
-            margin-bottom: 2rem;
-            padding-bottom: 1.5rem;
-            border-bottom: 1px solid #f0f0f0;
-        }
-        
-        .form-section:last-child {
-            border-bottom: none;
-            margin-bottom: 0;
-            padding-bottom: 0;
-        }
-        
-        .section-title {
-            font-size: 1.1rem;
-            font-weight: 600;
-            color: #003366;
-            margin-bottom: 1.5rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-        
-        .form-label {
-            font-weight: 500;
-            color: #495057;
-            margin-bottom: 0.5rem;
-        }
-        
-        .input-group-text {
-            background-color: #f8f9fa;
-            border-right: none;
-        }
-        
-        .form-control, .form-select {
-            border-left: none;
-            padding: 0.75rem 1rem;
-            border-radius: 0.375rem !important;
-            transition: all 0.3s;
-        }
-        
-        .form-control:focus, .form-select:focus {
-            box-shadow: 0 0 0 0.25rem rgba(0, 86, 179, 0.15);
-            border-color: #0056b3;
-        }
-        
-        .input-group:focus-within .input-group-text {
-            border-color: #0056b3;
-            background-color: #e9f0f7;
-        }
-        
-        .btn-primary-custom {
-            background: linear-gradient(135deg, #0056b3, #003366);
-            border: none;
-            padding: 0.5rem 1.5rem;
-            border-radius: 0.5rem;
-            font-weight: 500;
-            transition: all 0.3s;
-            box-shadow: 0 4px 12px rgba(0, 86, 179, 0.2);
-        }
-        
-        .btn-primary-custom:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 16px rgba(0, 86, 179, 0.3);
-        }
-        
-        .btn-outline-secondary {
-            transition: all 0.3s;
-        }
-        
-        .btn-outline-secondary:hover {
-            background-color: #f8f9fa;
-        }
-        
-        .optional-badge {
-            background-color: #f0f0f0;
-            color: #6c757d;
-            font-size: 0.75rem;
-            padding: 0.25rem 0.5rem;
-            border-radius: 0.25rem;
-            margin-left: 0.5rem;
-        }
-        
-        .form-actions {
-            display: flex;
-            justify-content: flex-end;
-            gap: 1rem;
-            padding-top: 1.5rem;
-            border-top: 1px solid #f0f0f0;
-            margin-top: 1.5rem;
-        }
-        
-        /* Efecto de hover para los campos */
-        .form-group:hover .form-label {
-            color: #0056b3;
-        }
-        
-        /* Animación para el card */
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        
-        .form-card {
-            animation: fadeIn 0.5s ease-out;
-        }
-    </style>
+    <link rel="stylesheet" href="/publico/css/layout.css?v=1772427290134">
+    <link rel="stylesheet" href="/publico/css/form-views.css?v=1772427290134">
+    
 </head>
 <body>
     <div class="wrapper">
@@ -161,22 +20,22 @@
         
         <!-- Main Content -->
         <div class="main-content" id="main-content">
-            <nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom navbar-top">
+            <nav class="navbar navbar-expand-lg navbar-top border-bottom">
                 <div class="container-fluid">
-                    <span class="navbar-brand ms-3 fw-semibold">Crear Nuevo Cliente</span>
+                    <h5 class="page-title mb-0">
+                        <i class="bi bi-person-plus"></i>
+                        Crear Cliente
+                    </h5>
                     <div class="user-profile ms-auto">
-                        <span class="fw-medium">Administrador</span>
-                        <div class="user-avatar">A</div>
+                        <span><%= typeof user !== 'undefined' && user && user.Nombres ? user.Nombres : 'Administrador' %></span>
+                        <div class="user-avatar"><%= typeof user !== 'undefined' && user && user.Nombres ? user.Nombres.charAt(0) : 'A' %></div>
                     </div>
                 </div>
             </nav>
             
-            <div class="container py-4">
-                <div class="form-container">
+            <div class="form-container">
                     <div class="form-card">
-                        <div class="form-header">
-                            <h2><i class="bi bi-person-plus"></i> Registrar Nuevo Cliente</h2>
-                        </div>
+                        <div class="form-header-title"><i class="bi bi-person-plus"></i> Registrar Nuevo Cliente</div>
                         
                         <div class="form-body">
                             <form action="/clientes/crear" method="POST" autocomplete="off">
@@ -189,30 +48,36 @@
                                     <div class="row g-3">
                                         <div class="col-md-6">
                                             <div class="form-group">
+                                                <div class="form-group-header">
                                                 <label for="documento" class="form-label">Documento de Identidad</label>
-                                                <div class="input-group">
-                                                    <span class="input-group-text"><i class="bi bi-credit-card-2-front"></i></span>
-                                                    <input type="text" class="form-control" id="documento" name="Documento" required placeholder="Ingrese RUC o DNI">
+                                            </div>
+                                            <div class="input-wrapper has-icon">
+                                                    <input type="text" class="form-control-modern" id="documento" name="Documento" required placeholder="Ingrese RUC o DNI">
+                                                    <i class="input-icon bi bi-credit-card-2-front"></i>
                                                 </div>
                                             </div>
                                         </div>
                                         
                                         <div class="col-md-6">
                                             <div class="form-group">
+                                                <div class="form-group-header">
                                                 <label for="razonSocial" class="form-label">Razón Social / Nombre</label>
-                                                <div class="input-group">
-                                                    <span class="input-group-text"><i class="bi bi-building"></i></span>
-                                                    <input type="text" class="form-control" id="razonSocial" name="RazonSocial" required placeholder="Nombre completo o razón social">
+                                            </div>
+                                            <div class="input-wrapper has-icon">
+                                                    <input type="text" class="form-control-modern" id="razonSocial" name="RazonSocial" required placeholder="Nombre completo o razón social">
+                                                    <i class="input-icon bi bi-building"></i>
                                                 </div>
                                             </div>
                                         </div>
                                         
                                         <div class="col-12">
                                             <div class="form-group">
+                                                <div class="form-group-header">
                                                 <label for="direccion" class="form-label">Dirección Fiscal</label>
-                                                <div class="input-group">
-                                                    <span class="input-group-text"><i class="bi bi-geo-alt"></i></span>
-                                                    <input type="text" class="form-control" id="direccion" name="Direccion" placeholder="Dirección completa">
+                                            </div>
+                                            <div class="input-wrapper has-icon">
+                                                    <input type="text" class="form-control-modern" id="direccion" name="Direccion" placeholder="Dirección completa">
+                                                    <i class="input-icon bi bi-geo-alt"></i>
                                                 </div>
                                             </div>
                                         </div>
@@ -228,10 +93,12 @@
                                     <div class="row g-3">
                                         <div class="col-md-6">
                                             <div class="form-group">
+                                                <div class="form-group-header">
                                                 <label for="telefono" class="form-label">Teléfono Principal</label>
-                                                <div class="input-group">
-                                                    <span class="input-group-text"><i class="bi bi-telephone-outbound"></i></span>
-                                                    <input type="text" class="form-control" id="telefono" name="Telefono" required placeholder="Número de teléfono">
+                                            </div>
+                                            <div class="input-wrapper has-icon">
+                                                    <input type="text" class="form-control-modern" id="telefono" name="Telefono" required placeholder="Número de teléfono">
+                                                    <i class="input-icon bi bi-telephone-outbound"></i>
                                                 </div>
                                             </div>
                                         </div>
@@ -242,29 +109,33 @@
                                                     Celular Secundario 
                                                     <span class="optional-badge">Opcional</span>
                                                 </label>
-                                                <div class="input-group">
-                                                    <span class="input-group-text"><i class="bi bi-phone"></i></span>
-                                                    <input type="text" class="form-control" id="celular" name="Celular" placeholder="Número de celular alternativo">
+                                                <div class="input-wrapper has-icon">
+                                                    <input type="text" class="form-control-modern" id="celular" name="Celular" placeholder="Número de celular alternativo">
+                                                    <i class="input-icon bi bi-phone"></i>
                                                 </div>
                                             </div>
                                         </div>
                                         
                                         <div class="col-md-6">
                                             <div class="form-group">
+                                                <div class="form-group-header">
                                                 <label for="email" class="form-label">Correo Electrónico</label>
-                                                <div class="input-group">
-                                                    <span class="input-group-text"><i class="bi bi-envelope-at"></i></span>
-                                                    <input type="email" class="form-control" id="email" name="Email" placeholder="correo@empresa.com">
+                                            </div>
+                                            <div class="input-wrapper has-icon">
+                                                    <input type="email" class="form-control-modern" id="email" name="Email" placeholder="correo@empresa.com">
+                                                    <i class="input-icon bi bi-envelope-at"></i>
                                                 </div>
                                             </div>
                                         </div>
                                         
                                         <div class="col-md-6">
                                             <div class="form-group">
+                                                <div class="form-group-header">
                                                 <label for="contacto" class="form-label">Persona de Contacto</label>
-                                                <div class="input-group">
-                                                    <span class="input-group-text"><i class="bi bi-person-lines-fill"></i></span>
-                                                    <input type="text" class="form-control" id="contacto" name="Contacto" placeholder="Nombre del contacto principal">
+                                            </div>
+                                            <div class="input-wrapper has-icon">
+                                                    <input type="text" class="form-control-modern" id="contacto" name="Contacto" placeholder="Nombre del contacto principal">
+                                                    <i class="input-icon bi bi-person-lines-fill"></i>
                                                 </div>
                                             </div>
                                         </div>
@@ -272,11 +143,11 @@
                                 </div>
                                 
                                 <!-- Sección de acciones -->
-                                <div class="form-actions">
-                                    <a href="/clientes" class="btn btn-outline-secondary btn-lg">
+                                <div class="form-buttons">
+                                    <a href="/clientes" class="btn btn-form btn-form-cancel btn-lg">
                                         <i class="bi bi-x-circle me-2"></i> Cancelar
                                     </a>
-                                    <button type="submit" class="btn btn-primary-custom btn-lg">
+                                    <button type="submit" class="btn btn-form-primary btn-lg">
                                         <i class="bi bi-save me-2"></i> Guardar Cliente
                                     </button>
                                 </div>
@@ -284,10 +155,9 @@
                         </div>
                     </div>
                 </div>
-            </div>
+            
         </div>
     </div>
-    
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
     document.addEventListener('DOMContentLoaded', function() {
@@ -333,6 +203,6 @@
         });
     });
     </script>
-    <script src="/publico/js/layout.js"></script>
+    <script src="/publico/js/layout.js?v=1772427290134"></script>
 </body>
 </html>

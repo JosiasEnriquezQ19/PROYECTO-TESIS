@@ -695,7 +695,7 @@
                 
                 errorMsg += '\n\n¿Deseas usar la impresión simple en su lugar?';
                 
-                if (confirm(errorMsg)) {
+                if (await liquidGlassConfirm(errorMsg)) {
                     window.print();
                 }
             }

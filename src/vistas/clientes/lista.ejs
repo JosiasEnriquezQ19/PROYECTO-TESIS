@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,399 +8,294 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="/publico/css/layout.css">
-    <style>
-@media (max-width: 768px) {
-}
-.stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1.5rem;
-            margin-bottom: 2rem;
-        }
-        .stat-card {
-            background: linear-gradient(135deg, #fff 0%, #f8fafc 100%);
-            border-radius: 1rem;
-            padding: 1.5rem;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.06);
-            border: 1px solid rgba(0,86,179,0.1);
-            transition: all 0.3s;
-        }
-        .stat-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 30px rgba(0,0,0,0.12);
-        }
-        .stat-icon {
-            width: 50px;
-            height: 50px;
-            border-radius: 1rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.5rem;
-            margin-bottom: 1rem;
-        }
-        .card-modern {
-            background: rgba(255,255,255,0.95);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(0,86,179,0.1);
-            border-radius: 1rem;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.06);
-            transition: all 0.3s;
-        }
-        .card-modern:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 12px 40px rgba(0,0,0,0.12);
-        }
-        .btn-modern {
-            border-radius: 0.7rem;
-            padding: 0.6rem 1.5rem;
-            font-weight: 600;
-            border: none;
-            transition: all 0.3s;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-        .btn-primary-modern {
-            background: linear-gradient(135deg, #0056b3, #0d6efd);
-            color: #fff;
-            box-shadow: 0 4px 12px rgba(0,86,179,0.3);
-        }
-        .btn-primary-modern:hover {
-            background: linear-gradient(135deg, #003d82, #0b5ed7);
-            transform: translateY(-2px);
-            box-shadow: 0 6px 16px rgba(0,86,179,0.4);
-            color: #fff;
-        }
-        .search-container {
-            background: rgba(255,255,255,0.9);
-            border-radius: 1rem;
-            padding: 1rem;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.06);
-            border: 1px solid rgba(0,86,179,0.1);
-            margin-bottom: 2rem;
-        }
-        .search-box {
-            position: relative;
-        }
-        .search-box .form-control, .search-box .form-select {
-            border-radius: 0.7rem;
-            border: 1px solid rgba(0,86,179,0.2);
-            padding: 0.8rem 1rem;
-            background: rgba(255,255,255,0.9);
-            transition: all 0.3s;
-        }
-        .search-box .form-control:focus, .search-box .form-select:focus {
-            border-color: #0056b3;
-            box-shadow: 0 0 0 0.2rem rgba(0,86,179,0.15);
-        }
-        .table-modern {
-            background: rgba(255,255,255,0.95);
-            border-radius: 1rem;
-            overflow: hidden;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.06);
-        }
-        .table-modern thead th {
-            background: linear-gradient(135deg, #003366, #0056b3);
-            color: #fff;
-            font-weight: 600;
-            border: none;
-            padding: 1rem;
-            font-size: 0.9rem;
-        }
-        .table-modern tbody td {
-            padding: 1rem;
-            vertical-align: middle;
-            border-bottom: 1px solid rgba(0,86,179,0.1);
-        }
-        .table-modern tbody tr:hover {
-            background: rgba(0,86,179,0.03);
-        }
-        .badge-modern {
-            padding: 0.5rem 1rem;
-            border-radius: 2rem;
-            font-weight: 500;
-            font-size: 0.8rem;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.3rem;
-        }
-        .badge-activo {
-            background: linear-gradient(135deg, #d1edff, #74b9ff);
-            color: #0984e3;
-            border: 1px solid #74b9ff;
-        }
-        .badge-inactivo {
-            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
-            color: #6c757d;
-            border: 1px solid #dee2e6;
-        }
-        .btn-action {
-            width: 35px;
-            height: 35px;
-            border-radius: 0.5rem;
-            border: none;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 0.2rem;
-            transition: all 0.3s;
-        }
-        .btn-action:hover {
-            transform: translateY(-2px);
-        }
-        .client-info {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-        .client-avatar {
-            width: 32px;
-            height: 32px;
-            background: linear-gradient(135deg, #0056b3, #003366);
-            color: #fff;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 600;
-            font-size: 0.8rem;
-        }
-        .contact-info {
-            display: flex;
-            align-items: center;
-            gap: 0.3rem;
-        }
-        .contact-info i {
-            color: #0056b3;
-        }
-    </style>
+    <link rel="stylesheet" href="/publico/css/layout.css?v=1772427290135">
+    <link rel="stylesheet" href="/publico/css/list-views.css">
 </head>
+
 <body>
     <div class="wrapper">
         <%- include("../parciales/sidebar") %>
-        
-        <!-- Botón para ocultar/mostrar barra -->
-        
-        <!-- Main Content -->
-        <div class="main-content" id="main-content">
-            <nav class="navbar navbar-expand-lg navbar-top border-bottom">
-                <div class="container-fluid">
-                    <h5 class="page-title mb-0">
-                        <i class="bi bi-people"></i>
-                        Gestión de Clientes
-                    </h5>
-                    <div class="user-profile ms-auto">
-                        <span><%= user && user.Nombres ? user.Nombres : 'Administrador' %></span>
-                        <div class="user-avatar"><%= user && user.Nombres ? user.Nombres.charAt(0) : 'A' %></div>
-                    </div>
-                </div>
-            </nav>
-            
-            <div class="container-fluid py-4">
-                <!-- Mensajes flash -->
-                <% if (success) { %>
-                    <div class="alert alert-success alert-dismissible fade show" role="alert">
-                        <i class="bi bi-check-circle me-2"></i><%= success %>
-                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                    </div>
-                <% } %>
-                <% if (error) { %>
-                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                        <i class="bi bi-exclamation-triangle me-2"></i><%= error %>
-                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                    </div>
-                <% } %>
 
-                <!-- Stats Cards -->
-                <div class="stats-grid">
-                    <div class="stat-card">
-                        <div class="stat-icon" style="background: linear-gradient(135deg, #0056b3, #003366);">
-                            <i class="bi bi-people text-white"></i>
-                        </div>
-                        <h6 class="text-muted">Total Clientes</h6>
-                        <h3 class="text-primary"><%= clientes ? clientes.length : 0 %></h3>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-icon" style="background: linear-gradient(135deg, #28a745, #20c997);">
-                            <i class="bi bi-check-circle text-white"></i>
-                        </div>
-                        <h6 class="text-muted">Activos</h6>
-                        <h3 class="text-success"><%= clientes ? clientes.filter(c => c.Estado == 1).length : 0 %></h3>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-icon" style="background: linear-gradient(135deg, #6c757d, #495057);">
-                            <i class="bi bi-pause-circle text-white"></i>
-                        </div>
-                        <h6 class="text-muted">Inactivos</h6>
-                        <h3 class="text-muted"><%= clientes ? clientes.filter(c => c.Estado == 0).length : 0 %></h3>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-icon" style="background: linear-gradient(135deg, #6f42c1, #6610f2);">
-                            <i class="bi bi-envelope text-white"></i>
-                        </div>
-                        <h6 class="text-muted">Con Email</h6>
-                        <h3 class="text-info"><%= clientes ? clientes.filter(c => c.Email && c.Email.length > 0).length : 0 %></h3>
-                    </div>
-                </div>
+            <!-- Botón para ocultar/mostrar barra -->
 
-                <!-- Search and Actions -->
-                <div class="search-container">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <div class="search-box flex-grow-1 me-3">
-                            <div class="d-flex gap-2">
-                                <select class="form-select" id="campoFiltro" style="max-width: 180px;">
-                                    <option value="0">Documento</option>
-                                    <option value="1">Razón Social</option>
-                                    <option value="2">Dirección</option>
-                                    <option value="3">Teléfono</option>
-                                    <option value="4">Celular</option>
-                                    <option value="5">Email</option>
-                                    <option value="6">Contacto</option>
-                                </select>
-                                <input type="text" class="form-control" id="valorFiltro" placeholder="Buscar clientes...">
+            <!-- Main Content -->
+            <div class="main-content" id="main-content">
+                <nav class="navbar navbar-expand-lg navbar-top border-bottom">
+                    <div class="container-fluid">
+                        <h5 class="page-title mb-0">
+                            <i class="bi bi-people"></i>
+                            Gestión de Clientes
+                        </h5>
+                        <div class="user-profile ms-auto">
+                            <span>
+                                <%= user && user.Nombres ? user.Nombres : 'Administrador' %>
+                            </span>
+                            <div class="user-avatar">
+                                <%= user && user.Nombres ? user.Nombres.charAt(0) : 'A' %>
                             </div>
                         </div>
-                        <a href="/clientes/crear" class="btn btn-primary-modern btn-modern">
-                            <i class="bi bi-plus-circle"></i>
-                            Nuevo Cliente
-                        </a>
                     </div>
-                </div>
+                </nav>
 
-                <!-- Tabla de clientes modernizada -->
-                <div class="card-modern">
-                    <div class="table-responsive">
-                        <table class="table table-modern mb-0">
-                            <thead>
-                                <tr>
-                                    <th><i class="bi bi-person me-1"></i>Cliente</th>
-                                    <th><i class="bi bi-credit-card-2-front me-1"></i>Documento</th>
-                                    <th><i class="bi bi-geo-alt me-1"></i>Dirección</th>
-                                    <th><i class="bi bi-telephone me-1"></i>Contacto</th>
-                                    <th><i class="bi bi-envelope me-1"></i>Email</th>
-                                    <th><i class="bi bi-person-lines-fill me-1"></i>Responsable</th>
-                                    <th><i class="bi bi-toggle-on me-1"></i>Estado</th>
-                                    <th class="text-center"><i class="bi bi-gear me-1"></i>Acciones</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <% if (clientes && clientes.length > 0) { %>
-                                    <% clientes.forEach(cliente => { %>
-                                        <tr>
-                                            <td>
-                                                <div class="client-info">
-                                                    <div class="client-avatar">
-                                                        <%= cliente.RazonSocial.charAt(0).toUpperCase() %>
-                                                    </div>
-                                                    <div>
-                                                        <strong><%= cliente.RazonSocial %></strong>
-                                                        <div class="text-muted small">ID: <%= cliente.IdCliente %></div>
-                                                    </div>
+                <div class="container-fluid py-4">
+                    <!-- Mensajes flash -->
+                    <% if (success) { %>
+                        <div class="alert alert-success alert-dismissible fade show" role="alert">
+                            <i class="bi bi-check-circle me-2"></i>
+                            <%= success %>
+                                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                        <% } %>
+                            <% if (error) { %>
+                                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                    <i class="bi bi-exclamation-triangle me-2"></i>
+                                    <%= error %>
+                                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                                </div>
+                                <% } %>
+
+                                    <!-- Stats Cards -->
+                                    <div class="stats-grid">
+                                        <div class="stat-card">
+                                            <div class="stat-icon"
+                                                style="background: linear-gradient(135deg, #0056b3, #003366);">
+                                                <i class="bi bi-people text-white"></i>
+                                            </div>
+                                            <h6 class="text-muted">Total Clientes</h6>
+                                            <h3 class="text-primary">
+                                                <%= clientes ? clientes.length : 0 %>
+                                            </h3>
+                                        </div>
+                                        <div class="stat-card">
+                                            <div class="stat-icon"
+                                                style="background: linear-gradient(135deg, #28a745, #20c997);">
+                                                <i class="bi bi-check-circle text-white"></i>
+                                            </div>
+                                            <h6 class="text-muted">Activos</h6>
+                                            <h3 class="text-success">
+                                                <%= clientes ? clientes.filter(c=> c.Estado == 1).length : 0 %>
+                                            </h3>
+                                        </div>
+                                        <div class="stat-card">
+                                            <div class="stat-icon"
+                                                style="background: linear-gradient(135deg, #6c757d, #495057);">
+                                                <i class="bi bi-pause-circle text-white"></i>
+                                            </div>
+                                            <h6 class="text-muted">Inactivos</h6>
+                                            <h3 class="text-muted">
+                                                <%= clientes ? clientes.filter(c=> c.Estado == 0).length : 0 %>
+                                            </h3>
+                                        </div>
+                                        <div class="stat-card">
+                                            <div class="stat-icon"
+                                                style="background: linear-gradient(135deg, #6f42c1, #6610f2);">
+                                                <i class="bi bi-envelope text-white"></i>
+                                            </div>
+                                            <h6 class="text-muted">Con Email</h6>
+                                            <h3 class="text-info">
+                                                <%= clientes ? clientes.filter(c=> c.Email && c.Email.length > 0).length
+                                                    : 0 %>
+                                            </h3>
+                                        </div>
+                                    </div>
+
+                                    <!-- Search and Actions -->
+                                    <div class="search-container">
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <div class="search-box flex-grow-1 me-3">
+                                                <div class="d-flex gap-2">
+                                                    <select class="form-select" id="campoFiltro"
+                                                        style="max-width: 180px;">
+                                                        <option value="0">Documento</option>
+                                                        <option value="1">Razón Social</option>
+                                                        <option value="2">Dirección</option>
+                                                        <option value="3">Teléfono</option>
+                                                        <option value="4">Celular</option>
+                                                        <option value="5">Email</option>
+                                                        <option value="6">Contacto</option>
+                                                    </select>
+                                                    <input type="text" class="form-control" id="valorFiltro"
+                                                        placeholder="Buscar clientes...">
                                                 </div>
-                                            </td>
-                                            <td>
-                                                <span class="badge bg-light text-dark">
-                                                    <i class="bi bi-credit-card me-1"></i>
-                                                    <%= cliente.Documento %>
-                                                </span>
-                                            </td>
-                                            <td>
-                                                <i class="bi bi-geo-alt text-muted me-1"></i>
-                                                <%= cliente.Direccion || 'No especificado' %>
-                                            </td>
-                                            <td>
-                                                <div>
-                                                    <% if (cliente.Telefono) { %>
-                                                        <div class="contact-info">
-                                                            <i class="bi bi-telephone"></i>
-                                                            <span><%= cliente.Telefono %></span>
-                                                        </div>
-                                                    <% } %>
-                                                    <% if (cliente.Celular) { %>
-                                                        <div class="contact-info">
-                                                            <i class="bi bi-phone"></i>
-                                                            <span><%= cliente.Celular %></span>
-                                                        </div>
-                                                    <% } %>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <% if (cliente.Email) { %>
-                                                    <div class="contact-info">
-                                                        <i class="bi bi-envelope"></i>
-                                                        <span><%= cliente.Email %></span>
-                                                    </div>
-                                                <% } else { %>
-                                                    <span class="text-muted">Sin email</span>
-                                                <% } %>
-                                            </td>
-                                            <td>
-                                                <% if (cliente.Contacto) { %>
-                                                    <div class="contact-info">
-                                                        <i class="bi bi-person-circle"></i>
-                                                        <span><%= cliente.Contacto %></span>
-                                                    </div>
-                                                <% } else { %>
-                                                    <span class="text-muted">Sin contacto</span>
-                                                <% } %>
-                                            </td>
-                                            <td>
-                                                <span class="badge-modern <%= cliente.Estado == 1 ? 'badge-activo' : 'badge-inactivo' %>">
-                                                    <i class="bi <%= cliente.Estado == 1 ? 'bi-check-circle' : 'bi-pause-circle' %>"></i>
-                                                    <%= cliente.Estado == 1 ? 'Activo' : 'Inactivo' %>
-                                                </span>
-                                            </td>
-                                            <td class="text-center">
-                                                <div class="d-flex justify-content-center gap-1">
-                                                    <a href="/clientes/editar/<%= cliente.IdCliente %>" 
-                                                       class="btn btn-outline-primary btn-action" 
-                                                       title="Editar">
-                                                        <i class="bi bi-pencil"></i>
-                                                    </a>
-                                                    <a href="/clientes/eliminar/<%= cliente.IdCliente %>" 
-                                                       class="btn btn-outline-danger btn-action" 
-                                                       title="Eliminar"
-                                                       onclick="return confirm('¿Está seguro de eliminar este cliente?')">
-                                                        <i class="bi bi-trash"></i>
-                                                    </a>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    <% }); %>
-                                <% } else { %>
-                                    <tr>
-                                        <td colspan="8" class="text-center py-5">
-                                            <i class="bi bi-people text-muted" style="font-size: 3rem;"></i>
-                                            <p class="text-muted mt-2">
-                                                <% if (terminoBusqueda && terminoBusqueda.length > 0) { %>
-                                                    No se encontraron clientes que coincidan con "<%= terminoBusqueda %>"
-                                                <% } else { %>
-                                                    No hay clientes registrados.
-                                                <% } %>
-                                            </p>
+                                            </div>
                                             <a href="/clientes/crear" class="btn btn-primary-modern btn-modern">
                                                 <i class="bi bi-plus-circle"></i>
-                                                Crear primer cliente
+                                                Nuevo Cliente
                                             </a>
-                                        </td>
-                                    </tr>
-                                <% } %>
-                            </tbody>
-                        </table>
-                    </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Tabla de clientes modernizada -->
+                                    <div class="card-modern">
+                                        <div class="table-responsive">
+                                            <table class="table table-modern mb-0">
+                                                <thead>
+                                                    <tr>
+                                                        <th style="width: 40px;"><input
+                                                                class="form-check-input custom-checkbox"
+                                                                type="checkbox"></th>
+                                                        <th>Cliente <i class="bi bi-arrow-down-up"></i></th>
+                                                        <th>Documento <i class="bi bi-arrow-down-up"></i></th>
+                                                        <th>Dirección <i class="bi bi-arrow-down-up"></i></th>
+                                                        <th>Contacto <i class="bi bi-arrow-down-up"></i></th>
+                                                        <th>Email <i class="bi bi-arrow-down-up"></i></th>
+                                                        <th>Responsable <i class="bi bi-arrow-down-up"></i></th>
+                                                        <th>Estado <i class="bi bi-arrow-down-up"></i></th>
+                                                        <th class="text-center">Acciones</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <% if (clientes && clientes.length> 0) { %>
+                                                        <% clientes.forEach(cliente=> { %>
+                                                            <tr>
+                                                                <td><input class="form-check-input custom-checkbox"
+                                                                        type="checkbox"></td>
+                                                                <td>
+                                                                    <div class="item-info">
+                                                                        <div class="item-avatar">
+                                                                            <%= cliente.RazonSocial.charAt(0).toUpperCase()
+                                                                                %>
+                                                                        </div>
+                                                                        <div class="item-details">
+                                                                            <strong>
+                                                                                <%= cliente.RazonSocial %>
+                                                                            </strong>
+                                                                            <span class="text-muted">ID: <%=
+                                                                                    cliente.IdCliente %></span>
+                                                                        </div>
+                                                                    </div>
+                                                                </td>
+                                                                <td>
+                                                                    <span class="text-muted">
+                                                                        <%= cliente.Documento %>
+                                                                    </span>
+                                                                </td>
+                                                                <td>
+                                                                    <i class="bi bi-geo-alt text-muted me-1"></i>
+                                                                    <%= cliente.Direccion || 'No especificado' %>
+                                                                </td>
+                                                                <td>
+                                                                    <div>
+                                                                        <% if (cliente.Telefono) { %>
+                                                                            <div class="contact-info">
+                                                                                <i class="bi bi-telephone"></i>
+                                                                                <span>
+                                                                                    <%= cliente.Telefono %>
+                                                                                </span>
+                                                                            </div>
+                                                                            <% } %>
+                                                                                <% if (cliente.Celular) { %>
+                                                                                    <div class="contact-info">
+                                                                                        <i class="bi bi-phone"></i>
+                                                                                        <span>
+                                                                                            <%= cliente.Celular %>
+                                                                                        </span>
+                                                                                    </div>
+                                                                                    <% } %>
+                                                                    </div>
+                                                                </td>
+                                                                <td>
+                                                                    <% if (cliente.Email) { %>
+                                                                        <div class="contact-info">
+                                                                            <i class="bi bi-envelope"></i>
+                                                                            <span>
+                                                                                <%= cliente.Email %>
+                                                                            </span>
+                                                                        </div>
+                                                                        <% } else { %>
+                                                                            <span class="text-muted">Sin email</span>
+                                                                            <% } %>
+                                                                </td>
+                                                                <td>
+                                                                    <% if (cliente.Contacto) { %>
+                                                                        <div class="contact-info">
+                                                                            <i class="bi bi-person-circle"></i>
+                                                                            <span>
+                                                                                <%= cliente.Contacto %>
+                                                                            </span>
+                                                                        </div>
+                                                                        <% } else { %>
+                                                                            <span class="text-muted">Sin contacto</span>
+                                                                            <% } %>
+                                                                </td>
+                                                                <td>
+                                                                    <span
+                                                                        class="badge-modern <%= cliente.Estado == 1 ? 'badge-activo' : 'badge-inactivo' %>">
+                                                                        <i
+                                                                            class="bi <%= cliente.Estado == 1 ? 'bi-check-circle' : 'bi-pause-circle' %>"></i>
+                                                                        <%= cliente.Estado==1 ? 'Activo' : 'Inactivo' %>
+                                                                    </span>
+                                                                </td>
+                                                                <td class="text-center">
+                                                                    <div class="action-buttons justify-content-center">
+                                                                        <a href="/clientes/editar/<%= cliente.IdCliente %>"
+                                                                            class="btn-action-icon btn-action-edit"
+                                                                            title="Editar">
+                                                                            <i class="bi bi-pencil"></i>
+                                                                        </a>
+                                                                        <a href="/clientes/eliminar/<%= cliente.IdCliente %>"
+                                                                            class="btn-action-icon btn-action-delete"
+                                                                            title="Eliminar"
+                                                                            onclick="return confirm('¿Está seguro de eliminar este cliente?')">
+                                                                            <i class="bi bi-trash"></i>
+                                                                        </a>
+                                                                    </div>
+                                                                </td>
+                                                            </tr>
+                                                            <% }); %>
+                                                                <% } else { %>
+                                                                    <tr>
+                                                                        <td colspan="8" class="text-center py-5">
+                                                                            <i class="bi bi-people text-muted"
+                                                                                style="font-size: 3rem;"></i>
+                                                                            <p class="text-muted mt-2">
+                                                                                <% if (terminoBusqueda &&
+                                                                                    terminoBusqueda.length> 0) { %>
+                                                                                    No se encontraron clientes que
+                                                                                    coincidan con "<%= terminoBusqueda
+                                                                                        %>"
+                                                                                        <% } else { %>
+                                                                                            No hay clientes registrados.
+                                                                                            <% } %>
+                                                                            </p>
+                                                                            <a href="/clientes/crear"
+                                                                                class="btn btn-primary-modern btn-modern">
+                                                                                <i class="bi bi-plus-circle"></i>
+                                                                                Crear primer cliente
+                                                                            </a>
+                                                                        </td>
+                                                                    </tr>
+                                                                    <% } %>
+                                                </tbody>
+                                            </table>
+
+                                            <!-- Paginación Modernizada -->
+                                            <div class="pagination-modern">
+                                                <div class="pagination-info">
+                                                    Showing 1 - <%= clientes ? clientes.length : 0 %> of <%= clientes ?
+                                                            clientes.length : 0 %>
+                                                </div>
+                                                <ul class="pagination-controls">
+                                                    <li><button class="page-item-modern disabled"><i
+                                                                class="bi bi-chevron-left"></i></button></li>
+                                                    <li><button class="page-item-modern active">1</button></li>
+                                                    <li><button class="page-item-modern disabled"><i
+                                                                class="bi bi-chevron-right"></i></button></li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
                 </div>
             </div>
-        </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        document.addEventListener('DOMContentLoaded', function() {// Cerrar sesión
-            document.querySelector('.logout-item').addEventListener('click', function(e) {
-                if (!confirm('¿Desea cerrar sesión?')) {
-                    e.preventDefault();
+        document.addEventListener('DOMContentLoaded', function () {// Cerrar sesión
+            document.querySelector('.logout-item').addEventListener('click', async function (e) {
+                e.preventDefault();
+                if (await liquidGlassConfirm('¿Desea cerrar sesión?')) {
+                    window.location.href = this.closest('a') ? this.closest('a').href : '/logout';
                 }
             });
         });
@@ -416,15 +312,15 @@
             const col = parseInt(campoFiltro.value);
             const searchTerm = valorFiltro.value.toLowerCase();
             const rows = document.querySelectorAll('tbody tr');
-            
+
             rows.forEach(row => {
                 if (row.querySelectorAll('td').length < 8) return;
-                
+
                 let cellText = '';
                 const cells = row.querySelectorAll('td');
-                
+
                 // Ajustar según la columna seleccionada
-                switch(col) {
+                switch (col) {
                     case 0: // Documento
                         cellText = cells[1].textContent.toLowerCase();
                         break;
@@ -447,7 +343,7 @@
                         cellText = cells[5].textContent.toLowerCase();
                         break;
                 }
-                
+
                 if (cellText.includes(searchTerm)) {
                     row.style.display = '';
                 } else {
@@ -456,6 +352,7 @@
             });
         }
     </script>
-    <script src="/publico/js/layout.js"></script>
+    <script src="/publico/js/layout.js?v=1772427290135"></script>
 </body>
+
 </html>

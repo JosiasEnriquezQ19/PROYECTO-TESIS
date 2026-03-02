@@ -7,49 +7,9 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="/publico/css/layout.css">
-    <style>
-@media (max-width: 768px) {
-}
-.sidebar .menu-item.active,
-.card {
-            border-radius: 0.5rem;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
-            border: none;
-        }
-        .card-header {
-            border-radius: 0.5rem 0.5rem 0 0 !important;
-            background-color: #0056b3;
-            color: white;
-        }
-        .form-section {
-            background: white;
-            border-radius: 0.5rem;
-            padding: 1.5rem;
-            margin-bottom: 1.5rem;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-        }
-        .form-section-title {
-            font-size: 1.1rem;
-            font-weight: 600;
-            color: #003366;
-            margin-bottom: 1.2rem;
-            padding-bottom: 0.5rem;
-            border-bottom: 1px solid #eee;
-        }
-        .user-avatar-lg {
-            width: 80px;
-            height: 80px;
-            border-radius: 50%;
-            background: #003366;
-            color: white;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 2rem;
-            font-weight: 600;
-        }
-    </style>
+    <link rel="stylesheet" href="/publico/css/layout.css?v=1772427290149">
+    <link rel="stylesheet" href="/publico/css/form-views.css?v=1772427290149">
+    
 </head>
 <body>
     <div class="wrapper">
@@ -111,33 +71,35 @@
                                         <label for="Nombres" class="form-label">Nombres</label>
                                         <div class="input-group">
                                             <span class="input-group-text"><i class="bi bi-person"></i></span>
-                                            <input type="text" class="form-control" id="Nombres" name="Nombres" value="<%= usuario.Nombres %>" required>
+                                            <input type="text" class="form-control-modern" id="Nombres" name="Nombres" value="<%= usuario.Nombres %>" required>
                                         </div>
                                     </div>
                                     <div class="col-md-6">
                                         <label for="Apellidos" class="form-label">Apellidos</label>
                                         <div class="input-group">
                                             <span class="input-group-text"><i class="bi bi-person"></i></span>
-                                            <input type="text" class="form-control" id="Apellidos" name="Apellidos" value="<%= usuario.Apellidos %>" required>
+                                            <input type="text" class="form-control-modern" id="Apellidos" name="Apellidos" value="<%= usuario.Apellidos %>" required>
                                         </div>
                                     </div>
                                     <div class="col-md-4">
-                                        <label for="TipoDocumento" class="form-label">Tipo de Documento</label>
-                                        <div class="input-group">
-                                            <span class="input-group-text"><i class="bi bi-card-list"></i></span>
-                                            <select class="form-select" id="TipoDocumento" name="TipoDocumento">
+                                        <div class="form-group-header">
+                                                <label for="TipoDocumento" class="form-label">Tipo de Documento</label>
+                                            </div>
+                                            <div class="input-wrapper has-icon">
+                                                    <select class="form-control-modern form-select-modern" id="TipoDocumento" name="TipoDocumento">
                                                 <option value="DNI" <%= usuario.TipoDocumento === 'DNI' ? 'selected' : '' %>>DNI</option>
                                                 <option value="RUC" <%= usuario.TipoDocumento === 'RUC' ? 'selected' : '' %>>RUC</option>
                                                 <option value="CE" <%= usuario.TipoDocumento === 'CE' ? 'selected' : '' %>>Carné de Extranjería</option>
                                                 <option value="PASAPORTE" <%= usuario.TipoDocumento === 'PASAPORTE' ? 'selected' : '' %>>Pasaporte</option>
                                             </select>
-                                        </div>
+                                                    <i class="input-icon bi bi-card-list"></i>
+                                                </div>
                                     </div>
                                     <div class="col-md-8">
                                         <label for="NumeroDocumento" class="form-label">Número de Documento</label>
                                         <div class="input-group">
                                             <span class="input-group-text"><i class="bi bi-credit-card-2-front"></i></span>
-                                            <input type="text" class="form-control" id="NumeroDocumento" name="NumeroDocumento" value="<%= usuario.NumeroDocumento %>" required>
+                                            <input type="text" class="form-control-modern" id="NumeroDocumento" name="NumeroDocumento" value="<%= usuario.NumeroDocumento %>" required>
                                         </div>
                                     </div>
                                 </div>
@@ -151,21 +113,21 @@
                                         <label for="Correo" class="form-label">Correo Electrónico</label>
                                         <div class="input-group">
                                             <span class="input-group-text"><i class="bi bi-envelope"></i></span>
-                                            <input type="email" class="form-control" id="Correo" name="Correo" value="<%= usuario.Correo %>" required>
+                                            <input type="email" class="form-control-modern" id="Correo" name="Correo" value="<%= usuario.Correo %>" required>
                                         </div>
                                     </div>
                                     <div class="col-md-6">
                                         <label for="Telefono" class="form-label">Teléfono</label>
                                         <div class="input-group">
                                             <span class="input-group-text"><i class="bi bi-telephone"></i></span>
-                                            <input type="text" class="form-control" id="Telefono" name="Telefono" value="<%= usuario.Telefono || '' %>">
+                                            <input type="text" class="form-control-modern" id="Telefono" name="Telefono" value="<%= usuario.Telefono || '' %>">
                                         </div>
                                     </div>
                                     <div class="col-12">
                                         <label for="Direccion" class="form-label">Dirección</label>
                                         <div class="input-group">
                                             <span class="input-group-text"><i class="bi bi-geo-alt"></i></span>
-                                            <input type="text" class="form-control" id="Direccion" name="Direccion" value="<%= usuario.Direccion || '' %>">
+                                            <input type="text" class="form-control-modern" id="Direccion" name="Direccion" value="<%= usuario.Direccion || '' %>">
                                         </div>
                                     </div>
                                 </div>
@@ -182,8 +144,8 @@
                                         </label>
                                         <div class="input-group">
                                             <span class="input-group-text"><i class="bi bi-key"></i></span>
-                                            <input type="password" class="form-control" id="Clave" name="Clave" placeholder="Mínimo 6 caracteres">
-                                            <button class="btn btn-outline-secondary toggle-password" type="button" tabindex="-1" data-target="Clave">
+                                            <input type="password" class="form-control-modern" id="Clave" name="Clave" placeholder="Mínimo 6 caracteres">
+                                            <button class="btn btn-form btn-form-cancel toggle-password" type="button" tabindex="-1" data-target="Clave">
                                                 <i class="bi bi-eye" id="iconClave"></i>
                                             </button>
                                         </div>
@@ -199,8 +161,8 @@
                                         </label>
                                         <div class="input-group">
                                             <span class="input-group-text"><i class="bi bi-key"></i></span>
-                                            <input type="password" class="form-control" id="ConfirmarClave" name="ConfirmarClave" placeholder="Repita la nueva contraseña">
-                                            <button class="btn btn-outline-secondary toggle-password" type="button" tabindex="-1" data-target="ConfirmarClave">
+                                            <input type="password" class="form-control-modern" id="ConfirmarClave" name="ConfirmarClave" placeholder="Repita la nueva contraseña">
+                                            <button class="btn btn-form btn-form-cancel toggle-password" type="button" tabindex="-1" data-target="ConfirmarClave">
                                                 <i class="bi bi-eye" id="iconConfirmarClave"></i>
                                             </button>
                                         </div>
@@ -210,36 +172,40 @@
                                         </div>
                                     </div>
                                     <div class="col-md-6">
-                                        <label for="IdRol" class="form-label">Rol</label>
-                                        <div class="input-group">
-                                            <span class="input-group-text"><i class="bi bi-person-badge"></i></span>
-                                            <select class="form-select" id="IdRol" name="IdRol" required>
+                                        <div class="form-group-header">
+                                                <label for="IdRol" class="form-label">Rol</label>
+                                            </div>
+                                            <div class="input-wrapper has-icon">
+                                                    <select class="form-control-modern form-select-modern" id="IdRol" name="IdRol" required>
                                                 <% roles.forEach(rol => { %>
                                                     <option value="<%= rol.IdRol %>" <%= rol.IdRol == usuario.IdRol ? 'selected' : '' %>>
                                                         <%= rol.Descripcion %>
                                                     </option>
                                                 <% }); %>
                                             </select>
-                                        </div>
+                                                    <i class="input-icon bi bi-person-badge"></i>
+                                                </div>
                                     </div>
                                     <div class="col-md-6">
-                                        <label for="Estado" class="form-label">Estado</label>
-                                        <div class="input-group">
-                                            <span class="input-group-text"><i class="bi bi-toggle-on"></i></span>
-                                            <select class="form-select" id="Estado" name="Estado">
+                                        <div class="form-group-header">
+                                                <label for="Estado" class="form-label">Estado</label>
+                                            </div>
+                                            <div class="input-wrapper has-icon">
+                                                    <select class="form-control-modern form-select-modern" id="Estado" name="Estado">
                                                 <option value="1" <%= usuario.Estado == 1 ? 'selected' : '' %>>Activo</option>
                                                 <option value="0" <%= usuario.Estado == 0 ? 'selected' : '' %>>Inactivo</option>
                                             </select>
-                                        </div>
+                                                    <i class="input-icon bi bi-toggle-on"></i>
+                                                </div>
                                     </div>
                                 </div>
                             </div>
                             
                             <div class="d-flex justify-content-end mt-4 gap-2">
-                                <a href="/usuarios" class="btn btn-outline-secondary">
+                                <a href="/usuarios" class="btn btn-form btn-form-cancel">
                                     <i class="bi bi-x-circle me-2"></i> Cancelar
                                 </a>
-                                <button type="submit" class="btn btn-primary">
+                                <button type="submit" class="btn-form btn-form-primary">
                                     <i class="bi bi-save me-2"></i> Guardar Cambios
                                 </button>
                             </div>
@@ -319,6 +285,6 @@
         });
     });
     </script>
-    <script src="/publico/js/layout.js"></script>
+    <script src="/publico/js/layout.js?v=1772427290149"></script>
 </body>
 </html>

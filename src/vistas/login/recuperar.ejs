@@ -37,8 +37,14 @@
 
         body {
             min-height: 100vh;
-            font-family: 'Inter', 'Segoe UI', sans-serif;
-            background: var(--gray-100);
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: var(--gray-200);
+            background-image:
+                radial-gradient(ellipse at 0% 0%, rgba(59, 73, 223, 0.12) 0px, transparent 50%),
+                radial-gradient(ellipse at 100% 0%, rgba(139, 92, 246, 0.10) 0px, transparent 50%),
+                radial-gradient(ellipse at 100% 100%, rgba(16, 185, 129, 0.08) 0px, transparent 50%),
+                radial-gradient(ellipse at 0% 100%, rgba(245, 158, 11, 0.08) 0px, transparent 50%);
+            background-attachment: fixed;
             display: flex;
             align-items: center;
             justify-content: center;

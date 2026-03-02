@@ -1,5 +1,7 @@
+<!-- src/vistas/empresa/lista.ejs -->
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,437 +9,168 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="/publico/css/layout.css">
-    <style>
-@media (max-width: 768px) {
-}
-.config-card {
-            background: rgba(255,255,255,0.95);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(0,86,179,0.1);
-            border-radius: 1.5rem;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.08);
-            overflow: hidden;
-            transition: all 0.3s;
-        }
-        .config-card:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 12px 40px rgba(0,0,0,0.15);
-        }
-        .config-header {
-            background: linear-gradient(135deg, #003366 0%, #0056b3 50%, #0d6efd 100%);
-            color: #fff;
-            padding: 3rem 2rem 2rem 2rem;
-            position: relative;
-            overflow: hidden;
-        }
-        .config-header::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse"><path d="M 10 0 L 0 0 0 10" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="0.5"/></pattern></defs><rect width="100" height="100" fill="url(%23grid)"/></svg>');
-            opacity: 0.3;
-        }
-        .company-logo-section {
-            display: flex;
-            align-items: center;
-            gap: 2rem;
-            position: relative;
-            z-index: 1;
-        }
-        .company-logo-placeholder {
-            width: 100px;
-            height: 100px;
-            background: rgba(255,255,255,0.2);
-            backdrop-filter: blur(10px);
-            border: 2px solid rgba(255,255,255,0.3);
-            border-radius: 20px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 2.5rem;
-            color: #fff;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.2);
-        }
-        .company-details h2 {
-            font-size: 2rem;
-            font-weight: 700;
-            margin-bottom: 0.5rem;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.2);
-        }
-        .company-details .ruc-badge {
-            background: rgba(255,255,255,0.2);
-            backdrop-filter: blur(10px);
-            padding: 0.5rem 1rem;
-            border-radius: 50px;
-            font-weight: 600;
-            display: inline-block;
-            margin-bottom: 0.5rem;
-        }
-        .info-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 2rem;
-            padding: 2.5rem;
-        }
-        .info-section {
-            background: linear-gradient(135deg, #f8fafc 0%, #fff 100%);
-            border-radius: 1rem;
-            padding: 2rem;
-            border: 1px solid rgba(0,86,179,0.1);
-            transition: all 0.3s;
-        }
-        .info-section:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
-        }
-        .section-title {
-            display: flex;
-            align-items: center;
-            gap: 0.8rem;
-            font-size: 1.2rem;
-            font-weight: 600;
-            color: #003366;
-            margin-bottom: 1.5rem;
-            padding-bottom: 0.8rem;
-            border-bottom: 2px solid rgba(0,86,179,0.1);
-        }
-        .section-icon {
-            width: 40px;
-            height: 40px;
-            background: linear-gradient(135deg, #0056b3, #0d6efd);
-            color: #fff;
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.1rem;
-        }
-        .info-item {
-            display: flex;
-            align-items: flex-start;
-            gap: 0.8rem;
-            margin-bottom: 1rem;
-            padding: 0.8rem;
-            border-radius: 0.8rem;
-            transition: all 0.3s;
-        }
-        .info-item:hover {
-            background: rgba(0,86,179,0.05);
-        }
-        .info-item i {
-            color: #0056b3;
-            font-size: 1.1rem;
-            margin-top: 0.2rem;
-            min-width: 20px;
-        }
-        .info-content {
-            flex: 1;
-        }
-        .info-label {
-            font-size: 0.85rem;
-            color: #6c757d;
-            font-weight: 500;
-            margin-bottom: 0.2rem;
-        }
-        .info-value {
-            font-size: 1rem;
-            color: #003366;
-            font-weight: 600;
-            word-break: break-word;
-        }
-        .empty-value {
-            color: #9ca3af;
-            font-style: italic;
-            font-weight: 400;
-        }
-        .action-buttons {
-            padding: 0 2.5rem 2.5rem 2.5rem;
-            display: flex;
-            justify-content: center;
-            gap: 1rem;
-        }
-        .btn-config {
-            padding: 1rem 2rem;
-            font-weight: 600;
-            border-radius: 0.8rem;
-            transition: all 0.3s;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.8rem;
-            text-decoration: none;
-            border: none;
-            font-size: 1.1rem;
-        }
-        .btn-config:hover {
-            transform: translateY(-2px);
-        }
-        .btn-primary-config {
-            background: linear-gradient(135deg, #0056b3, #0d6efd);
-            color: #fff;
-            box-shadow: 0 4px 15px rgba(0,86,179,0.3);
-        }
-        .btn-primary-config:hover {
-            background: linear-gradient(135deg, #003d82, #0b5ed7);
-            box-shadow: 0 6px 20px rgba(0,86,179,0.4);
-            color: #fff;
-        }
-        .btn-secondary-config {
-            background: rgba(108,117,125,0.1);
-            color: #6c757d;
-            border: 2px solid rgba(108,117,125,0.2);
-        }
-        .btn-secondary-config:hover {
-            background: #6c757d;
-            color: #fff;
-            border-color: #6c757d;
-        }
-        .status-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            padding: 0.5rem 1rem;
-            border-radius: 50px;
-            font-size: 0.9rem;
-            font-weight: 600;
-        }
-        .status-active {
-            background: rgba(40,167,69,0.1);
-            color: #28a745;
-            border: 1px solid rgba(40,167,69,0.2);
-        }
-        .presentation-text {
-            background: rgba(0,86,179,0.05);
-            border-left: 4px solid #0056b3;
-            padding: 1rem;
-            border-radius: 0.5rem;
-            font-style: italic;
-            color: #003366;
-            margin-top: 0.5rem;
-        }
-    </style>
+    <link rel="stylesheet" href="/publico/css/layout.css?v=1772427290140">
+    <link rel="stylesheet" href="/publico/css/form-views.css?v=1772427290140">
 </head>
+
 <body>
     <div class="wrapper">
         <%- include("../parciales/sidebar") %>
-        
-        <!-- Botón para ocultar/mostrar barra -->
-        
-        <!-- Main Content -->
-        <div class="main-content" id="main-content">
-            <nav class="navbar navbar-expand-lg navbar-top border-bottom">
-                <div class="container-fluid">
-                    <h5 class="page-title mb-0">
-                        <i class="bi bi-gear"></i>
-                        Configuración de Empresa
-                    </h5>
-                    <div class="user-profile ms-auto">
-                        <span><%= user && user.Nombres ? user.Nombres : 'Administrador' %></span>
-                        <div class="user-avatar"><%= user && user.Nombres ? user.Nombres.charAt(0) : 'A' %></div>
+            <div class="main-content" id="main-content">
+                <nav class="navbar navbar-expand-lg navbar-top border-bottom">
+                    <div class="container-fluid">
+                        <h5 class="page-title mb-0">
+                            <i class="bi bi-gear"></i>
+                            Configuración de Empresa
+                        </h5>
+                        <div class="user-profile ms-auto">
+                            <span>
+                                <%= user && user.Nombres ? user.Nombres : 'Administrador' %>
+                            </span>
+                            <div class="user-avatar">
+                                <%= user && user.Nombres ? user.Nombres.charAt(0) : 'A' %>
+                            </div>
+                        </div>
                     </div>
+                </nav>
+                <div class="container-fluid py-4">
+                    <% if (empresas && empresas.length> 0) { %>
+                        <% const empresa=empresas[0]; %>
+                            <div class="form-card">
+                                <h2 class="form-header-title">Información de la Empresa</h2>
+
+                                <div class="form-avatar-section">
+                                    <div class="form-avatar-wrapper">
+                                        <% if (empresa.Logo) { %>
+                                            <img src="/empresa/logo/<%= empresa.IdEmpresa %>" alt="Logo">
+                                            <% } else { %>
+                                                <i class="bi bi-building form-avatar-icon"></i>
+                                                <% } %>
+                                    </div>
+                                </div>
+
+                                <div class="form-grid">
+                                    <!-- Basic info -->
+                                    <div class="form-group">
+                                        <div class="form-group-header">
+                                            <label class="form-label">Razón Social</label>
+                                            <a href="/empresa/editar/<%= empresa.IdEmpresa %>"
+                                                class="form-action-text"><i class="bi bi-pencil"></i> Editar</a>
+                                        </div>
+                                        <div class="input-wrapper has-icon">
+                                            <input type="text" class="form-control-modern"
+                                                value="<%= empresa.Nombre || 'No configurado' %>" readonly>
+                                            <i class="bi bi-building input-icon"></i>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <div class="form-group-header">
+                                            <label class="form-label">RUC</label>
+                                            <span class="form-action-text success"><i
+                                                    class="bi bi-check-circle-fill"></i> Registrado</span>
+                                        </div>
+                                        <div class="input-wrapper has-icon">
+                                            <input type="text" class="form-control-modern"
+                                                value="<%= empresa.RUC || 'No configurado' %>" readonly>
+                                            <i class="bi bi-upc-scan input-icon"></i>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group full-width">
+                                        <div class="form-group-header">
+                                            <label class="form-label">Dirección</label>
+                                        </div>
+                                        <div class="input-wrapper has-icon">
+                                            <input type="text" class="form-control-modern"
+                                                value="<%= empresa.Direccion || 'No configurado' %>" readonly>
+                                            <i class="bi bi-geo-alt input-icon"></i>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <div class="form-group-header">
+                                            <label class="form-label">Teléfono</label>
+                                        </div>
+                                        <div class="input-wrapper has-icon">
+                                            <input type="text" class="form-control-modern"
+                                                value="<%= empresa.Telefono || 'No configurado' %>" readonly>
+                                            <i class="bi bi-telephone input-icon"></i>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <div class="form-group-header">
+                                            <label class="form-label">Celular</label>
+                                        </div>
+                                        <div class="input-wrapper has-icon">
+                                            <input type="text" class="form-control-modern"
+                                                value="<%= empresa.Celular || 'No configurado' %>" readonly>
+                                            <i class="bi bi-phone input-icon"></i>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group full-width">
+                                        <div class="form-group-header">
+                                            <label class="form-label">Email</label>
+                                        </div>
+                                        <div class="input-wrapper has-icon">
+                                            <input type="email" class="form-control-modern"
+                                                value="<%= empresa.Email || 'No configurado' %>" readonly>
+                                            <i class="bi bi-envelope input-icon"></i>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <div class="form-group-header">
+                                            <label class="form-label">Cuenta Bancaria</label>
+                                        </div>
+                                        <div class="input-wrapper has-icon">
+                                            <input type="text" class="form-control-modern"
+                                                value="<%= empresa.CuentaBancaria || 'No configurado' %>" readonly>
+                                            <i class="bi bi-credit-card input-icon"></i>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <div class="form-group-header">
+                                            <label class="form-label">Nombre de Cuenta</label>
+                                        </div>
+                                        <div class="input-wrapper has-icon">
+                                            <input type="text" class="form-control-modern"
+                                                value="<%= empresa.NombreCuentaBancaria || 'No configurado' %>"
+                                                readonly>
+                                            <i class="bi bi-bank2 input-icon"></i>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group full-width">
+                                        <div class="form-group-header">
+                                            <label class="form-label">Texto de Presentación en Proformas</label>
+                                            <a href="/empresa/editar/<%= empresa.IdEmpresa %>"
+                                                class="form-action-text"><i class="bi bi-pencil"></i> Editar</a>
+                                        </div>
+                                        <textarea class="form-control-modern"
+                                            readonly><%= empresa.TextoPresentacion || 'En atención a vuestra solicitud, tenemos el agrado de cotizarles lo siguiente:' %></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                            <% } else { %>
+                                <!-- Empty State -->
+                                <div class="form-card text-center py-5">
+                                    <h2 class="form-header-title">Configurar Empresa</h2>
+                                    <p class="text-muted mb-4">No hay información de empresa configurada en el sistema.
+                                    </p>
+                                    <a href="/empresa/crear" class="btn-form btn-form-primary">
+                                        <i class="bi bi-plus-circle"></i> Nueva Configuración
+                                    </a>
+                                </div>
+                                <% } %>
                 </div>
-            </nav>
-            
-            <div class="container-fluid py-4">
-                <% if (empresas && empresas.length > 0) { %>
-                    <% const empresa = empresas[0]; %>
-                    <div class="config-card">
-                        <!-- Header de la empresa -->
-                        <div class="config-header">
-                            <div class="company-logo-section">
-                                <div class="company-logo-placeholder">
-                                    <% if (empresa.Logo) { %>
-                                        <img src="/empresa/logo/<%= empresa.IdEmpresa %>" alt="Logo" class="img-fluid" style="max-width: 120px; max-height: 120px; object-fit: contain; border-radius: 18px;">
-                                    <% } else { %>
-                                        <i class="bi bi-building"></i>
-                                    <% } %>
-                                </div>
-                                <div class="company-details">
-                                    <h2><%= empresa.Nombre || 'Nombre de la Empresa' %></h2>
-                                    <div class="ruc-badge">
-                                        <i class="bi bi-credit-card-2-front me-2"></i>
-                                        RUC: <%= empresa.RUC || 'No configurado' %>
-                                    </div>
-                                    <div class="status-badge status-active">
-                                        <i class="bi bi-check-circle"></i>
-                                        <%= empresa.Estado ? 'Activa' : 'Inactiva' %>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Información detallada -->
-                        <div class="info-grid">
-                            <!-- Información básica -->
-                            <div class="info-section">
-                                <div class="section-title">
-                                    <div class="section-icon">
-                                        <i class="bi bi-info-circle"></i>
-                                    </div>
-                                    Información Básica
-                                </div>
-                                <div class="info-item">
-                                    <i class="bi bi-building"></i>
-                                    <div class="info-content">
-                                        <div class="info-label">Razón Social</div>
-                                        <div class="info-value <%= !empresa.Nombre ? 'empty-value' : '' %>">
-                                            <%= empresa.Nombre || 'No configurado' %>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="info-item">
-                                    <i class="bi bi-geo-alt"></i>
-                                    <div class="info-content">
-                                        <div class="info-label">Dirección</div>
-                                        <div class="info-value <%= !empresa.Direccion ? 'empty-value' : '' %>">
-                                            <%= empresa.Direccion || 'No configurado' %>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="info-item">
-                                    <i class="bi bi-calendar-plus"></i>
-                                    <div class="info-content">
-                                        <div class="info-label">Fecha de Registro</div>
-                                        <div class="info-value">
-                                            <%= empresa.FechaRegistro ? new Date(empresa.FechaRegistro).toLocaleDateString('es-ES') : 'No disponible' %>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Información de contacto -->
-                            <div class="info-section">
-                                <div class="section-title">
-                                    <div class="section-icon">
-                                        <i class="bi bi-telephone"></i>
-                                    </div>
-                                    Información de Contacto
-                                </div>
-                                <div class="info-item">
-                                    <i class="bi bi-telephone"></i>
-                                    <div class="info-content">
-                                        <div class="info-label">Teléfono</div>
-                                        <div class="info-value <%= !empresa.Telefono ? 'empty-value' : '' %>">
-                                            <%= empresa.Telefono || 'No configurado' %>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="info-item">
-                                    <i class="bi bi-phone"></i>
-                                    <div class="info-content">
-                                        <div class="info-label">Celular</div>
-                                        <div class="info-value <%= !empresa.Celular ? 'empty-value' : '' %>">
-                                            <%= empresa.Celular || 'No configurado' %>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="info-item">
-                                    <i class="bi bi-envelope"></i>
-                                    <div class="info-content">
-                                        <div class="info-label">Email</div>
-                                        <div class="info-value <%= !empresa.Email ? 'empty-value' : '' %>">
-                                            <%= empresa.Email || 'No configurado' %>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Información bancaria -->
-                            <div class="info-section">
-                                <div class="section-title">
-                                    <div class="section-icon">
-                                        <i class="bi bi-bank"></i>
-                                    </div>
-                                    Información Bancaria
-                                </div>
-                                <div class="info-item">
-                                    <i class="bi bi-credit-card"></i>
-                                    <div class="info-content">
-                                        <div class="info-label">Cuenta Bancaria</div>
-                                        <div class="info-value <%= !empresa.CuentaBancaria ? 'empty-value' : '' %>">
-                                            <%= empresa.CuentaBancaria || 'No configurado' %>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="info-item">
-                                    <i class="bi bi-bank2"></i>
-                                    <div class="info-content">
-                                        <div class="info-label">Nombre de la Cuenta</div>
-                                        <div class="info-value <%= !empresa.NombreCuentaBancaria ? 'empty-value' : '' %>">
-                                            <%= empresa.NombreCuentaBancaria || 'No configurado' %>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Texto de presentación -->
-                            <div class="info-section" style="grid-column: 1 / -1;">
-                                <div class="section-title">
-                                    <div class="section-icon">
-                                        <i class="bi bi-chat-quote"></i>
-                                    </div>
-                                    Texto de Presentación
-                                </div>
-                                <div class="info-item">
-                                    <i class="bi bi-quote"></i>
-                                    <div class="info-content">
-                                        <div class="info-label">Mensaje en Proformas</div>
-                                        <div class="presentation-text">
-                                            <%= empresa.TextoPresentacion || 'En atención a vuestra solicitud, tenemos el agrado de cotizarles lo siguiente:' %>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Botones de acción -->
-                        <div class="action-buttons">
-                            <a href="/empresa/editar/<%= empresa.IdEmpresa %>" class="btn-config btn-primary-config">
-                                <i class="bi bi-pencil-square"></i>
-                                Editar Configuración
-                            </a>
-                        </div>
-                    </div>
-                <% } else { %>
-                    <!-- Cuando no hay empresa configurada -->
-                    <div class="config-card">
-                        <div class="config-header">
-                            <div class="company-logo-section">
-                                <div class="company-logo-placeholder">
-                                    <i class="bi bi-building-add"></i>
-                                </div>
-                                <div class="company-details">
-                                    <h2>Configurar Empresa</h2>
-                                    <div class="ruc-badge">
-                                        <i class="bi bi-exclamation-triangle me-2"></i>
-                                        Sin configurar
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div style="padding: 4rem 2rem; text-align: center;">
-                            <i class="bi bi-building-gear" style="font-size: 4rem; color: #0056b3; margin-bottom: 2rem; display: block;"></i>
-                            <h4 style="color: #003366; margin-bottom: 1rem;">No hay información de empresa configurada</h4>
-                            <p style="color: #6c757d; margin-bottom: 2rem; max-width: 500px; margin-left: auto; margin-right: auto;">
-                                Configure la información de su empresa para que aparezca en las proformas, facturas y otros documentos del sistema.
-                            </p>
-                            <a href="/empresa/crear" class="btn-config btn-primary-config">
-                                <i class="bi bi-plus-circle"></i>
-                                Configurar Empresa
-                            </a>
-                        </div>
-                    </div>
-                <% } %>
             </div>
-        </div>
     </div>
-
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script></script>
-    <script src="/publico/js/layout.js"></script>
+    <script src="/publico/js/layout.js?v=1772427290140"></script>
 </body>
+
 </html>
