@@ -1,0 +1,1093 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nueva Factura - CARSIL Equipos y Servicios SAC</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+    body { 
+        font-family: 'Montserrat', sans-serif;
+        background: linear-gradient(135deg, #f8fafc 0%, #e9ecef 100%);
+    }
+    .toggle-sidebar-btn {
+        position: absolute;
+        top: 1.2rem;
+        left: 290px;
+        z-index: 1100;
+        background: linear-gradient(135deg, #0056b3, #003366);
+        color: #fff;
+        border: none;
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 4px 12px rgba(0,86,179,0.3);
+        cursor: pointer;
+        transition: all 0.3s;
+    }
+    .toggle-sidebar-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 16px rgba(0,86,179,0.4);
+    }
+    .sidebar.hide { transform: translateX(-100%); }
+    .main-content.full { margin-left: 0 !important; }
+    @media (max-width: 768px) {
+        .toggle-sidebar-btn { left: 10px; top: 10px; }
+    }
+    .sidebar {
+        width: 270px;
+        min-height: 100vh;
+        background: linear-gradient(180deg, #003366 0%, #001a33 100%);
+        color: #fff;
+        position: fixed;
+        left: 0;
+        top: 0;
+        padding-top: 1rem;
+        z-index: 1000;
+        box-shadow: 4px 0 20px rgba(0,0,0,0.1);
+    }
+    .sidebar .sidebar-heading {
+        font-size: 1.5rem;
+        font-weight: 700;
+        letter-spacing: 2px;
+        color: #fff;
+    }
+    .sidebar .company-slogan {
+        font-size: 0.9rem;
+        color: #b0c4de;
+        font-weight: 300;
+    }
+    .sidebar .menu-item {
+        color: rgba(255,255,255,0.9);
+        padding: 0.8rem 1.2rem;
+        border-radius: 0.7rem;
+        margin: 0.2rem 0.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.8rem;
+        text-decoration: none;
+        font-weight: 500;
+        transition: all 0.3s;
+        position: relative;
+    }
+    .sidebar .menu-item:hover {
+        background: rgba(0,86,179,0.3);
+        color: #fff;
+        transform: translateX(5px);
+    }
+    .sidebar .menu-item.active {
+        background: linear-gradient(135deg, #0056b3, #0d6efd);
+        color: #fff;
+        box-shadow: 0 2px 8px rgba(0,86,179,0.3);
+    }
+    .sidebar .logout-item {
+        color: #ff6b6b;
+    }
+    .sidebar .logout-item:hover {
+        background: rgba(255,107,107,0.1);
+        color: #ff6b6b;
+    }
+    .main-content {
+        margin-left: 270px;
+        min-height: 100vh;
+        transition: margin 0.3s;
+    }
+    .user-profile {
+        display: flex;
+        align-items: center;
+        gap: 0.8rem;
+    }
+    .user-avatar {
+        background: linear-gradient(135deg, #0056b3, #003366);
+        color: #fff;
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 600;
+        font-size: 1.2rem;
+        box-shadow: 0 2px 8px rgba(0,86,179,0.3);
+    }
+    .navbar-top {
+        background: rgba(255,255,255,0.95);
+        backdrop-filter: blur(10px);
+        box-shadow: 0 2px 20px rgba(0,0,0,0.08);
+        border: none;
+    }
+    .form-container {
+        background: rgba(255,255,255,0.95);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(0,86,179,0.1);
+        border-radius: 1rem;
+        box-shadow: 0 8px 32px rgba(0,0,0,0.06);
+        padding: 2rem;
+        margin-bottom: 2rem;
+    }
+    .btn-modern {
+        border-radius: 0.7rem;
+        padding: 0.6rem 1.5rem;
+        font-weight: 600;
+        border: none;
+        transition: all 0.3s;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    .btn-primary-modern {
+        background: linear-gradient(135deg, #0056b3, #0d6efd);
+        color: #fff;
+        box-shadow: 0 4px 12px rgba(0,86,179,0.3);
+    }
+    .btn-primary-modern:hover {
+        background: linear-gradient(135deg, #003d82, #0b5ed7);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 16px rgba(0,86,179,0.4);
+        color: #fff;
+    }
+    .btn-secondary-modern {
+        background: linear-gradient(135deg, #6c757d, #495057);
+        color: #fff;
+        box-shadow: 0 4px 12px rgba(108,117,125,0.3);
+    }
+    .btn-secondary-modern:hover {
+        background: linear-gradient(135deg, #5a6268, #3d4043);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 16px rgba(108,117,125,0.4);
+        color: #fff;
+    }
+    .form-control, .form-select {
+        border-radius: 0.7rem;
+        border: 1px solid rgba(0,86,179,0.2);
+        padding: 0.8rem 1rem;
+        background: rgba(255,255,255,0.9);
+        transition: all 0.3s;
+    }
+    .form-control:focus, .form-select:focus {
+        border-color: #0056b3;
+        box-shadow: 0 0 0 0.2rem rgba(0,86,179,0.15);
+        background: white;
+    }
+    .form-label {
+        font-weight: 600;
+        color: #495057;
+        margin-bottom: 0.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    .required { color: #dc3545; }
+    .alert {
+        border-radius: 0.7rem;
+        border: none;
+        padding: 1rem 1.5rem;
+        margin-bottom: 1.5rem;
+    }
+    .alert-success {
+        background: linear-gradient(135deg, #d4edda, #c3e6cb);
+        color: #155724;
+    }
+    .alert-danger {
+        background: linear-gradient(135deg, #f8d7da, #f5c6cb);
+        color: #721c24;
+    }
+    .alert-info {
+        background: linear-gradient(135deg, #d1ecf1, #bee5eb);
+        color: #0c5460;
+    }
+    .proforma-search-box {
+        position: relative;
+        margin-bottom: 1.5rem;
+    }
+    .proforma-details {
+        background: linear-gradient(135deg, #e3f2fd, #bbdefb);
+        border-radius: 0.7rem;
+        padding: 1.5rem;
+        border: 1px solid #2196f3;
+        margin-bottom: 1.5rem;
+        display: none;
+    }
+    .proforma-details.show {
+        display: block;
+        animation: slideIn 0.3s ease;
+    }
+    @keyframes slideIn {
+        from { opacity: 0; transform: translateY(-10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    .detail-item {
+        background: rgba(255,255,255,0.7);
+        border-radius: 0.5rem;
+        padding: 0.8rem;
+        margin-bottom: 0.8rem;
+        border: 1px solid rgba(33,150,243,0.2);
+    }
+    .detail-label {
+        font-weight: 600;
+        color: #0d47a1;
+        font-size: 0.9rem;
+        margin-bottom: 0.3rem;
+    }
+    .detail-value {
+        color: #1565c0;
+        font-size: 1rem;
+    }
+    .loading-spinner {
+        display: none;
+        text-align: center;
+        padding: 1rem;
+    }
+    .product-table {
+        background: rgba(255,255,255,0.9);
+        border-radius: 0.7rem;
+        overflow: hidden;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    }
+    .product-table thead th {
+        background: linear-gradient(135deg, #0056b3, #003366);
+        color: white;
+        font-weight: 600;
+        padding: 1rem;
+        border: none;
+    }
+    .product-table tbody td {
+        padding: 0.8rem;
+        border-bottom: 1px solid rgba(0,86,179,0.1);
+    }
+    .totals-box {
+        background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+        border-radius: 0.7rem;
+        padding: 1.5rem;
+        border: 1px solid rgba(0,86,179,0.1);
+        margin-top: 1.5rem;
+    }
+    .total-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0.5rem 0;
+        border-bottom: 1px solid rgba(0,86,179,0.1);
+    }
+    .total-row:last-child {
+        border-bottom: none;
+        font-weight: 700;
+        font-size: 1.2rem;
+        color: #0056b3;
+        margin-top: 0.5rem;
+        padding-top: 1rem;
+        border-top: 2px solid #0056b3;
+    }
+    
+    /* Estilos para productos adicionales */
+    .btn-add-product {
+        background: linear-gradient(135deg, #28a745, #20c997);
+        color: white;
+        border: none;
+        border-radius: 0.7rem;
+        padding: 0.5rem 1rem;
+        font-weight: 600;
+        transition: all 0.3s;
+        box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
+    }
+    
+    .btn-add-product:hover {
+        background: linear-gradient(135deg, #218838, #1ea47e);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 16px rgba(40, 167, 69, 0.4);
+        color: white;
+    }
+    
+    .btn-remove-product {
+        background: linear-gradient(135deg, #dc3545, #c82333);
+        color: white;
+        border: none;
+        border-radius: 50%;
+        width: 32px;
+        height: 32px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s;
+        box-shadow: 0 2px 8px rgba(220, 53, 69, 0.3);
+    }
+    
+    .btn-remove-product:hover {
+        background: linear-gradient(135deg, #c82333, #a71e2a);
+        transform: scale(1.1);
+        box-shadow: 0 4px 12px rgba(220, 53, 69, 0.4);
+        color: white;
+    }
+    
+    .producto-adicional-row {
+        background: rgba(40, 167, 69, 0.05);
+        border-left: 3px solid #28a745;
+    }
+    
+    .producto-adicional-row:hover {
+        background: rgba(40, 167, 69, 0.1);
+    }
+    
+    #noProductosAdicionales {
+        background: rgba(108, 117, 125, 0.05);
+        border-radius: 0.7rem;
+        padding: 2rem;
+        border: 2px dashed rgba(108, 117, 125, 0.3);
+    }
+    
+    .totals-section {
+        background: linear-gradient(135deg, #e8f5e8, #d4edda);
+        border-radius: 0.7rem;
+        padding: 1.5rem;
+        border: 1px solid rgba(40, 167, 69, 0.2);
+        margin-top: 1.5rem;
+    }
+    
+    .total-original {
+        color: #0056b3;
+        font-weight: 600;
+    }
+    
+    .total-adicional {
+        color: #28a745;
+        font-weight: 600;
+    }
+    
+    .total-final {
+        color: #dc3545;
+        font-weight: 700;
+        font-size: 1.2rem;
+    }
+</style>
+</head>
+<body>
+    <div class="wrapper">
+        <%- include("../parciales/sidebar") %>
+        
+        <!-- Botón para ocultar/mostrar barra -->
+        <button class="toggle-sidebar-btn" id="toggleSidebarBtn" title="Ocultar/Mostrar menú">
+            <i class="bi bi-chevron-left" id="toggleIcon"></i>
+        </button>
+        
+        <!-- Main Content -->
+        <div class="main-content" id="main-content">
+            <nav class="navbar navbar-expand-lg navbar-top border-bottom">
+                <div class="container-fluid">
+                    <h5 class="page-title mb-0">
+                        <i class="bi bi-receipt"></i>
+                        Nueva Factura
+                    </h5>
+                    <div class="user-profile ms-auto">
+                        <span><%= user && user.Nombres ? user.Nombres : 'Usuario' %></span>
+                        <div class="user-avatar"><%= user && user.Nombres ? user.Nombres.charAt(0) : 'U' %></div>
+                    </div>
+                </div>
+            </nav>
+
+            <div class="container-fluid py-4">
+                <!-- Mensajes flash -->
+                <% if (typeof success !== 'undefined' && success) { %>
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        <i class="bi bi-check-circle me-2"></i><%= success %>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                <% } %>
+                <% if (typeof error !== 'undefined' && error) { %>
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        <i class="bi bi-exclamation-triangle me-2"></i><%= error %>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                <% } %>
+
+                <!-- Formulario de creación de factura -->
+                <div class="form-container">
+                    <div class="text-center mb-4">
+                        <h2 class="text-primary fw-bold">
+                            <i class="bi bi-receipt me-2"></i>
+                            Crear Nueva Factura
+                        </h2>
+                        <p class="text-muted">Complete los datos para generar una factura desde una proforma aprobada</p>
+                    </div>
+
+                    <!-- Búsqueda de proforma -->
+                    <div class="proforma-search-box">
+                        <label for="proformaSearch" class="form-label">
+                            <i class="bi bi-search"></i>
+                            Buscar Proforma por Código <span class="required">*</span>
+                        </label>
+                        <div class="input-group">
+                            <input type="text" class="form-control" id="proformaSearch" 
+                                   placeholder="Ingrese el código de la proforma (ej: PROF-001)" 
+                                   autocomplete="off">
+                            <button class="btn btn-primary-modern" type="button" id="buscarProforma">
+                                <i class="bi bi-search"></i>
+                                Buscar
+                            </button>
+                        </div>
+                        <small class="form-text text-muted">
+                            <i class="bi bi-info-circle me-1"></i>
+                            Solo se pueden usar proformas con estado "APROBADA" (formato: PROF-001)
+                        </small>
+                    </div>
+
+                    <!-- Loading spinner -->
+                    <div class="loading-spinner" id="loadingSpinner">
+                        <div class="spinner-border text-primary" role="status">
+                            <span class="visually-hidden">Cargando...</span>
+                        </div>
+                        <p class="mt-2 text-muted">Buscando proforma...</p>
+                    </div>
+
+                    <!-- Detalles de la proforma encontrada -->
+                    <div class="proforma-details" id="proformaDetails">
+                        <h5 class="text-primary fw-bold mb-3">
+                            <i class="bi bi-file-earmark-check me-2"></i>
+                            Detalles de la Proforma
+                        </h5>
+                        
+                        <div class="row" id="proformaInfo">
+                            <!-- Los detalles se llenarán dinámicamente -->
+                        </div>
+
+                        <!-- Tabla de productos -->
+                        <div class="mt-4">
+                            <h6 class="fw-bold text-primary mb-3">
+                                <i class="bi bi-box me-2"></i>
+                                Productos/Servicios de la Proforma
+                            </h6>
+                            <div class="table-responsive">
+                                <table class="table product-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Producto</th>
+                                            <th>Cantidad</th>
+                                            <th>Unidad</th>
+                                            <th>Precio Unit.</th>
+                                            <th>Total</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="productosTableBody">
+                                        <!-- Los productos se llenarán dinámicamente -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- Sección de productos adicionales -->
+                        <div class="mt-4">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <h6 class="fw-bold text-success mb-0">
+                                    <i class="bi bi-plus-circle me-2"></i>
+                                    Productos Adicionales
+                                </h6>
+                                <button type="button" class="btn btn-success btn-sm" id="addProductBtn">
+                                    <i class="bi bi-plus-lg me-1"></i>
+                                    Agregar Producto
+                                </button>
+                            </div>
+                            <div class="table-responsive">
+                                <table class="table product-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Producto</th>
+                                            <th>Cantidad</th>
+                                            <th>Unidad</th>
+                                            <th>Precio Unit.</th>
+                                            <th>Total</th>
+                                            <th width="60">Acción</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="productosAdicionalesBody">
+                                        <!-- Los productos adicionales se agregarán aquí -->
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div id="noProductosAdicionales" class="text-center py-3 text-muted">
+                                <i class="bi bi-inbox" style="font-size: 2rem;"></i>
+                                <p class="mb-0 mt-2">No hay productos adicionales agregados</p>
+                                <small>Use el botón "Agregar Producto" para incluir productos adicionales a la factura</small>
+                            </div>
+                        </div>
+
+                        <!-- Totales -->
+                        <div class="totals-section">
+                            <h6 class="fw-bold text-primary mb-3">
+                                <i class="bi bi-calculator me-2"></i>
+                                Resumen de Totales
+                            </h6>
+                            
+                            <!-- Totales de la proforma original -->
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <div class="total-row">
+                                        <span class="total-original">Subtotal Proforma:</span>
+                                        <strong class="total-original" id="subtotalOriginalDisplay">S/ 0.00</strong>
+                                    </div>
+                                    <div class="total-row">
+                                        <span class="total-original">IGV Proforma (18%):</span>
+                                        <strong class="total-original" id="igvOriginalDisplay">S/ 0.00</strong>
+                                    </div>
+                                    <div class="total-row">
+                                        <span class="total-original">Total Proforma:</span>
+                                        <strong class="total-original" id="totalOriginalDisplay">S/ 0.00</strong>
+                                    </div>
+                                </div>
+                                
+                                <!-- Totales de productos adicionales -->
+                                <div class="col-md-6">
+                                    <div class="total-row">
+                                        <span class="total-adicional">Subtotal Adicionales:</span>
+                                        <strong class="total-adicional" id="subtotalAdicionalesDisplay">S/ 0.00</strong>
+                                    </div>
+                                    <div class="total-row">
+                                        <span class="total-adicional">IGV Adicionales (18%):</span>
+                                        <strong class="total-adicional" id="igvAdicionalesDisplay">S/ 0.00</strong>
+                                    </div>
+                                    <div class="total-row">
+                                        <span class="total-adicional">Total Adicionales:</span>
+                                        <strong class="total-adicional" id="totalAdicionalesDisplay">S/ 0.00</strong>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Total final -->
+                            <div class="total-row" style="margin-top: 1rem; padding-top: 1rem; border-top: 2px solid #28a745;">
+                                <span class="total-final">TOTAL FINAL FACTURA:</span>
+                                <strong class="total-final" id="totalFinalDisplay">S/ 0.00</strong>
+                            </div>
+                        </div>
+
+                        <!-- Formulario de factura -->
+                        <form action="/facturas/desde-proforma" method="POST" id="facturaForm" class="mt-4">
+                            <input type="hidden" id="idProformaHidden" name="IdProforma">
+                            
+                            <!-- Productos adicionales (hidden inputs) -->
+                            <div id="productosAdicionalesHidden">
+                                <!-- Los inputs hidden se agregarán dinámicamente aquí -->
+                            </div>
+                            
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="fechaVencimiento" class="form-label">
+                                            <i class="bi bi-calendar-x"></i>
+                                            Fecha de Vencimiento
+                                        </label>
+                                        <input type="date" class="form-control" id="fechaVencimiento" name="FechaVencimiento">
+                                        <small class="form-text text-muted">Opcional. Si no se especifica, será a 30 días de la fecha de emisión.</small>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="formaPago" class="form-label">
+                                            <i class="bi bi-credit-card"></i>
+                                            Forma de Pago
+                                        </label>
+                                        <select class="form-select" id="formaPago" name="FormaPago">
+                                            <option value="">Seleccionar forma de pago</option>
+                                            <option value="CONTADO">Contado</option>
+                                            <option value="CREDITO_30">Crédito 30 días</option>
+                                            <option value="CREDITO_60">Crédito 60 días</option>
+                                            <option value="CREDITO_90">Crédito 90 días</option>
+                                            <option value="TRANSFERENCIA">Transferencia bancaria</option>
+                                            <option value="CHEQUE">Cheque</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="observaciones" class="form-label">
+                                    <i class="bi bi-chat-square-text"></i>
+                                    Observaciones Adicionales
+                                </label>
+                                <textarea class="form-control" id="observaciones" name="Observaciones" 
+                                          rows="3" placeholder="Observaciones adicionales para la factura (opcional)"></textarea>
+                            </div>
+
+                            <!-- Botones de acción -->
+                            <div class="text-center mt-4">
+                                <button type="submit" class="btn btn-primary-modern btn-lg me-3">
+                                    <i class="bi bi-receipt"></i>
+                                    Generar Factura
+                                </button>
+                                <a href="/facturas" class="btn btn-secondary-modern btn-lg">
+                                    <i class="bi bi-arrow-left"></i>
+                                    Cancelar
+                                </a>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- Mensaje de ayuda cuando no hay proforma seleccionada -->
+                    <div class="text-center py-5" id="helpMessage">
+                        <i class="bi bi-search text-muted" style="font-size: 4rem;"></i>
+                        <h5 class="mt-3 text-muted">Busque una proforma para comenzar</h5>
+                        <p class="text-muted">
+                            Ingrese el código de una proforma aprobada (ej: PROF-001) en el campo de búsqueda para generar la factura automáticamente.
+                        </p>
+                        <div class="alert alert-info d-inline-block">
+                            <i class="bi bi-lightbulb me-2"></i>
+                            <strong>Tip:</strong> Solo las proformas con estado "APROBADA" pueden convertirse en facturas.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const toggleBtn = document.getElementById('toggleSidebarBtn');
+            const sidebar = document.getElementById('sidebar');
+            const mainContent = document.getElementById('main-content');
+            const toggleIcon = document.getElementById('toggleIcon');
+            
+            // Toggle sidebar
+            toggleBtn.addEventListener('click', function() {
+                sidebar.classList.toggle('hide');
+                mainContent.classList.toggle('full');
+                if (sidebar.classList.contains('hide')) {
+                    toggleIcon.classList.remove('bi-chevron-left');
+                    toggleIcon.classList.add('bi-chevron-right');
+                } else {
+                    toggleIcon.classList.remove('bi-chevron-right');
+                    toggleIcon.classList.add('bi-chevron-left');
+                }
+            });
+
+            // Elementos del DOM
+            const proformaSearch = document.getElementById('proformaSearch');
+            const buscarBtn = document.getElementById('buscarProforma');
+            const loadingSpinner = document.getElementById('loadingSpinner');
+            const proformaDetails = document.getElementById('proformaDetails');
+            const helpMessage = document.getElementById('helpMessage');
+            const facturaForm = document.getElementById('facturaForm');
+            const addProductBtn = document.getElementById('addProductBtn');
+            const productosAdicionalesBody = document.getElementById('productosAdicionalesBody');
+            const noProductosAdicionales = document.getElementById('noProductosAdicionales');
+
+            // Variables globales
+            let productosDisponibles = [];
+            let productosAdicionales = [];
+            let totalesProforma = { subtotal: 0, igv: 0, total: 0 };
+            let contadorProductos = 0;
+
+            // Cargar productos disponibles
+            cargarProductosDisponibles();
+
+            // Event listeners
+            buscarBtn.addEventListener('click', buscarProforma);
+            proformaSearch.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    buscarProforma();
+                }
+            });
+            addProductBtn.addEventListener('click', agregarProductoAdicional);
+
+            // Función para cargar productos disponibles
+            async function cargarProductosDisponibles() {
+                try {
+                    const response = await fetch('/productos/api/listar');
+                    if (response.ok) {
+                        const data = await response.json();
+                        productosDisponibles = data.productos || [];
+                    }
+                } catch (error) {
+                    console.error('Error al cargar productos:', error);
+                }
+            }
+
+            // Función para buscar proforma
+            async function buscarProforma() {
+                const codigoProforma = proformaSearch.value.trim().toUpperCase();
+                
+                if (!codigoProforma) {
+                    alert('Por favor ingrese un código de proforma');
+                    return;
+                }
+
+                if (!/^PROF-\d+$/.test(codigoProforma)) {
+                    alert('El código debe tener el formato PROF-XXX (ej: PROF-001)');
+                    return;
+                }
+
+                try {
+                    loadingSpinner.style.display = 'block';
+                    proformaDetails.classList.remove('show');
+                    helpMessage.style.display = 'none';
+
+                    const response = await fetch(`/facturas/buscar-proforma/${codigoProforma}`);
+                    const data = await response.json();
+
+                    loadingSpinner.style.display = 'none';
+
+                    if (!response.ok) {
+                        throw new Error(data.message || 'Error al buscar la proforma');
+                    }
+
+                    if (data.success) {
+                        mostrarProforma(data.data.proforma, data.data.detalles, data.data.totales);
+                    } else {
+                        alert(data.message || 'Proforma no encontrada');
+                        helpMessage.style.display = 'block';
+                    }
+
+                } catch (error) {
+                    loadingSpinner.style.display = 'none';
+                    console.error('Error:', error);
+                    alert('Error al buscar la proforma: ' + error.message);
+                    helpMessage.style.display = 'block';
+                }
+            }
+
+            // Función para mostrar los datos de la proforma
+            function mostrarProforma(proforma, detalles, totales) {
+                // Guardar totales de la proforma
+                totalesProforma = totales;
+
+                // Llenar información básica
+                document.getElementById('proformaInfo').innerHTML = `
+                    <div class="col-md-4">
+                        <div class="detail-item">
+                            <div class="detail-label">Código de Proforma</div>
+                            <div class="detail-value">${proforma.Codigo}</div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="detail-item">
+                            <div class="detail-label">Cliente</div>
+                            <div class="detail-value">${proforma.ClienteNombre || 'Cliente no encontrado'}</div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="detail-item">
+                            <div class="detail-label">Empresa</div>
+                            <div class="detail-value">${proforma.EmpresaNombre || 'Empresa no encontrada'}</div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="detail-item">
+                            <div class="detail-label">Estado</div>
+                            <div class="detail-value">
+                                <span class="badge bg-success">APROBADA</span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+
+                // Llenar tabla de productos
+                let productosHtml = '';
+                detalles.forEach(detalle => {
+                    productosHtml += `
+                        <tr>
+                            <td>
+                                <strong>${detalle.ProductoNombre || 'Producto no encontrado'}</strong>
+                                ${detalle.DescripcionAdicional ? `<br><small class="text-muted">${detalle.DescripcionAdicional}</small>` : ''}
+                            </td>
+                            <td>${detalle.Cantidad}</td>
+                            <td>${detalle.UnidadMedida || 'UNID'}</td>
+                            <td>S/ ${parseFloat(detalle.PrecioUnitario || 0).toFixed(2)}</td>
+                            <td>S/ ${parseFloat(detalle.Subtotal || 0).toFixed(2)}</td>
+                        </tr>
+                    `;
+                });
+                document.getElementById('productosTableBody').innerHTML = productosHtml;
+
+                // Llenar campo oculto
+                document.getElementById('idProformaHidden').value = proforma.IdProforma;
+
+                // Resetear productos adicionales
+                productosAdicionales = [];
+                actualizarTablaProductosAdicionales();
+
+                // Actualizar totales
+                actualizarTotales();
+
+                // Mostrar detalles
+                proformaDetails.classList.add('show');
+                helpMessage.style.display = 'none';
+
+                // Auto-calcular fecha de vencimiento (30 días por defecto)
+                const fechaEmision = new Date();
+                const fechaVencimiento = new Date(fechaEmision);
+                fechaVencimiento.setDate(fechaVencimiento.getDate() + 30);
+                document.getElementById('fechaVencimiento').value = fechaVencimiento.toISOString().split('T')[0];
+            }
+
+            // Función para agregar producto adicional
+            function agregarProductoAdicional() {
+                if (productosDisponibles.length === 0) {
+                    alert('No hay productos disponibles. Asegúrese de que existan productos en el sistema.');
+                    return;
+                }
+
+                contadorProductos++;
+                const producto = {
+                    id: contadorProductos,
+                    IdProducto: '',
+                    Nombre: '',
+                    Cantidad: 1,
+                    UnidadMedida: 'UNID',
+                    PrecioUnitario: 0,
+                    Total: 0,
+                    DescripcionAdicional: ''
+                };
+
+                productosAdicionales.push(producto);
+                actualizarTablaProductosAdicionales();
+                actualizarTotales();
+            }
+
+            // Función para actualizar la tabla de productos adicionales
+            function actualizarTablaProductosAdicionales() {
+                if (productosAdicionales.length === 0) {
+                    productosAdicionalesBody.innerHTML = '';
+                    noProductosAdicionales.style.display = 'block';
+                    return;
+                }
+
+                noProductosAdicionales.style.display = 'none';
+
+                let html = '';
+                productosAdicionales.forEach((producto, index) => {
+                    html += `
+                        <tr class="producto-adicional-row" data-index="${index}">
+                            <td>
+                                <select class="form-select form-select-sm producto-select" data-index="${index}" required>
+                                    <option value="">Seleccionar producto...</option>
+                                    ${productosDisponibles.map(p => 
+                                        `<option value="${p.IdProducto}" 
+                                                 data-precio="${p.PrecioUnitario}" 
+                                                 data-unidad="${p.UnidadMedida}"
+                                                 ${producto.IdProducto == p.IdProducto ? 'selected' : ''}>
+                                            ${p.Nombre} - ${p.Marca || ''} ${p.Modelo || ''}
+                                        </option>`
+                                    ).join('')}
+                                </select>
+                                <input type="text" class="form-control form-control-sm mt-1" 
+                                       placeholder="Descripción adicional (opcional)"
+                                       data-index="${index}" data-field="descripcion"
+                                       value="${producto.DescripcionAdicional}">
+                            </td>
+                            <td>
+                                <input type="number" class="form-control form-control-sm cantidad-input" 
+                                       min="0.01" step="0.01" data-index="${index}" 
+                                       value="${producto.Cantidad}" required>
+                            </td>
+                            <td>
+                                <span class="unidad-display">${producto.UnidadMedida}</span>
+                            </td>
+                            <td>
+                                <input type="number" class="form-control form-control-sm precio-input" 
+                                       min="0" step="0.01" data-index="${index}" 
+                                       value="${producto.PrecioUnitario}" required>
+                            </td>
+                            <td>
+                                <strong class="total-display">S/ ${producto.Total.toFixed(2)}</strong>
+                            </td>
+                            <td>
+                                <button type="button" class="btn btn-remove-product" 
+                                        data-index="${index}" title="Eliminar producto">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    `;
+                });
+
+                productosAdicionalesBody.innerHTML = html;
+
+                // Agregar event listeners
+                agregarEventListenersProductos();
+            }
+
+            // Función para agregar event listeners a los productos adicionales
+            function agregarEventListenersProductos() {
+                // Select de productos
+                document.querySelectorAll('.producto-select').forEach(select => {
+                    select.addEventListener('change', function() {
+                        const index = parseInt(this.dataset.index);
+                        const selectedOption = this.options[this.selectedIndex];
+                        
+                        if (selectedOption.value) {
+                            const producto = productosDisponibles.find(p => p.IdProducto == selectedOption.value);
+                            if (producto) {
+                                productosAdicionales[index].IdProducto = producto.IdProducto;
+                                productosAdicionales[index].Nombre = producto.Nombre;
+                                productosAdicionales[index].PrecioUnitario = parseFloat(producto.PrecioUnitario);
+                                productosAdicionales[index].UnidadMedida = producto.UnidadMedida || 'UNID';
+                                
+                                // Actualizar la fila
+                                const row = document.querySelector(`tr[data-index="${index}"]`);
+                                row.querySelector('.precio-input').value = producto.PrecioUnitario;
+                                row.querySelector('.unidad-display').textContent = producto.UnidadMedida || 'UNID';
+                                
+                                calcularTotalProducto(index);
+                            }
+                        }
+                    });
+                });
+
+                // Inputs de cantidad
+                document.querySelectorAll('.cantidad-input').forEach(input => {
+                    input.addEventListener('input', function() {
+                        const index = parseInt(this.dataset.index);
+                        productosAdicionales[index].Cantidad = parseFloat(this.value) || 0;
+                        calcularTotalProducto(index);
+                    });
+                });
+
+                // Inputs de precio
+                document.querySelectorAll('.precio-input').forEach(input => {
+                    input.addEventListener('input', function() {
+                        const index = parseInt(this.dataset.index);
+                        productosAdicionales[index].PrecioUnitario = parseFloat(this.value) || 0;
+                        calcularTotalProducto(index);
+                    });
+                });
+
+                // Inputs de descripción
+                document.querySelectorAll('input[data-field="descripcion"]').forEach(input => {
+                    input.addEventListener('input', function() {
+                        const index = parseInt(this.dataset.index);
+                        productosAdicionales[index].DescripcionAdicional = this.value;
+                    });
+                });
+
+                // Botones de eliminar
+                document.querySelectorAll('.btn-remove-product').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        const index = parseInt(this.dataset.index);
+                        if (confirm('¿Está seguro de que desea eliminar este producto?')) {
+                            productosAdicionales.splice(index, 1);
+                            actualizarTablaProductosAdicionales();
+                            actualizarTotales();
+                        }
+                    });
+                });
+            }
+
+            // Función para calcular el total de un producto específico
+            function calcularTotalProducto(index) {
+                const producto = productosAdicionales[index];
+                producto.Total = producto.Cantidad * producto.PrecioUnitario;
+                
+                // Actualizar display del total
+                const row = document.querySelector(`tr[data-index="${index}"]`);
+                if (row) {
+                    row.querySelector('.total-display').textContent = `S/ ${producto.Total.toFixed(2)}`;
+                }
+                
+                actualizarTotales();
+            }
+
+            // Función para actualizar todos los totales
+            function actualizarTotales() {
+                // Calcular totales de productos adicionales
+                const subtotalAdicionales = productosAdicionales.reduce((sum, p) => sum + p.Total, 0);
+                const igvAdicionales = subtotalAdicionales * 0.18;
+                const totalAdicionales = subtotalAdicionales + igvAdicionales;
+
+                // Totales finales
+                const subtotalFinal = totalesProforma.subtotal + subtotalAdicionales;
+                const igvFinal = totalesProforma.igv + igvAdicionales;
+                const totalFinal = totalesProforma.total + totalAdicionales;
+
+                // Actualizar displays
+                document.getElementById('subtotalOriginalDisplay').textContent = `S/ ${totalesProforma.subtotal.toFixed(2)}`;
+                document.getElementById('igvOriginalDisplay').textContent = `S/ ${totalesProforma.igv.toFixed(2)}`;
+                document.getElementById('totalOriginalDisplay').textContent = `S/ ${totalesProforma.total.toFixed(2)}`;
+
+                document.getElementById('subtotalAdicionalesDisplay').textContent = `S/ ${subtotalAdicionales.toFixed(2)}`;
+                document.getElementById('igvAdicionalesDisplay').textContent = `S/ ${igvAdicionales.toFixed(2)}`;
+                document.getElementById('totalAdicionalesDisplay').textContent = `S/ ${totalAdicionales.toFixed(2)}`;
+
+                document.getElementById('totalFinalDisplay').textContent = `S/ ${totalFinal.toFixed(2)}`;
+            }
+
+            // Función para actualizar inputs hidden de productos adicionales
+            function actualizarProductosAdicionalesHidden() {
+                const container = document.getElementById('productosAdicionalesHidden');
+                container.innerHTML = '';
+
+                productosAdicionales.forEach((producto, index) => {
+                    if (producto.IdProducto) { // Solo agregar productos válidos
+                        container.innerHTML += `
+                            <input type="hidden" name="productosAdicionales[${index}][IdProducto]" value="${producto.IdProducto}">
+                            <input type="hidden" name="productosAdicionales[${index}][Cantidad]" value="${producto.Cantidad}">
+                            <input type="hidden" name="productosAdicionales[${index}][PrecioUnitario]" value="${producto.PrecioUnitario}">
+                            <input type="hidden" name="productosAdicionales[${index}][DescripcionAdicional]" value="${producto.DescripcionAdicional}">
+                        `;
+                    }
+                });
+            }
+
+            // Auto-calcular fecha de vencimiento según forma de pago
+            const formaPagoSelect = document.getElementById('formaPago');
+            const fechaVencimientoInput = document.getElementById('fechaVencimiento');
+
+            formaPagoSelect.addEventListener('change', function() {
+                const formaPago = this.value;
+                const fechaEmision = new Date();
+                let dias = 30;
+
+                if (formaPago === 'CONTADO') {
+                    dias = 0;
+                } else if (formaPago === 'CREDITO_30') {
+                    dias = 30;
+                } else if (formaPago === 'CREDITO_60') {
+                    dias = 60;
+                } else if (formaPago === 'CREDITO_90') {
+                    dias = 90;
+                }
+
+                const fechaVencimiento = new Date(fechaEmision);
+                fechaVencimiento.setDate(fechaVencimiento.getDate() + dias);
+                fechaVencimientoInput.value = fechaVencimiento.toISOString().split('T')[0];
+            });
+
+            // Validación del formulario
+            facturaForm.addEventListener('submit', function(e) {
+                const idProforma = document.getElementById('idProformaHidden').value;
+                
+                if (!idProforma) {
+                    e.preventDefault();
+                    alert('Por favor seleccione una proforma válida');
+                    return false;
+                }
+
+                // Validar productos adicionales
+                for (let i = 0; i < productosAdicionales.length; i++) {
+                    const producto = productosAdicionales[i];
+                    if (!producto.IdProducto || producto.Cantidad <= 0 || producto.PrecioUnitario < 0) {
+                        e.preventDefault();
+                        alert(`Por favor complete correctamente el producto adicional #${i + 1}`);
+                        return false;
+                    }
+                }
+
+                // Actualizar inputs hidden antes del envío
+                actualizarProductosAdicionalesHidden();
+
+                if (!confirm('¿Está seguro de que desea generar esta factura? Esta acción no se puede deshacer.')) {
+                    e.preventDefault();
+                    return false;
+                }
+
+                // Deshabilitar botón para evitar doble envío
+                const submitBtn = this.querySelector('button[type="submit"]');
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Generando...';
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,890 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editar Contrato - CARSIL Equipos y Servicios SAC</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { 
+            font-family: 'Montserrat', sans-serif;
+            background: linear-gradient(135deg, #f8fafc 0%, #e9ecef 100%);
+            min-height: 100vh;
+        }
+        
+        .sidebar, .main-content { transition: all 0.3s; }
+        
+        .toggle-sidebar-btn {
+            position: absolute;
+            top: 1.2rem;
+            left: 290px;
+            z-index: 1100;
+            background: linear-gradient(135deg, #0056b3, #003366);
+            color: #fff;
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 12px rgba(0,86,179,0.3);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .toggle-sidebar-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(0,86,179,0.4);
+        }
+        
+        .sidebar.hide { transform: translateX(-100%); }
+        .main-content.full { margin-left: 0 !important; }
+        
+        @media (max-width: 768px) {
+            .toggle-sidebar-btn { left: 10px; top: 10px; }
+        }
+        
+        .sidebar {
+            width: 270px;
+            min-height: 100vh;
+            background: linear-gradient(180deg, #003366 0%, #001a33 100%);
+            color: #fff;
+            position: fixed;
+            left: 0;
+            top: 0;
+            padding-top: 1rem;
+            z-index: 1000;
+            box-shadow: 4px 0 20px rgba(0,0,0,0.1);
+        }
+        
+        .sidebar .sidebar-heading {
+            font-size: 1.5rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            color: #fff;
+        }
+        
+        .sidebar .company-slogan {
+            font-size: 0.9rem;
+            color: #b0c4de;
+            font-weight: 300;
+        }
+        
+        .sidebar .menu-item {
+            color: rgba(255,255,255,0.9);
+            padding: 0.8rem 1.2rem;
+            border-radius: 0.7rem;
+            margin: 0.2rem 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s;
+            position: relative;
+        }
+        
+        .sidebar .menu-item:hover {
+            background: rgba(0,86,179,0.3);
+            color: #fff;
+            transform: translateX(5px);
+        }
+        
+        .sidebar .menu-item.active {
+            background: linear-gradient(135deg, #0056b3, #0d6efd);
+            color: #fff;
+            box-shadow: 0 2px 8px rgba(0,86,179,0.3);
+        }
+        
+        .sidebar .logout-item {
+            color: #ff6b6b;
+        }
+        
+        .sidebar .logout-item:hover {
+            background: rgba(255,107,107,0.1);
+            color: #ff6b6b;
+        }
+        
+        .main-content {
+            margin-left: 270px;
+            min-height: 100vh;
+        }
+        
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+        
+        .user-avatar {
+            background: linear-gradient(135deg, #0056b3, #003366);
+            color: #fff;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 1.2rem;
+            box-shadow: 0 2px 8px rgba(0,86,179,0.3);
+        }
+        
+        .navbar-top {
+            background: rgba(255,255,255,0.95) !important;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 2px 20px rgba(0,0,0,0.08);
+            border: none !important;
+        }
+        
+        .form-floating {
+            position: relative;
+        }
+        
+        .form-floating > .form-control,
+        .form-floating > .form-select {
+            height: calc(3.5rem + 2px);
+            line-height: 1.25;
+            padding-top: 1.625rem;
+            padding-bottom: 0.625rem;
+            border: 2px solid rgba(0,86,179,0.1);
+            border-radius: 0.8rem;
+            transition: all 0.3s;
+            background: rgba(255,255,255,0.9);
+        }
+        
+        .form-floating > .form-control:focus,
+        .form-floating > .form-select:focus {
+            border-color: #0056b3;
+            box-shadow: 0 0 0 0.2rem rgba(0,86,179,0.1);
+            background: #fff;
+        }
+        
+        .form-floating > label {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            padding: 1rem 0.75rem;
+            pointer-events: none;
+            border: 1px solid transparent;
+            transform-origin: 0 0;
+            transition: opacity 0.1s ease-in-out, transform 0.1s ease-in-out;
+            color: #6c757d;
+            font-weight: 500;
+        }
+        
+        .card {
+            border: none;
+            border-radius: 1.2rem;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.08);
+            overflow: hidden;
+            background: rgba(255,255,255,0.95);
+            backdrop-filter: blur(10px);
+        }
+        
+        .card-header {
+            background: linear-gradient(135deg, #fff 0%, #f8fafc 100%);
+            border-bottom: 2px solid rgba(0,86,179,0.1);
+            padding: 1.5rem 2rem;
+            position: relative;
+        }
+        
+        .card-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #0056b3, #0d6efd, #6f42c1);
+        }
+        
+        .card-header h5, .card-header h6 {
+            color: #003366;
+            font-weight: 700;
+            margin-bottom: 0;
+        }
+        
+        .card-body {
+            padding: 2.5rem;
+        }
+        
+        .btn-modern {
+            border-radius: 0.8rem;
+            padding: 0.8rem 2rem;
+            font-weight: 600;
+            border: none;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.6rem;
+            text-decoration: none;
+        }
+        
+        .btn-primary-modern {
+            background: linear-gradient(135deg, #0056b3, #0d6efd);
+            color: #fff;
+            box-shadow: 0 4px 15px rgba(0,86,179,0.3);
+        }
+        
+        .btn-primary-modern:hover {
+            background: linear-gradient(135deg, #003d82, #0b5ed7);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0,86,179,0.4);
+            color: #fff;
+        }
+        
+        .btn-secondary-modern {
+            background: rgba(108,117,125,0.1);
+            color: #495057;
+            border: 2px solid rgba(108,117,125,0.2);
+        }
+        
+        .btn-secondary-modern:hover {
+            background: #495057;
+            color: #fff;
+            border-color: #495057;
+            transform: translateY(-2px);
+        }
+        
+        .btn-warning-modern {
+            background: linear-gradient(135deg, #ffc107, #fd7e14);
+            color: #000;
+            box-shadow: 0 4px 15px rgba(255,193,7,0.3);
+        }
+        
+        .btn-warning-modern:hover {
+            background: linear-gradient(135deg, #e0a800, #e8690b);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(255,193,7,0.4);
+            color: #000;
+        }
+        
+        .required {
+            color: #dc3545;
+            font-weight: 600;
+        }
+        
+        .info-panel {
+            background: linear-gradient(135deg, #fff 0%, #f8fafc 100%);
+            border: 1px solid rgba(0,86,179,0.1);
+            border-radius: 1.2rem;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .info-panel::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #17a2b8, #20c997);
+        }
+        
+        .info-panel .card-header {
+            background: transparent;
+            border-bottom: 1px solid rgba(0,86,179,0.1);
+        }
+        
+        .info-panel .card-header h6 {
+            color: #17a2b8;
+            font-weight: 600;
+        }
+        
+        .estado-badge {
+            padding: 0.5rem 1rem;
+            border-radius: 1rem;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .estado-activo { 
+            background: linear-gradient(135deg, rgba(40,167,69,0.1), rgba(40,167,69,0.05));
+            color: #28a745; 
+            border: 1px solid rgba(40,167,69,0.2);
+        }
+        .estado-finalizado { 
+            background: linear-gradient(135deg, rgba(0,86,179,0.1), rgba(0,86,179,0.05));
+            color: #0056b3; 
+            border: 1px solid rgba(0,86,179,0.2);
+        }
+        .estado-suspendido { 
+            background: linear-gradient(135deg, rgba(255,193,7,0.1), rgba(255,193,7,0.05));
+            color: #ffc107; 
+            border: 1px solid rgba(255,193,7,0.2);
+        }
+        .estado-cancelado { 
+            background: linear-gradient(135deg, rgba(220,53,69,0.1), rgba(220,53,69,0.05));
+            color: #dc3545; 
+            border: 1px solid rgba(220,53,69,0.2);
+        }
+        
+        .alert {
+            border: none;
+            border-radius: 0.8rem;
+            padding: 1rem 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .alert-danger {
+            background: linear-gradient(135deg, rgba(220,53,69,0.1), rgba(220,53,69,0.05));
+            color: #721c24;
+            border-left: 4px solid #dc3545;
+        }
+        
+        .page-header {
+            background: linear-gradient(135deg, #fff 0%, #f8fafc 100%);
+            border-radius: 1.2rem;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            border: 1px solid rgba(0,86,179,0.1);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .page-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #ffc107, #fd7e14, #e83e8c);
+        }
+        
+        .page-title {
+            color: #003366;
+            font-weight: 700;
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .page-subtitle {
+            color: #6c757d;
+            margin-bottom: 0;
+        }
+        
+        .floating-shapes {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            overflow: hidden;
+        }
+        
+        .shape {
+            position: absolute;
+            opacity: 0.05;
+            animation: float 6s ease-in-out infinite;
+        }
+        
+        .shape:nth-child(1) {
+            top: 20%;
+            left: 10%;
+            animation-delay: 0s;
+        }
+        
+        .shape:nth-child(2) {
+            top: 60%;
+            right: 10%;
+            animation-delay: 2s;
+        }
+        
+        .shape:nth-child(3) {
+            bottom: 20%;
+            left: 50%;
+            animation-delay: 4s;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="wrapper">
+        <!-- Sidebar -->
+        <%- include("../parciales/sidebar") %>
+
+        <!-- Botón para ocultar/mostrar barra -->
+        <button class="toggle-sidebar-btn" id="toggleSidebarBtn" title="Ocultar/Mostrar menú">
+            <i class="bi bi-chevron-left" id="toggleIcon"></i>
+        </button>
+
+        <!-- Main Content -->
+        <div class="main-content" id="main-content">
+            <nav class="navbar navbar-expand-lg navbar-light navbar-top border-bottom">
+                <div class="container-fluid">
+                    <h5 class="navbar-brand ms-3 mb-0">
+                        <i class="bi bi-pencil-square me-2"></i>
+                        Editar Contrato
+                    </h5>
+                    <div class="user-profile ms-auto">
+                        <span><%= user && user.Nombres ? user.Nombres : 'Administrador' %></span>
+                        <div class="user-avatar"><%= user && user.Nombres ? user.Nombres.charAt(0) : 'A' %></div>
+                    </div>
+                </div>
+            </nav>
+
+<div id="main-content" class="main-content">
+    <div class="container-fluid py-4">
+            <div class="container-fluid py-4">
+                <!-- Header modernizado -->
+                <div class="page-header">
+                    <div class="floating-shapes">
+                        <i class="bi bi-pencil-square shape" style="font-size: 3rem;"></i>
+                        <i class="bi bi-file-earmark-check shape" style="font-size: 2.5rem;"></i>
+                        <i class="bi bi-gear shape" style="font-size: 2rem;"></i>
+                    </div>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h1 class="page-title">
+                                <i class="bi bi-pencil me-3 text-warning"></i>
+                                Editar Contrato <%= contrato.Codigo %>
+                            </h1>
+                            <p class="page-subtitle">Modifique la información del contrato</p>
+                        </div>
+                        <div class="d-flex align-items-center gap-3">
+                            <span class="estado-badge estado-<%= contrato.Estado.toLowerCase() %>">
+                                <%= contrato.Estado %>
+                            </span>
+                            <a href="/contratos/<%= contrato.IdContrato %>" class="btn btn-secondary-modern btn-modern">
+                                <i class="bi bi-arrow-left"></i>
+                                Volver al Detalle
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+        <!-- Mensajes flash -->
+        <% if (error) { %>
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                <i class="bi bi-exclamation-triangle me-2"></i>
+                <%= error %>
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        <% } %>
+
+        <div class="row">
+            <!-- Formulario -->
+            <div class="col-lg-8">
+                <div class="card shadow-sm">
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="bi bi-file-earmark-text me-2"></i>
+                            Información del Contrato
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <form action="/contratos/<%= contrato.IdContrato %>/editar" method="POST" id="formContrato">
+                            <div class="row">
+                                <!-- Código del Contrato -->
+                                <div class="col-md-6 mb-3">
+                                    <div class="form-floating">
+                                        <input type="text" class="form-control" id="Codigo" name="Codigo" 
+                                               value="<%= contrato.Codigo %>" required>
+                                        <label for="Codigo">Código del Contrato <span class="required">*</span></label>
+                                    </div>
+                                </div>
+
+                                <!-- Cliente -->
+                                <div class="col-md-6 mb-3">
+                                    <div class="form-floating">
+                                        <select class="form-select" id="IdCliente" name="IdCliente" required>
+                                            <option value="">Seleccionar cliente...</option>
+                                            <% clientes.forEach(function(cliente) { %>
+                                                <option value="<%= cliente.IdCliente %>" 
+                                                        <%= cliente.IdCliente == contrato.IdCliente ? 'selected' : '' %>>
+                                                    <%= cliente.RazonSocial %> - <%= cliente.Documento %>
+                                                </option>
+                                            <% }); %>
+                                        </select>
+                                        <label for="IdCliente">Cliente <span class="required">*</span></label>
+                                    </div>
+                                </div>
+
+                                <!-- Factura -->
+                                <div class="col-md-6 mb-3">
+                                    <div class="form-floating">
+                                        <select class="form-select" id="IdFactura" name="IdFactura">
+                                            <option value="">Seleccionar factura (opcional)...</option>
+                                            <% facturas.forEach(function(factura) { %>
+                                                <option value="<%= factura.IdFactura %>" 
+                                                        data-cliente="<%= factura.IdCliente %>"
+                                                        data-total="<%= factura.Total %>"
+                                                        <%= factura.IdFactura == contrato.IdFactura ? 'selected' : '' %>>
+                                                    <%= factura.Codigo %> - S/ <%= parseFloat(factura.Total).toFixed(2) %>
+                                                </option>
+                                            <% }); %>
+                                        </select>
+                                        <label for="IdFactura">Factura Asociada</label>
+                                    </div>
+                                </div>
+
+                                <!-- Número de Cuenta Bancaria -->
+                                <div class="col-md-6 mb-3">
+                                    <div class="form-floating">
+                                        <input type="text" class="form-control" id="NumeroCuentaBanco" 
+                                               name="NumeroCuentaBanco" value="<%= contrato.NumeroCuentaBanco || '' %>"
+                                               placeholder="Número de cuenta">
+                                        <label for="NumeroCuentaBanco">Número de Cuenta Bancaria</label>
+                                    </div>
+                                </div>
+
+                                <!-- Fecha de Inicio -->
+                                <div class="col-md-6 mb-3">
+                                    <div class="form-floating">
+                                        <input type="date" class="form-control" id="FechaInicio" 
+                                               name="FechaInicio" value="<%= contrato.FechaInicio.toISOString().split('T')[0] %>" required>
+                                        <label for="FechaInicio">Fecha de Inicio <span class="required">*</span></label>
+                                    </div>
+                                </div>
+
+                                <!-- Fecha de Fin -->
+                                <div class="col-md-6 mb-3">
+                                    <div class="form-floating">
+                                        <input type="date" class="form-control" id="FechaFin" name="FechaFin"
+                                               value="<%= contrato.FechaFin ? contrato.FechaFin.toISOString().split('T')[0] : '' %>">
+                                        <label for="FechaFin">Fecha de Fin (Opcional)</label>
+                                    </div>
+                                </div>
+
+                                <!-- Pago Semanal -->
+                                <div class="col-md-6 mb-3">
+                                    <div class="form-floating">
+                                        <input type="number" class="form-control" id="PagoSemanal" 
+                                               name="PagoSemanal" step="0.01" min="0" 
+                                               value="<%= contrato.PagoSemanal || '' %>" placeholder="0.00">
+                                        <label for="PagoSemanal">Pago Semanal (S/)</label>
+                                    </div>
+                                </div>
+
+                                <!-- Estado -->
+                                <div class="col-md-6 mb-3">
+                                    <div class="form-floating">
+                                        <select class="form-select" id="Estado" name="Estado">
+                                            <option value="ACTIVO" <%= contrato.Estado === 'ACTIVO' ? 'selected' : '' %>>Activo</option>
+                                            <option value="SUSPENDIDO" <%= contrato.Estado === 'SUSPENDIDO' ? 'selected' : '' %>>Suspendido</option>
+                                            <option value="FINALIZADO" <%= contrato.Estado === 'FINALIZADO' ? 'selected' : '' %>>Finalizado</option>
+                                            <option value="CANCELADO" <%= contrato.Estado === 'CANCELADO' ? 'selected' : '' %>>Cancelado</option>
+                                        </select>
+                                        <label for="Estado">Estado del Contrato</label>
+                                    </div>
+                                </div>
+
+                                <!-- Términos y Condiciones -->
+                                <div class="col-12 mb-3">
+                                    <div class="form-floating">
+                                        <textarea class="form-control" id="Terminos" name="Terminos" 
+                                                  style="height: 120px;" placeholder="Términos y condiciones del contrato..."><%= contrato.Terminos || '' %></textarea>
+                                        <label for="Terminos">Términos y Condiciones</label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Botones -->
+                            <div class="row mt-4">
+                                <div class="col-12">
+                                    <button type="submit" class="btn btn-warning-modern btn-modern me-3">
+                                        <i class="bi bi-check-circle"></i>
+                                        Actualizar Contrato
+                                    </button>
+                                    <a href="/contratos/<%= contrato.IdContrato %>" class="btn btn-secondary-modern btn-modern">
+                                        <i class="bi bi-x-circle"></i>
+                                        Cancelar
+                                    </a>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Panel de información -->
+            <div class="col-lg-4">
+                <div class="card info-panel mb-4">
+                    <div class="card-header">
+                        <h6 class="mb-0">
+                            <i class="bi bi-info-circle me-2"></i>
+                            Información del Contrato Actual
+                        </h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <h6 class="text-primary">
+                                <i class="bi bi-calendar me-2"></i>
+                                Fechas Importantes
+                            </h6>
+                            <ul class="list-unstyled small">
+                                <li class="mb-2">
+                                    <strong>Registrado:</strong> 
+                                    <%= new Date(contrato.FechaRegistro).toLocaleDateString('es-PE') %>
+                                </li>
+                                <li class="mb-2">
+                                    <strong>Inicio:</strong> 
+                                    <%= new Date(contrato.FechaInicio).toLocaleDateString('es-PE') %>
+                                </li>
+                                <% if (contrato.FechaFin) { %>
+                                <li class="mb-2">
+                                    <strong>Fin:</strong> 
+                                    <%= new Date(contrato.FechaFin).toLocaleDateString('es-PE') %>
+                                </li>
+                                <% } %>
+                            </ul>
+                        </div>
+
+                        <div class="mb-3">
+                            <h6 class="text-success">
+                                <i class="bi bi-person-badge me-2"></i>
+                                Cliente Actual
+                            </h6>
+                            <div class="small">
+                                <p class="mb-1"><strong><%= contrato.ClienteNombre %></strong></p>
+                                <p class="mb-1">Doc: <%= contrato.ClienteDocumento %></p>
+                                <% if (contrato.ClienteEmail) { %>
+                                <p class="mb-0">Email: <%= contrato.ClienteEmail %></p>
+                                <% } %>
+                            </div>
+                        </div>
+
+                        <% if (contrato.FacturaCodigo) { %>
+                        <div class="mb-3">
+                            <h6 class="text-info">
+                                <i class="bi bi-receipt me-2"></i>
+                                Factura Asociada
+                            </h6>
+                            <div class="small">
+                                <p class="mb-1"><strong><%= contrato.FacturaCodigo %></strong></p>
+                                <p class="mb-0">Total: S/ <%= parseFloat(contrato.FacturaTotal).toFixed(2) %></p>
+                            </div>
+                        </div>
+                        <% } %>
+
+                        <div id="infoFactura" class="d-none">
+                            <h6 class="text-info">
+                                <i class="bi bi-receipt me-2"></i>
+                                Nueva Factura Seleccionada
+                            </h6>
+                            <div class="small">
+                                <p class="mb-1"><strong>Total:</strong> <span id="facturaTotal"></span></p>
+                                <p class="mb-0"><strong>Cliente:</strong> <span id="facturaCliente"></span></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h6 class="mb-0">
+                            <i class="bi bi-exclamation-triangle me-2"></i>
+                            Consideraciones
+                        </h6>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-unstyled small">
+                            <li class="mb-2">
+                                <i class="bi bi-check text-success me-2"></i>
+                                Puede cambiar el cliente del contrato
+                            </li>
+                            <li class="mb-2">
+                                <i class="bi bi-check text-success me-2"></i>
+                                La factura se filtra por cliente
+                            </li>
+                            <li class="mb-2">
+                                <i class="bi bi-check text-success me-2"></i>
+                                Puede quitar la factura asociada
+                            </li>
+                            <li class="mb-2">
+                                <i class="bi bi-exclamation text-warning me-2"></i>
+                                Los cambios son permanentes
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Sidebar functionality
+    const toggleBtn = document.getElementById('toggleSidebarBtn');
+    const sidebar = document.getElementById('sidebar');
+    const mainContent = document.getElementById('main-content');
+    const toggleIcon = document.getElementById('toggleIcon');
+    const userAvatar = document.querySelector('.user-avatar');
+    const userName = '<%= user && user.Nombres ? user.Nombres : "Administrador" %>';
+    
+    if (userAvatar) {
+        userAvatar.textContent = userName.charAt(0);
+    }
+
+    // Toggle sidebar
+    if (toggleBtn) {
+        toggleBtn.addEventListener('click', function() {
+            sidebar.classList.toggle('hide');
+            mainContent.classList.toggle('full');
+            if (sidebar.classList.contains('hide')) {
+                toggleIcon.classList.remove('bi-chevron-left');
+                toggleIcon.classList.add('bi-chevron-right');
+            } else {
+                toggleIcon.classList.remove('bi-chevron-right');
+                toggleIcon.classList.add('bi-chevron-left');
+            }
+        });
+    }
+
+    // Form functionality
+    const clienteSelect = document.getElementById('IdCliente');
+    const facturaSelect = document.getElementById('IdFactura');
+    const fechaInicioInput = document.getElementById('FechaInicio');
+    const fechaFinInput = document.getElementById('FechaFin');
+    const infoFactura = document.getElementById('infoFactura');
+    const facturaTotal = document.getElementById('facturaTotal');
+    const facturaCliente = document.getElementById('facturaCliente');
+    const estadoSelect = document.getElementById('Estado');
+
+    // Filtrar facturas por cliente seleccionado
+    clienteSelect.addEventListener('change', function() {
+        const clienteId = this.value;
+        const opciones = facturaSelect.querySelectorAll('option');
+        
+        // Resetear facturas
+        facturaSelect.value = '';
+        if (infoFactura) infoFactura.classList.add('d-none');
+        
+        opciones.forEach(opcion => {
+            if (opcion.value === '') {
+                opcion.style.display = 'block';
+            } else {
+                const facturaClienteId = opcion.dataset.cliente;
+                opcion.style.display = (clienteId === '' || facturaClienteId === clienteId) ? 'block' : 'none';
+            }
+        });
+
+        // Si hay cliente seleccionado, cargar sus facturas via AJAX
+        if (clienteId) {
+            cargarFacturasCliente(clienteId);
+        }
+    });
+
+    // Mostrar información de factura seleccionada
+    facturaSelect.addEventListener('change', function() {
+        const opcionSeleccionada = this.options[this.selectedIndex];
+        
+        if (this.value && opcionSeleccionada.dataset.total && infoFactura) {
+            const total = parseFloat(opcionSeleccionada.dataset.total).toFixed(2);
+            const clienteNombre = clienteSelect.options[clienteSelect.selectedIndex].text;
+            
+            facturaTotal.textContent = 'S/ ' + total;
+            facturaCliente.textContent = clienteNombre;
+            infoFactura.classList.remove('d-none');
+        } else if (infoFactura) {
+            infoFactura.classList.add('d-none');
+        }
+    });
+
+    // Validar fechas
+    fechaInicioInput.addEventListener('change', function() {
+        fechaFinInput.min = this.value;
+        if (fechaFinInput.value && fechaFinInput.value <= this.value) {
+            if (!confirm('La fecha de fin es anterior o igual a la fecha de inicio. ¿Desea mantenerla?')) {
+                fechaFinInput.value = '';
+            }
+        }
+    });
+
+    // Actualizar badge de estado en tiempo real
+    estadoSelect.addEventListener('change', function() {
+        // Aquí podrías actualizar visualmente el badge si quisieras
+        console.log('Estado cambiado a:', this.value);
+    });
+
+    // Cargar facturas del cliente via AJAX
+    async function cargarFacturasCliente(clienteId) {
+        try {
+            const response = await fetch(`/contratos/api/facturas-cliente/${clienteId}`);
+            const data = await response.json();
+            
+            if (data.success && data.facturas) {
+                // Mantener la primera opción y facturas existentes que coincidan
+                const facturaActual = facturaSelect.value;
+                const primeraOpcion = facturaSelect.querySelector('option[value=""]');
+                
+                // Limpiar opciones (excepto la primera y posiblemente la actual)
+                Array.from(facturaSelect.options).forEach(option => {
+                    if (option.value !== '' && option.value !== facturaActual) {
+                        option.remove();
+                    }
+                });
+                
+                // Agregar facturas disponibles
+                data.facturas.forEach(factura => {
+                    // No agregar si ya existe
+                    if (!facturaSelect.querySelector(`option[value="${factura.IdFactura}"]`)) {
+                        const opcion = document.createElement('option');
+                        opcion.value = factura.IdFactura;
+                        opcion.textContent = `${factura.Codigo} - S/ ${parseFloat(factura.Total).toFixed(2)}`;
+                        opcion.dataset.cliente = clienteId;
+                        opcion.dataset.total = factura.Total;
+                        facturaSelect.appendChild(opcion);
+                    }
+                });
+            }
+        } catch (error) {
+            console.error('Error al cargar facturas:', error);
+        }
+    }
+
+    // Validación del formulario
+    document.getElementById('formContrato').addEventListener('submit', function(e) {
+        const codigo = document.getElementById('Codigo').value.trim();
+        const cliente = document.getElementById('IdCliente').value;
+        const fechaInicio = document.getElementById('FechaInicio').value;
+        const pagoSemanal = document.getElementById('PagoSemanal').value;
+
+        if (!codigo || !cliente || !fechaInicio) {
+            e.preventDefault();
+            alert('Por favor complete todos los campos obligatorios.');
+            return false;
+        }
+
+        if (pagoSemanal && (isNaN(pagoSemanal) || parseFloat(pagoSemanal) < 0)) {
+            e.preventDefault();
+            alert('El pago semanal debe ser un número positivo.');
+            return false;
+        }
+
+        // Confirmar actualización
+        if (!confirm('¿Está seguro de que desea actualizar este contrato?')) {
+            e.preventDefault();
+            return false;
+        }
+    });
+
+    // Inicializar filtros si hay cliente seleccionado
+    if (clienteSelect.value) {
+        clienteSelect.dispatchEvent(new Event('change'));
+    }
+});
+</script>
+
+</body>
+</html>

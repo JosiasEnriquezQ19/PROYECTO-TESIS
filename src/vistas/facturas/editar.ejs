@@ -1,0 +1,1173 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editar Factura - CARSIL Equipos y Servicios SAC</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+    body { 
+        font-family: 'Montserrat', sans-serif;
+        background: linear-gradient(135deg, #f8fafc 0%, #e9ecef 100%);
+    }
+    .toggle-sidebar-btn {
+        position: absolute;
+        top: 1.2rem;
+        left: 290px;
+        z-index: 1100;
+        background: linear-gradient(135deg, #0056b3, #003366);
+        color: #fff;
+        border: none;
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 4px 12px rgba(0,86,179,0.3);
+        cursor: pointer;
+        transition: all 0.3s;
+    }
+    .toggle-sidebar-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 16px rgba(0,86,179,0.4);
+    }
+    .sidebar.hide { transform: translateX(-100%); }
+    .main-content.full { margin-left: 0 !important; }
+    @media (max-width: 768px) {
+        .toggle-sidebar-btn { left: 10px; top: 10px; }
+    }
+    .sidebar {
+        width: 270px;
+        min-height: 100vh;
+        background: linear-gradient(180deg, #003366 0%, #001a33 100%);
+        color: #fff;
+        position: fixed;
+        left: 0;
+        top: 0;
+        padding-top: 1rem;
+        z-index: 1000;
+        box-shadow: 4px 0 20px rgba(0,0,0,0.1);
+    }
+    .sidebar .sidebar-heading {
+        font-size: 1.5rem;
+        font-weight: 700;
+        letter-spacing: 2px;
+        color: #fff;
+    }
+    .sidebar .company-slogan {
+        font-size: 0.9rem;
+        color: #b0c4de;
+        font-weight: 300;
+    }
+    .sidebar .menu-item {
+        color: rgba(255,255,255,0.9);
+        padding: 0.8rem 1.2rem;
+        border-radius: 0.7rem;
+        margin: 0.2rem 0.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.8rem;
+        text-decoration: none;
+        font-weight: 500;
+        transition: all 0.3s;
+        position: relative;
+    }
+    .sidebar .menu-item:hover {
+        background: rgba(0,86,179,0.3);
+        color: #fff;
+        transform: translateX(5px);
+    }
+    .sidebar .menu-item.active {
+        background: linear-gradient(135deg, #0056b3, #0d6efd);
+        color: #fff;
+        box-shadow: 0 2px 8px rgba(0,86,179,0.3);
+    }
+    .sidebar .logout-item {
+        color: #ff6b6b;
+    }
+    .sidebar .logout-item:hover {
+        background: rgba(255,107,107,0.1);
+        color: #ff6b6b;
+    }
+    .main-content {
+        margin-left: 270px;
+        min-height: 100vh;
+        transition: margin 0.3s;
+    }
+    .user-profile {
+        display: flex;
+        align-items: center;
+        gap: 0.8rem;
+    }
+    .user-avatar {
+        background: linear-gradient(135deg, #0056b3, #003366);
+        color: #fff;
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 600;
+        font-size: 1.2rem;
+        box-shadow: 0 2px 8px rgba(0,86,179,0.3);
+    }
+    .navbar-top {
+        background: rgba(255,255,255,0.95);
+        backdrop-filter: blur(10px);
+        box-shadow: 0 2px 20px rgba(0,0,0,0.08);
+        border: none;
+    }
+
+    .section-title {
+        color: #2c3e50;
+        font-weight: 600;
+        margin-bottom: 20px;
+        font-size: 1.3rem;
+        border-bottom: 2px solid #e9ecef;
+        padding-bottom: 10px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .form-label {
+        font-weight: 600;
+        color: #495057;
+        margin-bottom: 8px;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    }
+
+    .form-control, .form-select {
+        border: 2px solid #e9ecef;
+        border-radius: 10px;
+        padding: 12px 15px;
+        transition: all 0.3s ease;
+        background: #f8f9fa;
+    }
+
+    .form-control:focus, .form-select:focus {
+        border-color: #667eea;
+        box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+        background: white;
+        transform: translateY(-2px);
+    }
+
+    .btn-primary {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border: none;
+        border-radius: 10px;
+        padding: 12px 30px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        transition: all 0.3s ease;
+        box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+    }
+
+    .btn-primary:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+        background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+    }
+
+    .btn-secondary {
+        background: linear-gradient(135deg, #6c757d 0%, #495057 100%);
+        border: none;
+        border-radius: 10px;
+        padding: 12px 30px;
+        font-weight: 600;
+        color: white;
+        text-decoration: none;
+        display: inline-block;
+        transition: all 0.3s ease;
+        box-shadow: 0 5px 15px rgba(108, 117, 125, 0.3);
+    }
+
+    .btn-secondary:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 10px 25px rgba(108, 117, 125, 0.4);
+        color: white;
+        text-decoration: none;
+    }
+
+    .btn-danger {
+        background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+        border: none;
+        border-radius: 10px;
+        padding: 8px 20px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        box-shadow: 0 3px 10px rgba(220, 53, 69, 0.3);
+    }
+
+    .btn-danger:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(220, 53, 69, 0.4);
+    }
+
+    .btn-success {
+        background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+        border: none;
+        border-radius: 10px;
+        padding: 8px 20px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        box-shadow: 0 3px 10px rgba(40, 167, 69, 0.3);
+    }
+
+    .btn-success:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(40, 167, 69, 0.4);
+    }
+
+    .product-row {
+        background: #f8f9fa;
+        border-radius: 10px;
+        padding: 20px;
+        margin-bottom: 15px;
+        border: 2px solid #e9ecef;
+        transition: all 0.3s ease;
+        position: relative;
+    }
+
+    .product-row:hover {
+        border-color: #667eea;
+        box-shadow: 0 5px 15px rgba(102, 126, 234, 0.1);
+    }
+
+    .remove-product {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+    }
+
+    .totals-section {
+        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+        border-radius: 15px;
+        padding: 25px;
+        margin-top: 30px;
+        border: 2px solid #dee2e6;
+    }
+
+    .total-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px 0;
+        border-bottom: 1px solid #dee2e6;
+        font-size: 1.1rem;
+    }
+
+    .total-row:last-child {
+        border-bottom: none;
+        font-weight: 700;
+        font-size: 1.3rem;
+        color: #2c3e50;
+        margin-top: 10px;
+        padding-top: 15px;
+        border-top: 2px solid #495057;
+    }
+
+    .alert {
+        border-radius: 10px;
+        border: none;
+        padding: 15px 20px;
+        margin-bottom: 20px;
+        box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+    }
+
+    .alert-success {
+        background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+        color: #155724;
+    }
+
+    .alert-danger {
+        background: linear-gradient(135deg, #f8d7da 0%, #f5c6cb 100%);
+        color: #721c24;
+    }
+
+    .required {
+        color: #dc3545;
+    }
+
+    .form-text {
+        color: #6c757d;
+        font-size: 0.875rem;
+        margin-top: 5px;
+    }
+
+    .card {
+        border: none;
+        border-radius: 15px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+        margin-bottom: 25px;
+        overflow: hidden;
+        transition: all 0.3s ease;
+    }
+
+    .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+    }
+
+    .card-header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        font-weight: 600;
+        padding: 15px 25px;
+        border: none;
+    }
+
+    .invalid-feedback {
+        display: block;
+        color: #dc3545;
+        font-size: 0.875rem;
+        margin-top: 5px;
+    }
+
+    .estado-badge {
+        padding: 8px 16px;
+        border-radius: 20px;
+        font-weight: 600;
+        font-size: 0.875rem;
+        text-transform: uppercase;
+        display: inline-block;
+        margin-left: 10px;
+    }
+
+    .estado-pendiente {
+        background: #fff3cd;
+        color: #856404;
+        border: 2px solid #ffeaa7;
+    }
+
+    .estado-pagada {
+        background: #d1edff;
+        color: #155724;
+        border: 2px solid #c3e6cb;
+    }
+
+    .estado-vencida {
+        background: #f8d7da;
+        color: #721c24;
+        border: 2px solid #f5c6cb;
+    }
+
+    .estado-anulada {
+        background: #f8f9fa;
+        color: #495057;
+        border: 2px solid #dee2e6;
+    }
+
+    /* Estilos para productos adicionales en edición */
+    .producto-original {
+        background: rgba(0, 86, 179, 0.05);
+        border-left: 4px solid #0056b3;
+    }
+
+    .producto-adicional {
+        background: rgba(40, 167, 69, 0.05);
+        border-left: 4px solid #28a745;
+    }
+
+    .producto-row {
+        padding: 1rem;
+        margin-bottom: 1rem;
+        border-radius: 0.5rem;
+        border: 1px solid #dee2e6;
+    }
+
+    .btn-add-product {
+        background: linear-gradient(135deg, #28a745, #20c997);
+        color: white;
+        border: none;
+        border-radius: 0.7rem;
+        padding: 0.5rem 1rem;
+        font-weight: 600;
+        transition: all 0.3s;
+        box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
+    }
+
+    .btn-add-product:hover {
+        background: linear-gradient(135deg, #218838, #1ea47e);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 16px rgba(40, 167, 69, 0.4);
+        color: white;
+    }
+
+    .btn-remove-product {
+        background: linear-gradient(135deg, #dc3545, #c82333);
+        color: white;
+        border: none;
+        border-radius: 50%;
+        width: 32px;
+        height: 32px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s;
+        box-shadow: 0 2px 8px rgba(220, 53, 69, 0.3);
+    }
+
+    .btn-remove-product:hover {
+        background: linear-gradient(135deg, #c82333, #a71e2a);
+        transform: scale(1.1);
+        box-shadow: 0 4px 12px rgba(220, 53, 69, 0.4);
+        color: white;
+    }
+
+    .protected-product {
+        position: relative;
+    }
+
+    .protected-badge {
+        position: absolute;
+        top: 5px;
+        right: 5px;
+        background: #0056b3;
+        color: white;
+        padding: 2px 8px;
+        border-radius: 12px;
+        font-size: 0.7rem;
+        font-weight: 600;
+    }
+
+    .totals-section-detailed {
+        background: linear-gradient(135deg, #e8f5e8, #d4edda);
+        border-radius: 0.7rem;
+        padding: 1.5rem;
+        border: 1px solid rgba(40, 167, 69, 0.2);
+        margin-top: 1.5rem;
+    }
+</style>
+
+<div class="wrapper">
+        <%- include("../parciales/sidebar") %>
+    <!-- Botón para ocultar/mostrar barra -->
+    <button class="toggle-sidebar-btn" id="toggleSidebarBtn" title="Ocultar/Mostrar menú">
+        <i class="bi bi-chevron-left" id="toggleIcon"></i>
+    </button>
+    <!-- Main Content -->
+    <div class="main-content" id="main-content">
+        <nav class="navbar navbar-expand-lg navbar-top border-bottom">
+            <div class="container-fluid">
+                <h5 class="page-title mb-0">
+                    <i class="bi bi-receipt"></i>
+                    Editar Factura
+                </h5>
+                <div class="user-profile ms-auto">
+                    <span><%= user && user.Nombres ? user.Nombres : 'Usuario' %></span>
+                    <div class="user-avatar"><%= user && user.Nombres ? user.Nombres.charAt(0) : 'U' %></div>
+                </div>
+            </div>
+        </nav>
+        <div class="container-fluid py-4">
+            <!-- Mensajes flash -->
+            <% if (typeof error !== 'undefined' && error) { %>
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <i class="bi bi-exclamation-triangle me-2"></i><%= error %>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            <% } %>
+            <% if (typeof success !== 'undefined' && success) { %>
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    <i class="bi bi-check-circle me-2"></i><%= success %>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            <% } %>
+
+            <!-- Formulario de edición de factura -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h2 class="mb-0">
+                            <i class="bi bi-receipt me-2"></i>
+                            Editar Factura <%= factura.Codigo %>
+                        </h2>
+                        <span class="estado-badge estado-<%= factura.Estado ? factura.Estado.toLowerCase() : 'pendiente' %>">
+                            <%= factura.Estado || 'PENDIENTE' %>
+                        </span>
+                    </div>
+                </div>
+
+                <form action="/facturas/<%= factura.IdFactura %>/actualizar" method="POST" id="editFacturaForm">
+                    <!-- Campo hidden para mantener la referencia a la proforma -->
+                    <% if (factura.IdProforma) { %>
+                        <input type="hidden" name="IdProforma" value="<%= factura.IdProforma %>">
+                    <% } %>
+                    
+                    <div class="card-body">
+                        <!-- Información de Proforma (si existe) -->
+                        <% if (factura.IdProforma && factura.ProformaCodigo) { %>
+                        <div class="row mb-4">
+                            <div class="col-md-12">
+                                <div class="alert alert-info">
+                                    <h6 class="alert-heading">
+                                        <i class="bi bi-file-earmark-text me-2"></i>
+                                        Factura generada desde Proforma
+                                    </h6>
+                                    <p class="mb-1">
+                                        <strong>Código de Proforma:</strong> <%= factura.ProformaCodigo %>
+                                    </p>
+                                    <p class="mb-0">
+                                        <a href="/proformas/<%= factura.IdProforma %>" class="btn btn-sm btn-outline-primary">
+                                            <i class="bi bi-eye me-1"></i>
+                                            Ver Proforma Original
+                                        </a>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        <% } %>
+                        
+                        <!-- Información básica -->
+                        <div class="row mb-4">
+                            <div class="col-md-12">
+                                <h4 class="section-title">
+                                    <i class="bi bi-info-circle"></i>
+                                    Información Básica
+                                </h4>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="mb-3">
+                                    <label for="Codigo" class="form-label">
+                                        <i class="bi bi-hash"></i>
+                                        Código de Factura
+                                    </label>
+                                    <input type="text" class="form-control" id="Codigo" name="Codigo" 
+                                           value="<%= factura.Codigo %>" readonly>
+                                    <div class="form-text">El código es único y no se puede modificar</div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="mb-3">
+                                    <label for="Estado" class="form-label">
+                                        <i class="bi bi-flag"></i>
+                                        Estado <span class="required">*</span>
+                                    </label>
+                                    <select class="form-select" id="Estado" name="Estado" required>
+                                        <option value="PENDIENTE" <%= factura.Estado === 'PENDIENTE' ? 'selected' : '' %>>Pendiente</option>
+                                        <option value="PAGADA" <%= factura.Estado === 'PAGADA' ? 'selected' : '' %>>Pagada</option>
+                                        <option value="VENCIDA" <%= factura.Estado === 'VENCIDA' ? 'selected' : '' %>>Vencida</option>
+                                        <option value="ANULADA" <%= factura.Estado === 'ANULADA' ? 'selected' : '' %>>Anulada</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="mb-3">
+                                    <label for="IdCliente" class="form-label">
+                                        <i class="bi bi-person"></i>
+                                        Cliente <span class="required">*</span>
+                                    </label>
+                                    <select class="form-select" id="IdCliente" name="IdCliente" required>
+                                        <option value="">Seleccionar cliente</option>
+                                        <% if (clientes) { %>
+                                            <% clientes.forEach(function(cliente) { %>
+                                                <option value="<%= cliente.IdCliente %>" <%= factura.IdCliente == cliente.IdCliente ? 'selected' : '' %>>
+                                                    <%= cliente.RazonSocial %> - <%= cliente.Documento %>
+                                                </option>
+                                            <% }); %>
+                                        <% } %>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="FechaEmision" class="form-label">
+                                        <i class="bi bi-calendar"></i>
+                                        Fecha de Emisión <span class="required">*</span>
+                                    </label>
+                                    <input type="date" class="form-control" id="FechaEmision" name="FechaEmision" 
+                                           value="<%= factura.FechaEmision ? factura.FechaEmision.toISOString().split('T')[0] : '' %>" required>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="FechaVencimiento" class="form-label">
+                                        <i class="bi bi-calendar-x"></i>
+                                        Fecha de Vencimiento
+                                    </label>
+                                    <input type="date" class="form-control" id="FechaVencimiento" name="FechaVencimiento" 
+                                           value="<%= factura.FechaVencimiento ? factura.FechaVencimiento.toISOString().split('T')[0] : '' %>">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="FormaPago" class="form-label">
+                                        <i class="bi bi-credit-card"></i>
+                                        Forma de Pago
+                                    </label>
+                                    <select class="form-select" id="FormaPago" name="FormaPago">
+                                        <option value="">Seleccionar forma de pago</option>
+                                        <option value="CONTADO" <%= factura.FormaPago === 'CONTADO' ? 'selected' : '' %>>Contado</option>
+                                        <option value="CREDITO_30" <%= factura.FormaPago === 'CREDITO_30' ? 'selected' : '' %>>Crédito 30 días</option>
+                                        <option value="CREDITO_60" <%= factura.FormaPago === 'CREDITO_60' ? 'selected' : '' %>>Crédito 60 días</option>
+                                        <option value="CREDITO_90" <%= factura.FormaPago === 'CREDITO_90' ? 'selected' : '' %>>Crédito 90 días</option>
+                                        <option value="TRANSFERENCIA" <%= factura.FormaPago === 'TRANSFERENCIA' ? 'selected' : '' %>>Transferencia bancaria</option>
+                                        <option value="CHEQUE" <%= factura.FormaPago === 'CHEQUE' ? 'selected' : '' %>>Cheque</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="Observaciones" class="form-label">
+                                        <i class="bi bi-chat-square-text"></i>
+                                        Observaciones
+                                    </label>
+                                    <textarea class="form-control" id="Observaciones" name="Observaciones" 
+                                              rows="3" placeholder="Observaciones adicionales"><%= factura.Observaciones || '' %></textarea>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Productos existentes -->
+                        <div class="row mb-4">
+                            <div class="col-md-12">
+                                <h4 class="section-title">
+                                    <i class="bi bi-box"></i>
+                                    Productos de la Factura
+                                </h4>
+                            </div>
+                        </div>
+
+                        <!-- Productos de la proforma original (si los hay) -->
+                        <div id="productosOriginales">
+                            <% let tieneProductosOriginales = false; %>
+                            <% if (detalles && detalles.length > 0) { %>
+                                <% detalles.forEach(function(detalle, index) { %>
+                                    <% 
+                                    // Determinar si es producto original o adicional
+                                    const esOriginal = detalle.IdDetalleProforma || detalle.TipoDetalle === 'ORIGINAL';
+                                    if (esOriginal) tieneProductosOriginales = true;
+                                    %>
+                                    
+                                    <div class="producto-row <%= esOriginal ? 'producto-original protected-product' : 'producto-adicional' %>" 
+                                         data-detalle-id="<%= detalle.IdDetalleFactura %>" 
+                                         data-tipo="<%= esOriginal ? 'ORIGINAL' : 'ADICIONAL' %>">
+                                        
+                                        <% if (esOriginal) { %>
+                                            <div class="protected-badge">De Proforma</div>
+                                        <% } %>
+                                        
+                                        <div class="row align-items-center">
+                                            <div class="col-md-4">
+                                                <strong><%= detalle.ProductoNombre || 'Producto no encontrado' %></strong>
+                                                <% if (detalle.DescripcionAdicional) { %>
+                                                    <br><small class="text-muted"><%= detalle.DescripcionAdicional %></small>
+                                                <% } %>
+                                            </div>
+                                            <div class="col-md-2">
+                                                <% if (esOriginal) { %>
+                                                    <span class="form-control-plaintext"><%= detalle.Cantidad %></span>
+                                                <% } else { %>
+                                                    <input type="number" class="form-control form-control-sm cantidad-input" 
+                                                           min="0.01" step="0.01" value="<%= detalle.Cantidad %>"
+                                                           data-detalle-id="<%= detalle.IdDetalleFactura %>">
+                                                <% } %>
+                                            </div>
+                                            <div class="col-md-1">
+                                                <span class="form-control-plaintext"><%= detalle.UnidadMedida || 'UNID' %></span>
+                                            </div>
+                                            <div class="col-md-2">
+                                                <% if (esOriginal) { %>
+                                                    <span class="form-control-plaintext">S/ <%= parseFloat(detalle.PrecioUnitario || 0).toFixed(2) %></span>
+                                                <% } else { %>
+                                                    <input type="number" class="form-control form-control-sm precio-input" 
+                                                           min="0" step="0.01" value="<%= detalle.PrecioUnitario %>"
+                                                           data-detalle-id="<%= detalle.IdDetalleFactura %>">
+                                                <% } %>
+                                            </div>
+                                            <div class="col-md-2">
+                                                <strong class="total-producto">S/ <%= parseFloat(detalle.Total || 0).toFixed(2) %></strong>
+                                            </div>
+                                            <div class="col-md-1">
+                                                <% if (!esOriginal) { %>
+                                                    <button type="button" class="btn btn-remove-product" 
+                                                            data-detalle-id="<%= detalle.IdDetalleFactura %>"
+                                                            title="Eliminar producto adicional">
+                                                        <i class="bi bi-trash"></i>
+                                                    </button>
+                                                <% } else { %>
+                                                    <i class="bi bi-shield-lock text-primary" title="Producto protegido de proforma"></i>
+                                                <% } %>
+                                            </div>
+                                        </div>
+                                    </div>
+                                <% }); %>
+                            <% } %>
+                        </div>
+
+                        <!-- Botón para agregar productos adicionales -->
+                        <div class="row mb-3">
+                            <div class="col-md-12">
+                                <button type="button" class="btn btn-add-product" id="addProductBtn">
+                                    <i class="bi bi-plus-lg me-1"></i>
+                                    Agregar Producto Adicional
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Contenedor para productos adicionales nuevos -->
+                        <div id="nuevosProductosAdicionales">
+                            <!-- Los nuevos productos se agregarán aquí dinámicamente -->
+                        </div>
+
+                        <!-- Totales detallados -->
+                        <div class="totals-section-detailed">
+                            <h5 class="mb-3">
+                                <i class="bi bi-calculator"></i>
+                                Resumen de Totales
+                            </h5>
+                            
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="total-row">
+                                        <span>Subtotal Original:</span>
+                                        <strong id="subtotalOriginal">S/ 0.00</strong>
+                                    </div>
+                                    <div class="total-row">
+                                        <span>IGV Original (18%):</span>
+                                        <strong id="igvOriginal">S/ 0.00</strong>
+                                    </div>
+                                    <div class="total-row">
+                                        <span>Total Original:</span>
+                                        <strong id="totalOriginal">S/ 0.00</strong>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="total-row">
+                                        <span>Subtotal Adicionales:</span>
+                                        <strong id="subtotalAdicionales">S/ 0.00</strong>
+                                    </div>
+                                    <div class="total-row">
+                                        <span>IGV Adicionales (18%):</span>
+                                        <strong id="igvAdicionales">S/ 0.00</strong>
+                                    </div>
+                                    <div class="total-row">
+                                        <span>Total Adicionales:</span>
+                                        <strong id="totalAdicionales">S/ 0.00</strong>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="total-row" style="margin-top: 1rem; padding-top: 1rem; border-top: 2px solid #28a745;">
+                                <span style="font-size: 1.2rem; font-weight: bold;">TOTAL FINAL:</span>
+                                <strong style="font-size: 1.3rem; color: #dc3545;" id="totalFinal">S/ <%= factura.Total || '0.00' %></strong>
+                            </div>
+                        </div>
+
+                        <!-- Inputs hidden para productos modificados -->
+                        <div id="productosModificadosHidden">
+                            <!-- Se llenarán dinámicamente -->
+                        </div>
+                    </div>
+                    
+                    <!-- Hidden inputs para manejar cambios -->
+                    <div id="productosModificadosHidden"></div>
+
+                    <!-- Botones de acción -->
+                    <div class="card-footer">
+                        <div class="text-center">
+                            <button type="submit" class="btn btn-primary me-3">
+                                <i class="bi bi-check-circle"></i>
+                                Actualizar Factura
+                            </button>
+                            <a href="/facturas/<%= factura.IdFactura %>" class="btn btn-secondary me-2">
+                                <i class="bi bi-eye"></i>
+                                Ver Detalle
+                            </a>
+                            <a href="/facturas" class="btn btn-secondary">
+                                <i class="bi bi-arrow-left"></i>
+                                Volver al Listado
+                            </a>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Toggle sidebar
+    const toggleBtn = document.getElementById('toggleSidebarBtn');
+    const sidebar = document.getElementById('sidebar');
+    const mainContent = document.getElementById('main-content');
+    const toggleIcon = document.getElementById('toggleIcon');
+    
+    toggleBtn.addEventListener('click', function() {
+        sidebar.classList.toggle('hide');
+        mainContent.classList.toggle('full');
+        if (sidebar.classList.contains('hide')) {
+            toggleIcon.classList.remove('bi-chevron-left');
+            toggleIcon.classList.add('bi-chevron-right');
+        } else {
+            toggleIcon.classList.remove('bi-chevron-right');
+            toggleIcon.classList.add('bi-chevron-left');
+        }
+    });
+
+    // Variables globales
+    let productosDisponibles = [];
+    let contadorNuevosProductos = 0;
+    let productosModificados = [];
+    let productosEliminados = [];
+
+    // Cargar productos disponibles
+    cargarProductosDisponibles();
+
+    // Event listeners
+    document.getElementById('addProductBtn').addEventListener('click', agregarNuevoProducto);
+    document.getElementById('editFacturaForm').addEventListener('submit', validarYEnviarFormulario);
+
+    // Inicializar cálculo de totales
+    calcularTotales();
+
+    // Event listeners para productos existentes
+    document.querySelectorAll('.cantidad-input, .precio-input').forEach(input => {
+        input.addEventListener('input', function() {
+            const detalleId = this.dataset.detalleId;
+            actualizarProductoExistente(detalleId);
+        });
+    });
+
+    // Event listeners para eliminar productos adicionales
+    document.querySelectorAll('.btn-remove-product').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const detalleId = this.dataset.detalleId;
+            eliminarProductoAdicional(detalleId);
+        });
+    });
+
+    // Función para cargar productos disponibles
+    async function cargarProductosDisponibles() {
+        try {
+            const response = await fetch('/productos/api/listar');
+            if (response.ok) {
+                const data = await response.json();
+                productosDisponibles = data.productos || [];
+            }
+        } catch (error) {
+            console.error('Error al cargar productos:', error);
+        }
+    }
+
+    // Función para agregar nuevo producto adicional
+    function agregarNuevoProducto() {
+        if (productosDisponibles.length === 0) {
+            alert('No hay productos disponibles. Asegúrese de que existan productos en el sistema.');
+            return;
+        }
+
+        contadorNuevosProductos++;
+        const nuevoId = `nuevo_${contadorNuevosProductos}`;
+
+        const nuevaFila = document.createElement('div');
+        nuevaFila.className = 'producto-row producto-adicional';
+        nuevaFila.dataset.nuevoId = nuevoId;
+        nuevaFila.innerHTML = `
+            <div class="row align-items-center">
+                <div class="col-md-4">
+                    <select class="form-select form-select-sm producto-select" data-nuevo-id="${nuevoId}" required>
+                        <option value="">Seleccionar producto...</option>
+                        ${productosDisponibles.map(p => 
+                            `<option value="${p.IdProducto}" 
+                                     data-precio="${p.PrecioUnitario}" 
+                                     data-unidad="${p.UnidadMedida}">
+                                ${p.Nombre} - ${p.Marca || ''} ${p.Modelo || ''}
+                            </option>`
+                        ).join('')}
+                    </select>
+                    <input type="text" class="form-control form-control-sm mt-1" 
+                           placeholder="Descripción adicional (opcional)"
+                           data-nuevo-id="${nuevoId}" data-field="descripcion">
+                </div>
+                <div class="col-md-2">
+                    <input type="number" class="form-control form-control-sm cantidad-nueva" 
+                           min="0.01" step="0.01" value="1" data-nuevo-id="${nuevoId}" required>
+                </div>
+                <div class="col-md-1">
+                    <span class="unidad-display">UNID</span>
+                </div>
+                <div class="col-md-2">
+                    <input type="number" class="form-control form-control-sm precio-nuevo" 
+                           min="0" step="0.01" value="0" data-nuevo-id="${nuevoId}" required>
+                </div>
+                <div class="col-md-2">
+                    <strong class="total-producto">S/ 0.00</strong>
+                </div>
+                <div class="col-md-1">
+                    <button type="button" class="btn btn-remove-product" 
+                            data-nuevo-id="${nuevoId}" title="Eliminar producto">
+                        <i class="bi bi-trash"></i>
+                    </button>
+                </div>
+            </div>
+        `;
+
+        document.getElementById('nuevosProductosAdicionales').appendChild(nuevaFila);
+
+        // Agregar event listeners al nuevo producto
+        const select = nuevaFila.querySelector('.producto-select');
+        const cantidadInput = nuevaFila.querySelector('.cantidad-nueva');
+        const precioInput = nuevaFila.querySelector('.precio-nuevo');
+        const descripcionInput = nuevaFila.querySelector('input[data-field="descripcion"]');
+        const removeBtn = nuevaFila.querySelector('.btn-remove-product');
+
+        select.addEventListener('change', function() {
+            const selectedOption = this.options[this.selectedIndex];
+            if (selectedOption.value) {
+                const precio = parseFloat(selectedOption.dataset.precio) || 0;
+                const unidad = selectedOption.dataset.unidad || 'UNID';
+                
+                precioInput.value = precio;
+                nuevaFila.querySelector('.unidad-display').textContent = unidad;
+                
+                calcularTotalNuevoProducto(nuevoId);
+            }
+        });
+
+        cantidadInput.addEventListener('input', () => calcularTotalNuevoProducto(nuevoId));
+        precioInput.addEventListener('input', () => calcularTotalNuevoProducto(nuevoId));
+
+        removeBtn.addEventListener('click', function() {
+            if (confirm('¿Está seguro de que desea eliminar este producto?')) {
+                nuevaFila.remove();
+                calcularTotales();
+            }
+        });
+    }
+
+    // Función para calcular total de nuevo producto
+    function calcularTotalNuevoProducto(nuevoId) {
+        const fila = document.querySelector(`[data-nuevo-id="${nuevoId}"]`);
+        const cantidad = parseFloat(fila.querySelector('.cantidad-nueva').value) || 0;
+        const precio = parseFloat(fila.querySelector('.precio-nuevo').value) || 0;
+        const total = cantidad * precio;
+        
+        fila.querySelector('.total-producto').textContent = `S/ ${total.toFixed(2)}`;
+        
+        calcularTotales();
+    }
+
+    // Función para actualizar producto existente
+    function actualizarProductoExistente(detalleId) {
+        const fila = document.querySelector(`[data-detalle-id="${detalleId}"]`);
+        const cantidadInput = fila.querySelector('.cantidad-input');
+        const precioInput = fila.querySelector('.precio-input');
+        
+        if (cantidadInput && precioInput) {
+            const cantidad = parseFloat(cantidadInput.value) || 0;
+            const precio = parseFloat(precioInput.value) || 0;
+            const total = cantidad * precio;
+            
+            fila.querySelector('.total-producto').textContent = `S/ ${total.toFixed(2)}`;
+            
+            // Agregar a productos modificados
+            const index = productosModificados.findIndex(p => p.IdDetalleFactura == detalleId);
+            const productoModificado = {
+                IdDetalleFactura: detalleId,
+                Cantidad: cantidad,
+                PrecioUnitario: precio,
+                Total: total
+            };
+            
+            if (index >= 0) {
+                productosModificados[index] = productoModificado;
+            } else {
+                productosModificados.push(productoModificado);
+            }
+            
+            calcularTotales();
+        }
+    }
+
+    // Función para eliminar producto adicional
+    function eliminarProductoAdicional(detalleId) {
+        if (confirm('¿Está seguro de que desea eliminar este producto adicional?')) {
+            const fila = document.querySelector(`[data-detalle-id="${detalleId}"]`);
+            if (fila && fila.dataset.tipo === 'ADICIONAL') {
+                fila.remove();
+                productosEliminados.push(detalleId);
+                calcularTotales();
+            }
+        }
+    }
+
+    // Función para calcular todos los totales
+    function calcularTotales() {
+        let subtotalOriginal = 0;
+        let subtotalAdicionales = 0;
+
+        // Calcular totales de productos originales (no modificables)
+        document.querySelectorAll('[data-tipo="ORIGINAL"] .total-producto').forEach(totalEl => {
+            const total = parseFloat(totalEl.textContent.replace('S/ ', '')) || 0;
+            subtotalOriginal += total;
+        });
+
+        // Calcular totales de productos adicionales existentes
+        document.querySelectorAll('[data-tipo="ADICIONAL"] .total-producto').forEach(totalEl => {
+            const fila = totalEl.closest('.producto-row');
+            if (fila && !productosEliminados.includes(fila.dataset.detalleId)) {
+                const total = parseFloat(totalEl.textContent.replace('S/ ', '')) || 0;
+                subtotalAdicionales += total;
+            }
+        });
+
+        // Calcular totales de nuevos productos adicionales
+        document.querySelectorAll('#nuevosProductosAdicionales .total-producto').forEach(totalEl => {
+            const total = parseFloat(totalEl.textContent.replace('S/ ', '')) || 0;
+            subtotalAdicionales += total;
+        });
+
+        // Calcular IGV y totales
+        const igvOriginal = subtotalOriginal * 0.18;
+        const totalOriginal = subtotalOriginal + igvOriginal;
+        
+        const igvAdicionales = subtotalAdicionales * 0.18;
+        const totalAdicionales = subtotalAdicionales + igvAdicionales;
+        
+        const totalFinal = totalOriginal + totalAdicionales;
+
+        // Actualizar displays
+        document.getElementById('subtotalOriginal').textContent = `S/ ${subtotalOriginal.toFixed(2)}`;
+        document.getElementById('igvOriginal').textContent = `S/ ${igvOriginal.toFixed(2)}`;
+        document.getElementById('totalOriginal').textContent = `S/ ${totalOriginal.toFixed(2)}`;
+        
+        document.getElementById('subtotalAdicionales').textContent = `S/ ${subtotalAdicionales.toFixed(2)}`;
+        document.getElementById('igvAdicionales').textContent = `S/ ${igvAdicionales.toFixed(2)}`;
+        document.getElementById('totalAdicionales').textContent = `S/ ${totalAdicionales.toFixed(2)}`;
+        
+        document.getElementById('totalFinal').textContent = `S/ ${totalFinal.toFixed(2)}`;
+    }
+
+    // Función para validar y enviar formulario
+    function validarYEnviarFormulario(e) {
+        e.preventDefault();
+        
+        // Preparar datos de productos modificados
+        actualizarInputsHidden();
+        
+        // Validaciones básicas
+        const estado = document.getElementById('Estado').value;
+        const cliente = document.getElementById('IdCliente').value;
+        const fechaEmision = document.getElementById('FechaEmision').value;
+
+        if (!estado || !cliente || !fechaEmision) {
+            alert('Por favor complete todos los campos obligatorios.');
+            return false;
+        }
+
+        // Validar nuevos productos
+        const nuevosProductos = document.querySelectorAll('#nuevosProductosAdicionales .producto-row');
+        for (let fila of nuevosProductos) {
+            const select = fila.querySelector('.producto-select');
+            const cantidad = fila.querySelector('.cantidad-nueva');
+            const precio = fila.querySelector('.precio-nuevo');
+            
+            if (!select.value || !cantidad.value || cantidad.value <= 0 || precio.value < 0) {
+                alert('Por favor complete correctamente todos los productos adicionales.');
+                return false;
+            }
+        }
+
+        if (confirm('¿Está seguro de que desea actualizar esta factura?')) {
+            // Deshabilitar botón para evitar doble envío
+            const submitBtn = document.querySelector('button[type="submit"]');
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Actualizando...';
+            
+            // Enviar formulario
+            e.target.submit();
+        }
+    }
+
+    // Función para actualizar inputs hidden
+    function actualizarInputsHidden() {
+        const container = document.getElementById('productosModificadosHidden');
+        container.innerHTML = '';
+
+        // Productos modificados
+        productosModificados.forEach((producto, index) => {
+            container.innerHTML += `
+                <input type="hidden" name="productosModificados[${index}][IdDetalleFactura]" value="${producto.IdDetalleFactura}">
+                <input type="hidden" name="productosModificados[${index}][Cantidad]" value="${producto.Cantidad}">
+                <input type="hidden" name="productosModificados[${index}][PrecioUnitario]" value="${producto.PrecioUnitario}">
+            `;
+        });
+
+        // Productos eliminados
+        productosEliminados.forEach((detalleId, index) => {
+            container.innerHTML += `<input type="hidden" name="productosEliminados[${index}]" value="${detalleId}">`;
+        });
+
+        // Nuevos productos adicionales
+        const nuevosProductos = document.querySelectorAll('#nuevosProductosAdicionales .producto-row');
+        nuevosProductos.forEach((fila, index) => {
+            const select = fila.querySelector('.producto-select');
+            const cantidad = fila.querySelector('.cantidad-nueva');
+            const precio = fila.querySelector('.precio-nuevo');
+            const descripcion = fila.querySelector('input[data-field="descripcion"]');
+            
+            if (select.value) {
+                container.innerHTML += `
+                    <input type="hidden" name="nuevosProductos[${index}][IdProducto]" value="${select.value}">
+                    <input type="hidden" name="nuevosProductos[${index}][Cantidad]" value="${cantidad.value}">
+                    <input type="hidden" name="nuevosProductos[${index}][PrecioUnitario]" value="${precio.value}">
+                    <input type="hidden" name="nuevosProductos[${index}][DescripcionAdicional]" value="${descripcion.value}">
+                `;
+            }
+        });
+    }
+
+    // Auto-calcular fecha de vencimiento según forma de pago
+    const formaPagoSelect = document.getElementById('FormaPago');
+    const fechaEmisionInput = document.getElementById('FechaEmision');
+    const fechaVencimientoInput = document.getElementById('FechaVencimiento');
+
+    function calcularFechaVencimiento() {
+        const formaPago = formaPagoSelect.value;
+        const fechaEmision = fechaEmisionInput.value;
+        
+        if (fechaEmision && formaPago.startsWith('CREDITO_')) {
+            const dias = parseInt(formaPago.split('_')[1]);
+            const fecha = new Date(fechaEmision);
+            fecha.setDate(fecha.getDate() + dias);
+            fechaVencimientoInput.value = fecha.toISOString().split('T')[0];
+        } else if (formaPago === 'CONTADO' && fechaEmision) {
+            fechaVencimientoInput.value = fechaEmision;
+        }
+    }
+
+    formaPagoSelect.addEventListener('change', calcularFechaVencimiento);
+    fechaEmisionInput.addEventListener('change', calcularFechaVencimiento);
+
+    // Actualizar badge de estado
+    document.getElementById('Estado').addEventListener('change', function() {
+        const badge = document.querySelector('.estado-badge');
+        const nuevoEstado = this.value;
+        badge.textContent = nuevoEstado;
+        badge.className = `estado-badge estado-${nuevoEstado.toLowerCase()}`;
+    });
+});
+</script>
+
+</body>
+</html>

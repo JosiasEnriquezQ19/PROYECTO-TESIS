@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lista de Pagos - CARSIL Equipos y Servicios SAC</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { 
+            font-family: 'Montserrat', sans-serif;
+            background: linear-gradient(135deg, #f8fafc 0%, #e9ecef 100%);
+        }
+        .toggle-sidebar-btn {
+            position: absolute;
+            top: 1.2rem;
+            left: 290px;
+            z-index: 1100;
+            background: linear-gradient(135deg, #0056b3, #003366);
+            color: #fff;
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 12px rgba(0,86,179,0.3);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .toggle-sidebar-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(0,86,179,0.4);
+        }
+        .sidebar.hide { transform: translateX(-100%); }
+        .main-content.full { margin-left: 0 !important; }
+        @media (max-width: 768px) {
+            .toggle-sidebar-btn { left: 10px; top: 10px; }
+        }
+        .sidebar {
+            width: 270px;
+            min-height: 100vh;
+            background: linear-gradient(180deg, #003366 0%, #001a33 100%);
+            color: #fff;
+            position: fixed;
+            left: 0;
+            top: 0;
+            padding-top: 1rem;
+            z-index: 1000;
+            box-shadow: 4px 0 20px rgba(0,0,0,0.1);
+        }
+        .sidebar .sidebar-heading {
+            font-size: 1.5rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            color: #fff;
+        }
+        .sidebar .company-slogan {
+            font-size: 0.9rem;
+            color: #b0c4de;
+            font-weight: 300;
+        }
+        .sidebar .menu-item {
+            color: rgba(255,255,255,0.9);
+            padding: 0.8rem 1.2rem;
+            border-radius: 0.7rem;
+            margin: 0.2rem 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s;
+            position: relative;
+        }
+        .sidebar .menu-item:hover {
+            background: rgba(0,86,179,0.3);
+            color: #fff;
+            transform: translateX(5px);
+        }
+        .sidebar .menu-item.active {
+            background: linear-gradient(135deg, #0056b3, #0d6efd);
+            color: #fff;
+            box-shadow: 0 2px 8px rgba(0,86,179,0.3);
+        }
+        .sidebar .logout-item {
+            color: #ff6b6b;
+        }
+        .sidebar .logout-item:hover {
+            background: rgba(255,107,107,0.1);
+            color: #ff6b6b;
+        }
+        .main-content {
+            margin-left: 270px;
+            min-height: 100vh;
+            transition: margin 0.3s;
+        }
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+        .user-avatar {
+            background: linear-gradient(135deg, #0056b3, #003366);
+            color: #fff;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 1.2rem;
+            box-shadow: 0 2px 8px rgba(0,86,179,0.3);
+        }
+        .navbar-top {
+            background: rgba(255,255,255,0.95);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 2px 20px rgba(0,0,0,0.08);
+            border: none;
+        }
+        .page-header {
+            background: linear-gradient(135deg, #fff 0%, #f8fafc 100%);
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border-radius: 1rem;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            border: 1px solid rgba(0,86,179,0.1);
+        }
+        .page-title {
+            color: #003366;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        .stat-card {
+            background: linear-gradient(135deg, #fff 0%, #f8fafc 100%);
+            border-radius: 1rem;
+            padding: 1.5rem;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+            border: 1px solid rgba(0,86,179,0.1);
+            transition: all 0.3s;
+        }
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 30px rgba(0,0,0,0.12);
+        }
+        .stat-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        .card-modern {
+            background: rgba(255,255,255,0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(0,86,179,0.1);
+            border-radius: 1rem;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.06);
+            transition: all 0.3s;
+        }
+        .card-modern:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 40px rgba(0,0,0,0.12);
+        }
+        .btn-modern {
+            border-radius: 0.7rem;
+            padding: 0.6rem 1.5rem;
+            font-weight: 600;
+            border: none;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .btn-primary-modern {
+            background: linear-gradient(135deg, #0056b3, #0d6efd);
+            color: #fff;
+            box-shadow: 0 4px 12px rgba(0,86,179,0.3);
+        }
+        .btn-primary-modern:hover {
+            background: linear-gradient(135deg, #003d82, #0b5ed7);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(0,86,179,0.4);
+            color: #fff;
+        }
+        .search-container {
+            background: rgba(255,255,255,0.9);
+            border-radius: 1rem;
+            padding: 1rem;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+            border: 1px solid rgba(0,86,179,0.1);
+            margin-bottom: 2rem;
+        }
+        .search-box {
+            position: relative;
+        }
+        .search-box .form-control {
+            border-radius: 0.7rem;
+            border: 1px solid rgba(0,86,179,0.2);
+            padding: 0.8rem 1rem;
+            background: rgba(255,255,255,0.9);
+            transition: all 0.3s;
+        }
+        .search-box .form-control:focus {
+            border-color: #0056b3;
+            box-shadow: 0 0 0 0.2rem rgba(0,86,179,0.15);
+        }
+        .table-modern {
+            background: rgba(255,255,255,0.95);
+            border-radius: 1rem;
+            overflow: hidden;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.06);
+        }
+        .table-modern thead th {
+            background: linear-gradient(135deg, #003366, #0056b3);
+            color: #fff;
+            font-weight: 600;
+            border: none;
+            padding: 1rem;
+            font-size: 0.9rem;
+        }
+        .table-modern tbody td {
+            padding: 1rem;
+            vertical-align: middle;
+            border-bottom: 1px solid rgba(0,86,179,0.1);
+        }
+        .table-modern tbody tr:hover {
+            background: rgba(0,86,179,0.03);
+        }
+        .badge-modern {
+            padding: 0.5rem 1rem;
+            border-radius: 2rem;
+            font-weight: 500;
+            font-size: 0.8rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+        .badge-pendiente {
+            background: linear-gradient(135deg, #fff3cd, #ffeaa7);
+            color: #856404;
+            border: 1px solid #ffeaa7;
+        }
+        .badge-pagado {
+            background: linear-gradient(135deg, #d1edff, #74b9ff);
+            color: #0984e3;
+            border: 1px solid #74b9ff;
+        }
+        .badge-vencido {
+            background: linear-gradient(135deg, #ffe0e0, #ff7675);
+            color: #d63031;
+            border: 1px solid #ff7675;
+        }
+        .btn-action {
+            width: 35px;
+            height: 35px;
+            border-radius: 0.5rem;
+            border: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 0.2rem;
+            transition: all 0.3s;
+        }
+        .btn-action:hover {
+            transform: translateY(-2px);
+        }
+        .amount-highlight {
+            font-weight: 700;
+            color: #0056b3;
+        }
+        .employee-info {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .employee-avatar {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, #28a745, #20c997);
+            color: #fff;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 0.8rem;
+        }
+        
+        /* Estilos adicionales para la tabla mejorada */
+        .period-info {
+            font-size: 0.85rem;
+        }
+        
+        .hours-badge {
+            background: linear-gradient(135deg, #17a2b8, #138496);
+            color: white;
+            padding: 0.3rem 0.6rem;
+            border-radius: 1rem;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+        
+        .payment-total {
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            border-left: 4px solid #0056b3;
+            padding: 0.5rem;
+            border-radius: 0.5rem;
+            font-size: 1.1rem;
+        }
+        
+        .method-icon {
+            font-size: 1.2rem;
+            margin-top: 0.2rem;
+        }
+        
+        .comment-preview {
+            max-width: 150px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        
+        .table-modern tbody td {
+            vertical-align: middle;
+            padding: 1rem 0.8rem;
+        }
+        
+        .badge-partial {
+            background: linear-gradient(135deg, #ffeaa7, #fdcb6e);
+            color: #856404;
+            border: 1px solid #fdcb6e;
+        }
+    </style>
+</head>
+<body>
+    <div class="wrapper">
+        <%- include("../parciales/sidebar") %>
+        
+        <!-- Botón para ocultar/mostrar barra -->
+        <button class="toggle-sidebar-btn" id="toggleSidebarBtn" title="Ocultar/Mostrar menú">
+            <i class="bi bi-chevron-left" id="toggleIcon"></i>
+        </button>
+        
+        <!-- Main Content -->
+        <div class="main-content" id="main-content">
+            <nav class="navbar navbar-expand-lg navbar-top border-bottom">
+                <div class="container-fluid">
+                    <h5 class="page-title mb-0">
+                        <i class="bi bi-cash-coin"></i>
+                        Gestión de Pagos
+                    </h5>
+                    <div class="user-profile ms-auto">
+                        <span>Administrador</span>
+                        <div class="user-avatar">A</div>
+                    </div>
+                </div>
+            </nav>
+            
+            <div class="container-fluid py-4">
+                <!-- Mensajes de éxito y error eliminados según solicitud del usuario -->
+                
+                <!-- Stats Cards -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background: linear-gradient(135deg, #28a745, #20c997);">
+                            <i class="bi bi-list-check text-white"></i>
+                        </div>                
+                        <h6 class="text-muted">Total de Registros</h6>
+                        <h3 class="text-primary"><%= pagos ? pagos.length : 0 %></h3>
+                        <small class="text-muted">Pagos registrados en el sistema</small>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background: linear-gradient(135deg, #74b9ff, #0984e3);">
+                            <i class="bi bi-check-circle text-white"></i>
+                        </div>                
+                        <h6 class="text-muted">Pagos Completados</h6>
+                        <h3 class="text-success"><%= pagos ? pagos.filter(p => p.Estado === 'PAGADO').length : 0 %></h3>
+                        <small class="text-muted">Ya fueron pagados</small>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background: linear-gradient(135deg, #ffeaa7, #fdcb6e);">
+                            <i class="bi bi-clock text-white"></i>
+                        </div>                
+                        <h6 class="text-muted">Pendientes de Pago</h6>
+                        <h3 class="text-warning"><%= pagos ? pagos.filter(p => p.Estado === 'PENDIENTE' || p.Estado === 'PARCIAL').length : 0 %></h3>
+                        <small class="text-muted">Requieren atención</small>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background: linear-gradient(135deg, #6c5ce7, #a29bfe);">
+                            <i class="bi bi-cash-stack text-white"></i>
+                        </div>                
+                        <h6 class="text-muted">Monto Total Pendiente</h6>
+                        <h3 class="text-primary">S/ <%= pagos ? pagos.filter(p => p.Estado !== 'PAGADO').reduce((sum, p) => sum + parseFloat(p.TotalPago || 0), 0).toFixed(2) : '0.00' %></h3>
+                        <small class="text-muted">Por pagar a empleados</small>
+                    </div>
+                </div>
+
+                <!-- Search and Actions -->
+                <div class="search-container">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div class="search-box flex-grow-1 me-3">
+                            <div class="d-flex gap-2">
+                                <select class="form-select" id="campoFiltro" style="max-width: 200px;">
+                                    <option value="0">Empleado</option>
+                                    <option value="1">Semana</option>
+                                    <option value="2">Año</option>
+                                    <option value="3">Período (Inicio-Fin)</option>
+                                    <option value="4">Horas Trabajadas</option>
+                                    <option value="5">Sueldo Base</option>
+                                    <option value="6">Bonificaciones</option>
+                                    <option value="7">Descuentos</option>
+                                    <option value="8">Total a Pagar</option>
+                                    <option value="9">Estado</option>
+                                    <option value="10">Método de Pago</option>
+                                    <option value="11">Fecha de Pago</option>
+                                </select>
+                                <input type="text" class="form-control" id="valorFiltro" placeholder="Buscar pagos...">
+                            </div>
+                        </div>
+                        <a href="/pagos/crear" class="btn btn-primary-modern btn-modern">
+                            <i class="bi bi-plus-circle"></i>
+                            Nuevo Pago
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Tabla de pagos modernizada -->
+                <div class="card-modern">
+                    <div class="table-responsive">
+                        <table class="table table-modern mb-0">
+                            <thead>
+                                <tr>
+                                    <th><i class="bi bi-person me-1"></i>Empleado</th>
+                                    <th><i class="bi bi-calendar-week me-1"></i>Semana / Año</th>
+                                    <th><i class="bi bi-calendar-range me-1"></i>Período Laboral</th>
+                                    <th><i class="bi bi-clock-history me-1"></i>Horas</th>
+                                    <th><i class="bi bi-calculator me-1"></i>Sueldo Base</th>
+                                    <th><i class="bi bi-gift me-1"></i>Bonificaciones</th>
+                                    <th><i class="bi bi-dash-circle me-1"></i>Descuentos</th>
+                                    <th><i class="bi bi-cash-stack me-1"></i>Total a Pagar</th>
+                                    <th><i class="bi bi-toggle-on me-1"></i>Estado</th>
+                                    <th><i class="bi bi-credit-card me-1"></i>Método de Pago</th>
+                                    <th><i class="bi bi-calendar-check me-1"></i>Fecha de Pago</th>
+                                    <th><i class="bi bi-chat-dots me-1"></i>Observaciones</th>
+                                    <th class="text-center"><i class="bi bi-gear me-1"></i>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <% if (pagos && pagos.length > 0) { %>
+                                    <% pagos.forEach(pago => { %>
+                                        <tr>
+                                            <td>
+                                                <div class="employee-info">
+                                                    <div class="employee-avatar">
+                                                        <%= pago.NombreEmpleado ? pago.NombreEmpleado.charAt(0).toUpperCase() : 'E' %>
+                                                    </div>
+                                                    <div>
+                                                        <strong><%= pago.NombreEmpleado || `Empleado ${pago.IdEmpleado}` %></strong>
+                                                        <small class="d-block text-muted">ID: <%= pago.IdEmpleado %></small>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="text-center">
+                                                    <span class="badge bg-primary">Semana <%= pago.Semana %></span>
+                                                    <div class="text-muted small mt-1"><%= pago.Anio %></div>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="small">
+                                                    <div><strong>Inicio:</strong> <%= pago.FechaInicio ? (pago.FechaInicio.toISOString ? pago.FechaInicio.toISOString().substring(0,10) : pago.FechaInicio.substring(0,10)) : 'N/A' %></div>
+                                                    <div><strong>Fin:</strong> <%= pago.FechaFin ? (pago.FechaFin.toISOString ? pago.FechaFin.toISOString().substring(0,10) : pago.FechaFin.substring(0,10)) : 'N/A' %></div>
+                                                </div>
+                                            </td>
+                                            <td class="text-center">
+                                                <span class="badge bg-info text-dark">
+                                                    <i class="bi bi-clock me-1"></i>
+                                                    <%= parseFloat(pago.HorasTrabajadas || 0).toFixed(1) %>h
+                                                </span>
+                                            </td>
+                                            <td class="amount-highlight text-end">
+                                                <strong>S/ <%= parseFloat(pago.SueldoSemanal || 0).toFixed(2) %></strong>
+                                            </td>
+                                            <td class="text-end">
+                                                <span class="text-success fw-bold">
+                                                    + S/ <%= parseFloat(pago.Bonificaciones || 0).toFixed(2) %>
+                                                </span>
+                                            </td>
+                                            <td class="text-end">
+                                                <span class="text-danger fw-bold">
+                                                    - S/ <%= parseFloat(pago.Descuentos || 0).toFixed(2) %>
+                                                </span>
+                                            </td>
+                                            <td class="text-end">
+                                                <div class="amount-highlight" style="font-size: 1.2rem; padding: 0.5rem; background: #f8f9fa; border-radius: 0.5rem; border-left: 4px solid #0056b3;">
+                                                    <strong>S/ <%= parseFloat(pago.TotalPago || 0).toFixed(2) %></strong>
+                                                </div>
+                                            </td>
+                                            <td class="text-center">
+                                                <span class="badge-modern <%= 
+                                                    pago.Estado === 'PAGADO' ? 'badge-pagado' : 
+                                                    pago.Estado === 'PENDIENTE' ? 'badge-pendiente' : 
+                                                    pago.Estado === 'PARCIAL' ? 'badge-pendiente' :
+                                                    'badge-vencido' 
+                                                %>">
+                                                    <i class="bi <%= 
+                                                        pago.Estado === 'PAGADO' ? 'bi-check-circle' : 
+                                                        pago.Estado === 'PENDIENTE' ? 'bi-clock' : 
+                                                        pago.Estado === 'PARCIAL' ? 'bi-clock-history' :
+                                                        'bi-x-circle' 
+                                                    %>"></i>
+                                                    <%= pago.Estado %>
+                                                </span>
+                                            </td>
+                                            <td class="text-center">
+                                                <div class="small">
+                                                    <div class="fw-bold"><%= pago.MetodoPago || 'No especificado' %></div>
+                                                    <% if (pago.MetodoPago === 'TRANSFERENCIA') { %>
+                                                        <i class="bi bi-bank text-primary"></i>
+                                                    <% } else if (pago.MetodoPago === 'EFECTIVO') { %>
+                                                        <i class="bi bi-cash text-success"></i>
+                                                    <% } else if (pago.MetodoPago === 'CHEQUE') { %>
+                                                        <i class="bi bi-receipt text-info"></i>
+                                                    <% } else if (pago.MetodoPago === 'DEPOSITO') { %>
+                                                        <i class="bi bi-building text-warning"></i>
+                                                    <% } %>
+                                                </div>
+                                            </td>
+                                            <td class="text-center">
+                                                <% if (pago.FechaPago) { %>
+                                                    <span class="badge bg-success">
+                                                        <i class="bi bi-calendar-check me-1"></i>
+                                                        <%= pago.FechaPago.toISOString ? pago.FechaPago.toISOString().substring(0,10) : pago.FechaPago.substring(0,10) %>
+                                                    </span>
+                                                <% } else { %>
+                                                    <span class="badge bg-secondary">
+                                                        <i class="bi bi-calendar-x me-1"></i>
+                                                        Sin pagar
+                                                    </span>
+                                                <% } %>
+                                            </td>
+                                            <td>
+                                                <% if (pago.Comentarios && pago.Comentarios.trim()) { %>
+                                                    <span class="small text-muted" title="<%= pago.Comentarios %>">
+                                                        <i class="bi bi-chat-dots me-1"></i>
+                                                        <%= pago.Comentarios.length > 30 ? pago.Comentarios.substring(0, 30) + '...' : pago.Comentarios %>
+                                                    </span>
+                                                <% } else { %>
+                                                    <span class="text-muted small">Sin observaciones</span>
+                                                <% } %>
+                                            </td>
+                                            <td class="text-center">
+                                                <div class="d-flex justify-content-center gap-1">
+                                                    <a href="/pagos/editar/<%= pago.IdPago %>" class="btn btn-outline-primary btn-action" title="Editar pago">
+                                                        <i class="bi bi-pencil"></i>
+                                                    </a>
+                                                    <% if (pago.Estado !== 'PAGADO') { %>
+                                                        <a href="/pagos/editar/<%= pago.IdPago %>" class="btn btn-outline-success btn-action" title="Marcar como pagado">
+                                                            <i class="bi bi-check-circle"></i>
+                                                        </a>
+                                                    <% } %>
+                                                    <a href="/pagos/eliminar/<%= pago.IdPago %>" class="btn btn-outline-danger btn-action" title="Eliminar pago" onclick="return confirm('¿Está seguro de eliminar este pago?\\n\\nEmpleado: <%= pago.NombreEmpleado || pago.IdEmpleado %>\\nPeríodo: Semana <%= pago.Semana %> del <%= pago.Anio %>\\nTotal: S/ <%= parseFloat(pago.TotalPago || 0).toFixed(2) %>')">
+                                                        <i class="bi bi-trash"></i>
+                                                    </a>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    <% }); %>
+                                <% } else { %>
+                                    <tr>
+                                        <td colspan="13" class="text-center py-5">
+                                            <div class="d-flex flex-column align-items-center">
+                                                <i class="bi bi-cash-coin text-muted" style="font-size: 4rem; opacity: 0.5;"></i>
+                                                <h5 class="text-muted mt-3">No hay pagos registrados</h5>
+                                                <p class="text-muted">Comience registrando el primer pago de nómina</p>
+                                                <a href="/pagos/crear" class="btn btn-primary-modern btn-modern mt-2">
+                                                    <i class="bi bi-plus-circle"></i>
+                                                    Registrar primer pago
+                                                </a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                <% } %>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const toggleBtn = document.getElementById('toggleSidebarBtn');
+            const sidebar = document.getElementById('sidebar');
+            const mainContent = document.getElementById('main-content');
+            const toggleIcon = document.getElementById('toggleIcon');
+            const menuItems = document.querySelectorAll('.menu-item');
+
+            toggleBtn.addEventListener('click', function() {
+                sidebar.classList.toggle('hide');
+                mainContent.classList.toggle('full');
+                if (sidebar.classList.contains('hide')) {
+                    toggleIcon.classList.remove('bi-chevron-left');
+                    toggleIcon.classList.add('bi-chevron-right');
+                } else {
+                    toggleIcon.classList.remove('bi-chevron-right');
+                    toggleIcon.classList.add('bi-chevron-left');
+                }
+            });
+
+            menuItems.forEach(item => {
+                item.addEventListener('click', function() {
+                    menuItems.forEach(i => i.classList.remove('active'));
+                    this.classList.add('active');
+                });
+            });
+        });
+
+        // Filtro único con combo box y campo de texto para pagos
+        const campoFiltro = document.getElementById('campoFiltro');
+        const valorFiltro = document.getElementById('valorFiltro');
+        if (campoFiltro && valorFiltro) {
+            valorFiltro.addEventListener('input', filtrarTablaPagos);
+            campoFiltro.addEventListener('change', filtrarTablaPagos);
+        }
+
+        function filtrarTablaPagos() {
+            const col = parseInt(campoFiltro.value);
+            const searchTerm = valorFiltro.value.toLowerCase();
+            const rows = document.querySelectorAll('tbody tr');
+            
+            rows.forEach(row => {
+                if (row.querySelectorAll('td').length < 13) return;
+                
+                const cell = row.querySelectorAll('td')[col];
+                let cellText = cell.textContent.toLowerCase();
+                
+                // Para campos de montos, eliminar el símbolo "s/" y signos
+                if (col === 4 || col === 5 || col === 6 || col === 7) {
+                    cellText = cellText.replace(/s\/|\+|\-/g, '').trim();
+                }
+                
+                if (cell && cellText.includes(searchTerm)) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        }
+    </script>
+</body>
+</html>

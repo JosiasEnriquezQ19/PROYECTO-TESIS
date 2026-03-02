@@ -1,0 +1,673 @@
+-- Creación de la base de datos
+-- CREATE DATABASE IF NOT EXISTS DBVENTASDEMO;
+USE DBVENTASDEMO;
+
+-- Tabla para roles de usuario
+CREATE TABLE ROL(
+    IdRol INT PRIMARY KEY AUTO_INCREMENT,
+    Descripcion VARCHAR(50),
+    FechaRegistro DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Tabla para permisos
+CREATE TABLE PERMISO(
+    IdPermiso INT PRIMARY KEY AUTO_INCREMENT,
+    IdRol INT,
+    NombreMenu VARCHAR(100),
+    FechaRegistro DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (IdRol) REFERENCES ROL(IdRol)
+);
+
+-- Tabla para usuarios
+CREATE TABLE USUARIO(
+    IdUsuario INT PRIMARY KEY AUTO_INCREMENT,
+    Nombres VARCHAR(50) NOT NULL,
+    Apellidos VARCHAR(50) NOT NULL,
+    TipoDocumento VARCHAR(20) DEFAULT 'DNI',
+    NumeroDocumento VARCHAR(20) NOT NULL UNIQUE,
+    Correo VARCHAR(50) UNIQUE,
+    Clave VARCHAR(255) NOT NULL,
+    IdRol INT NOT NULL,
+    Estado TINYINT(1) DEFAULT 1,
+    Telefono VARCHAR(20),
+    Direccion VARCHAR(200),
+    FechaRegistro DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (IdRol) REFERENCES ROL(IdRol)
+);
+
+-- Tabla para información de la empresa
+CREATE TABLE EMPRESA(
+    IdEmpresa INT PRIMARY KEY AUTO_INCREMENT,
+    Nombre VARCHAR(100) NOT NULL,
+    RUC VARCHAR(11) NOT NULL,
+    Direccion VARCHAR(200) NOT NULL,
+    Telefono VARCHAR(20),
+    Celular VARCHAR(20),
+    Email VARCHAR(100),
+    Logo LONGBLOB,
+    TextoPresentacion VARCHAR(500) DEFAULT 'En atención a vuestra solicitud, tenemos el agrado de cotizarles lo siguiente:',
+    CuentaBancaria VARCHAR(100),
+    NombreCuentaBancaria VARCHAR(100),
+    Estado TINYINT(1) DEFAULT 1,
+    FechaRegistro DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Tabla para clientes
+CREATE TABLE CLIENTE(
+    IdCliente INT PRIMARY KEY AUTO_INCREMENT,
+    Documento VARCHAR(20) NOT NULL,
+    RazonSocial VARCHAR(100) NOT NULL,
+    Direccion VARCHAR(200),
+    Telefono VARCHAR(20),
+    Celular VARCHAR(20),
+    Email VARCHAR(100),
+    Contacto VARCHAR(100),
+    Estado TINYINT(1) DEFAULT 1,
+    FechaRegistro DATETIME DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE (Documento)
+);
+
+-- Tabla para productos/servicios (especializado en bombas hidráulicas)
+CREATE TABLE PRODUCTO(
+    IdProducto INT PRIMARY KEY AUTO_INCREMENT,
+    Codigo VARCHAR(50),
+    Nombre VARCHAR(100) NOT NULL,
+    Descripcion TEXT,
+    Marca VARCHAR(100),
+    Modelo VARCHAR(100),
+    Tipo VARCHAR(100),
+    UnidadMedida VARCHAR(20) DEFAULT 'UNID',
+    PrecioUnitario DECIMAL(12,2) NOT NULL,
+    Estado TINYINT(1) DEFAULT 1,
+    FechaRegistro DATETIME DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE (Codigo)
+);
+
+-- Tabla principal de proformas
+CREATE TABLE PROFORMA(
+    IdProforma INT PRIMARY KEY AUTO_INCREMENT,
+    Codigo VARCHAR(20) NOT NULL,
+    IdUsuario INT NOT NULL,
+    IdCliente INT NOT NULL,
+    IdEmpresa INT NOT NULL,
+    FechaEmision DATE NOT NULL,
+    Referencia VARCHAR(100),
+    ValidezOferta INT DEFAULT 10,
+    TiempoEntrega VARCHAR(100),
+    LugarEntrega VARCHAR(200),
+    Garantia VARCHAR(100),
+    FormaPago VARCHAR(200),
+    PorcentajeIGV DECIMAL(5,2) DEFAULT 18.00,
+    SubTotal DECIMAL(12,2) NOT NULL,
+    TotalIGV DECIMAL(12,2) NOT NULL,
+    Total DECIMAL(12,2) NOT NULL,
+    Estado VARCHAR(20) DEFAULT 'PENDIENTE',
+    Observaciones TEXT,
+    FechaRegistro DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (IdUsuario) REFERENCES USUARIO(IdUsuario),
+    FOREIGN KEY (IdCliente) REFERENCES CLIENTE(IdCliente),
+    FOREIGN KEY (IdEmpresa) REFERENCES EMPRESA(IdEmpresa)
+);
+
+-- Tabla de detalle de proformas
+CREATE TABLE DETALLE_PROFORMA(
+    IdDetalleProforma INT PRIMARY KEY AUTO_INCREMENT,
+    IdProforma INT NOT NULL,
+    IdProducto INT NOT NULL,
+    Cantidad DECIMAL(10,2) NOT NULL,
+    UnidadMedida VARCHAR(20) DEFAULT 'UNID',
+    PrecioUnitario DECIMAL(12,2) NOT NULL,
+    Total DECIMAL(12,2) NOT NULL,
+    DescripcionAdicional TEXT,
+    FechaRegistro DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (IdProforma) REFERENCES PROFORMA(IdProforma),
+    FOREIGN KEY (IdProducto) REFERENCES PRODUCTO(IdProducto)
+);
+
+-- Tabla para condiciones específicas de productos en proformas
+CREATE TABLE CONDICIONES_PRODUCTO(
+    IdCondicion INT PRIMARY KEY AUTO_INCREMENT,
+    IdDetalleProforma INT NOT NULL,
+    NombreCondicion VARCHAR(100) NOT NULL,
+    ValorCondicion VARCHAR(500) NOT NULL,
+    FechaRegistro DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (IdDetalleProforma) REFERENCES DETALLE_PROFORMA(IdDetalleProforma)
+);
+
+-- Tabla para facturas
+CREATE TABLE FACTURA(
+    IdFactura INT PRIMARY KEY AUTO_INCREMENT,
+    Codigo VARCHAR(20) NOT NULL,
+    IdProforma INT,
+    IdUsuario INT NOT NULL,
+    IdCliente INT NOT NULL,
+    IdEmpresa INT NOT NULL,
+    FechaEmision DATE NOT NULL,
+    FechaVencimiento DATE,
+    SubTotal DECIMAL(12,2) NOT NULL,
+    TotalIGV DECIMAL(12,2) NOT NULL,
+    Total DECIMAL(12,2) NOT NULL,
+    Estado VARCHAR(20) DEFAULT 'PENDIENTE',
+    FormaPago VARCHAR(100),
+    Observaciones TEXT,
+    FechaRegistro DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (IdProforma) REFERENCES PROFORMA(IdProforma),
+    FOREIGN KEY (IdUsuario) REFERENCES USUARIO(IdUsuario),
+    FOREIGN KEY (IdCliente) REFERENCES CLIENTE(IdCliente),
+    FOREIGN KEY (IdEmpresa) REFERENCES EMPRESA(IdEmpresa)
+);
+
+-- Tabla de detalle de facturas
+CREATE TABLE DETALLE_FACTURA(
+    IdDetalleFactura INT PRIMARY KEY AUTO_INCREMENT,
+    IdFactura INT NOT NULL,
+    IdProducto INT NOT NULL,
+    Cantidad DECIMAL(10,2) NOT NULL,
+    UnidadMedida VARCHAR(20) DEFAULT 'UNID',
+    PrecioUnitario DECIMAL(12,2) NOT NULL,
+    Total DECIMAL(12,2) NOT NULL,
+    DescripcionAdicional TEXT,
+    FechaRegistro DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (IdFactura) REFERENCES FACTURA(IdFactura),
+    FOREIGN KEY (IdProducto) REFERENCES PRODUCTO(IdProducto)
+);
+
+-- Tabla para ventas (puede ser usada para resumen de facturas)
+CREATE TABLE VENTA(
+    IdVenta INT PRIMARY KEY AUTO_INCREMENT,
+    IdFactura INT NOT NULL,
+    FechaVenta DATE NOT NULL,
+    Total DECIMAL(12,2) NOT NULL,
+    Estado VARCHAR(20),
+    FechaRegistro DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (IdFactura) REFERENCES FACTURA(IdFactura)
+);
+
+-- Tabla para contratos
+CREATE TABLE CONTRATO(
+    IdContrato INT PRIMARY KEY AUTO_INCREMENT,
+    Codigo VARCHAR(20) NOT NULL,
+    IdCliente INT NOT NULL,
+    IdFactura INT,
+    NumeroCuentaBanco VARCHAR(50),
+    FechaInicio DATE NOT NULL,
+    FechaFin DATE,
+    PagoSemanal DECIMAL(12,2),
+    Estado VARCHAR(20) DEFAULT 'ACTIVO',
+    Terminos TEXT,
+    FechaRegistro DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (IdCliente) REFERENCES CLIENTE(IdCliente),
+    FOREIGN KEY (IdFactura) REFERENCES FACTURA(IdFactura)
+);
+
+
+
+
+-- Tabla para empleados (extiende la información de USUARIO con datos laborales)
+CREATE TABLE EMPLEADO(
+    IdEmpleado INT PRIMARY KEY AUTO_INCREMENT,
+    IdUsuario INT NOT NULL,
+    Cargo VARCHAR(100) NOT NULL,
+    Area VARCHAR(100),
+    FechaContratacion DATE NOT NULL,
+    TipoContrato VARCHAR(50) DEFAULT 'INDEFINIDO',
+    SueldoBase DECIMAL(12,2) NOT NULL COMMENT 'Sueldo base semanal del empleado',
+    Banco VARCHAR(100),
+    NumeroCuenta VARCHAR(50),
+    TipoCuenta VARCHAR(30) DEFAULT 'AHORROS',
+    Estado VARCHAR(20) DEFAULT 'ACTIVO',
+    FechaRegistro DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (IdUsuario) REFERENCES USUARIO(IdUsuario),
+    UNIQUE (IdUsuario)
+);
+
+-- Tabla para asistencias del personal
+CREATE TABLE ASISTENCIA(
+    IdAsistencia INT PRIMARY KEY AUTO_INCREMENT,
+    IdEmpleado INT NOT NULL,
+    Fecha DATE NOT NULL,
+    JornadaLaboral VARCHAR(20) DEFAULT 'COMPLETA', -- COMPLETA, MEDIO_MANANA, MEDIO_TARDE, NOCTURNO, PERSONALIZADO
+    HoraEntrada TIME,
+    HoraSalida TIME,
+    HorasTrabajadas DECIMAL(5,2) GENERATED ALWAYS AS (
+        CASE 
+            WHEN HoraEntrada IS NOT NULL AND HoraSalida IS NOT NULL 
+            THEN ROUND(TIME_TO_SEC(TIMEDIFF(HoraSalida, HoraEntrada)) / 3600, 2)
+            ELSE 0 
+        END
+    ) STORED,
+    Estado VARCHAR(20) DEFAULT 'PRESENTE',
+    TipoAsistencia VARCHAR(20) DEFAULT 'REGULAR', -- REGULAR, FERIADO, EXTRA
+    Observaciones TEXT,
+    FechaRegistro DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (IdEmpleado) REFERENCES EMPLEADO(IdEmpleado)
+);
+
+-- Tabla para pagos a empleados
+CREATE TABLE PAGO(
+    IdPago INT PRIMARY KEY AUTO_INCREMENT,
+    IdEmpleado INT NOT NULL,
+    Semana INT NOT NULL,
+    Anio INT NOT NULL,
+    FechaInicio DATE NOT NULL,
+    FechaFin DATE NOT NULL,
+    HorasTrabajadas DECIMAL(10,2) NOT NULL,
+    SueldoSemanal DECIMAL(12,2) NOT NULL,
+    Bonificaciones DECIMAL(12,2) DEFAULT 0,
+    Descuentos DECIMAL(12,2) DEFAULT 0,
+    TotalPago DECIMAL(12,2) NOT NULL,
+    Estado VARCHAR(20) DEFAULT 'PENDIENTE',
+    FechaPago DATE,
+    MetodoPago VARCHAR(50) DEFAULT 'TRANSFERENCIA',
+    Comentarios TEXT,
+    FechaRegistro DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (IdEmpleado) REFERENCES EMPLEADO(IdEmpleado)
+);
+
+
+
+
+
+
+-- Procedimiento almacenado para calcular el pago semanal automáticamente
+DELIMITER //
+CREATE PROCEDURE CalcularPagoSemanal(
+    IN p_IdEmpleado INT,
+    IN p_Semana INT,
+    IN p_Anio INT,
+    IN p_FechaInicio DATE,
+    IN p_FechaFin DATE,
+    IN p_Bonificaciones DECIMAL(12,2),
+    IN p_Descuentos DECIMAL(12,2)
+)
+BEGIN
+    DECLARE v_HorasTrabajadas DECIMAL(10,2) DEFAULT 0;
+    DECLARE v_SueldoBase DECIMAL(12,2) DEFAULT 0;
+    DECLARE v_SueldoCalculado DECIMAL(12,2) DEFAULT 0;
+    DECLARE v_TotalPago DECIMAL(12,2) DEFAULT 0;
+    DECLARE v_HorasSemanaNormal DECIMAL(5,2) DEFAULT 43; -- 5*8 + 3 (L-V: 8h, Sábado: 3h)
+    DECLARE v_ValorPorHora DECIMAL(10,4) DEFAULT 0;
+    
+    -- Manejar valores NULL para bonificaciones y descuentos
+    IF p_Bonificaciones IS NULL THEN
+        SET p_Bonificaciones = 0;
+    END IF;
+    
+    IF p_Descuentos IS NULL THEN
+        SET p_Descuentos = 0;
+    END IF;
+    
+    -- Calcular total de horas trabajadas del empleado en el rango de fechas
+    SELECT COALESCE(SUM(HorasTrabajadas), 0) INTO v_HorasTrabajadas
+    FROM ASISTENCIA
+    WHERE IdEmpleado = p_IdEmpleado
+    AND Fecha BETWEEN p_FechaInicio AND p_FechaFin
+    AND Estado IN ('PRESENTE', 'TARDANZA');
+    
+    -- Obtener sueldo base semanal del empleado
+    SELECT COALESCE(SueldoBase, 0) INTO v_SueldoBase
+    FROM EMPLEADO
+    WHERE IdEmpleado = p_IdEmpleado;
+    
+    -- Calcular valor por hora y sueldo proporcional
+    IF v_SueldoBase > 0 THEN
+        SET v_ValorPorHora = v_SueldoBase / v_HorasSemanaNormal;
+        SET v_SueldoCalculado = v_ValorPorHora * v_HorasTrabajadas;
+    END IF;
+    
+    -- Calcular el total a pagar
+    SET v_TotalPago = v_SueldoCalculado + p_Bonificaciones - p_Descuentos;
+    
+    -- Insertar o actualizar el registro de pago
+    INSERT INTO PAGO(
+        IdEmpleado, 
+        Semana, 
+        Anio, 
+        FechaInicio, 
+        FechaFin, 
+        HorasTrabajadas, 
+        SueldoSemanal, 
+        Bonificaciones, 
+        Descuentos, 
+        TotalPago,
+        Estado
+    )
+    VALUES(
+        p_IdEmpleado,
+        p_Semana,
+        p_Anio,
+        p_FechaInicio,
+        p_FechaFin,
+        v_HorasTrabajadas,
+        v_SueldoCalculado,
+        p_Bonificaciones,
+        p_Descuentos,
+        v_TotalPago,
+        'PENDIENTE'
+    )
+    ON DUPLICATE KEY UPDATE
+        HorasTrabajadas = v_HorasTrabajadas,
+        SueldoSemanal = v_SueldoCalculado,
+        Bonificaciones = p_Bonificaciones,
+        Descuentos = p_Descuentos,
+        TotalPago = v_TotalPago;
+        
+    -- Retornar los valores calculados
+    SELECT 
+        v_HorasTrabajadas as HorasCalculadas, 
+        v_SueldoCalculado as SueldoCalculado, 
+        v_TotalPago as TotalCalculado;
+END //
+DELIMITER ;
+
+-- Procedimiento para registrar asistencia con cálculo automático de horas
+DELIMITER //
+CREATE PROCEDURE RegistrarAsistencia(
+    IN p_IdEmpleado INT,
+    IN p_Fecha DATE,
+    IN p_JornadaLaboral VARCHAR(20),
+    IN p_HoraEntrada TIME,
+    IN p_HoraSalida TIME,
+    IN p_TipoAsistencia VARCHAR(20),
+    IN p_Observaciones TEXT
+)
+BEGIN
+    DECLARE v_Estado VARCHAR(20) DEFAULT 'PRESENTE';
+    
+    -- Manejar valores NULL
+    IF p_TipoAsistencia IS NULL THEN
+        SET p_TipoAsistencia = 'REGULAR';
+    END IF;
+    
+    IF p_JornadaLaboral IS NULL THEN
+        SET p_JornadaLaboral = 'COMPLETA';
+    END IF;
+    
+    -- Determinar el estado basándose en la jornada y hora de entrada
+    IF p_HoraEntrada IS NULL THEN
+        SET v_Estado = 'AUSENTE';
+    ELSE
+        -- Validar tardanza según el tipo de jornada
+        CASE p_JornadaLaboral
+            WHEN 'COMPLETA' THEN
+                IF TIME(p_HoraEntrada) > '08:30:00' THEN
+                    SET v_Estado = 'TARDANZA';
+                END IF;
+            WHEN 'MEDIO_MANANA' THEN
+                IF TIME(p_HoraEntrada) > '08:30:00' THEN
+                    SET v_Estado = 'TARDANZA';
+                END IF;
+            WHEN 'MEDIO_TARDE' THEN
+                IF TIME(p_HoraEntrada) > '13:30:00' THEN
+                    SET v_Estado = 'TARDANZA';
+                END IF;
+            WHEN 'NOCTURNO' THEN
+                IF TIME(p_HoraEntrada) > '22:30:00' THEN
+                    SET v_Estado = 'TARDANZA';
+                END IF;
+            ELSE
+                -- PERSONALIZADO: usar tolerancia general de 30 minutos
+                SET v_Estado = 'PRESENTE';
+        END CASE;
+    END IF;
+    
+    INSERT INTO ASISTENCIA(
+        IdEmpleado, 
+        Fecha, 
+        JornadaLaboral,
+        HoraEntrada, 
+        HoraSalida, 
+        TipoAsistencia,
+        Estado,
+        Observaciones
+    )
+    VALUES(
+        p_IdEmpleado,
+        p_Fecha,
+        p_JornadaLaboral,
+        p_HoraEntrada,
+        p_HoraSalida,
+        p_TipoAsistencia,
+        v_Estado,
+        p_Observaciones
+    )
+    ON DUPLICATE KEY UPDATE
+        JornadaLaboral = p_JornadaLaboral,
+        HoraEntrada = p_HoraEntrada,
+        HoraSalida = p_HoraSalida,
+        TipoAsistencia = p_TipoAsistencia,
+        Estado = v_Estado,
+        Observaciones = p_Observaciones;
+END //
+DELIMITER ;
+
+-- Vista para obtener resumen de asistencias por empleado y semana
+CREATE VIEW VistaAsistenciaSemanal AS
+SELECT 
+    e.IdEmpleado,
+    CONCAT(u.Nombres, ' ', u.Apellidos) AS NombreEmpleado,
+    YEAR(a.Fecha) AS Anio,
+    WEEK(a.Fecha, 1) AS Semana,
+    DATE(DATE_SUB(a.Fecha, INTERVAL WEEKDAY(a.Fecha) DAY)) AS FechaInicioSemana,
+    DATE(DATE_ADD(DATE_SUB(a.Fecha, INTERVAL WEEKDAY(a.Fecha) DAY), INTERVAL 6 DAY)) AS FechaFinSemana,
+    COUNT(CASE WHEN a.Estado = 'PRESENTE' THEN 1 END) AS DiasPresente,
+    COUNT(CASE WHEN a.Estado = 'TARDANZA' THEN 1 END) AS DiasTardanza,
+    COUNT(CASE WHEN a.Estado = 'AUSENTE' THEN 1 END) AS DiasAusente,
+    COALESCE(SUM(a.HorasTrabajadas), 0) AS TotalHorasTrabajadas,
+    e.SueldoBase
+FROM EMPLEADO e
+INNER JOIN USUARIO u ON e.IdUsuario = u.IdUsuario
+LEFT JOIN ASISTENCIA a ON e.IdEmpleado = a.IdEmpleado
+WHERE e.Estado = 'ACTIVO'
+GROUP BY e.IdEmpleado, YEAR(a.Fecha), WEEK(a.Fecha, 1), 
+         u.Nombres, u.Apellidos, e.SueldoBase;
+
+-- Función para obtener horas trabajadas en un rango de fechas
+DELIMITER //
+CREATE FUNCTION ObtenerHorasTrabajadasRango(
+    p_IdEmpleado INT,
+    p_FechaInicio DATE,
+    p_FechaFin DATE
+) RETURNS DECIMAL(10,2)
+READS SQL DATA
+DETERMINISTIC
+BEGIN
+    DECLARE v_TotalHoras DECIMAL(10,2) DEFAULT 0;
+    
+    SELECT COALESCE(SUM(HorasTrabajadas), 0) INTO v_TotalHoras
+    FROM ASISTENCIA
+    WHERE IdEmpleado = p_IdEmpleado
+    AND Fecha BETWEEN p_FechaInicio AND p_FechaFin
+    AND Estado IN ('PRESENTE', 'TARDANZA');
+    
+    RETURN v_TotalHoras;
+END //
+DELIMITER ;
+
+-- Agregar restricción única para evitar duplicados en asistencias
+ALTER TABLE ASISTENCIA ADD UNIQUE KEY unique_empleado_fecha (IdEmpleado, Fecha);
+
+-- Agregar campo JornadaLaboral si no existe (para actualizar tablas existentes)
+
+
+-- Agregar clave única compuesta para PAGO
+ALTER TABLE PAGO ADD UNIQUE KEY unique_empleado_semana_anio (IdEmpleado, Semana, Anio);
+
+-- Índices para mejorar el rendimiento
+CREATE INDEX idx_asistencia_empleado_fecha ON ASISTENCIA(IdEmpleado, Fecha);
+CREATE INDEX idx_pago_empleado_semana ON PAGO(IdEmpleado, Semana, Anio);
+CREATE INDEX idx_empleado_estado ON EMPLEADO(Estado);
+
+-- Datos de ejemplo para probar el sistema
+INSERT INTO ROL (Descripcion) VALUES 
+('Administrador'),
+('Empleado'),
+('Supervisor');
+
+INSERT INTO USUARIO (Nombres, Apellidos, NumeroDocumento, Correo, Clave, IdRol) VALUES
+('Juan Carlos', 'Pérez López', '12345678', 'juan@carsil.com', '$2b$10$example', 1),
+('María Elena', 'García Torres', '87654321', 'maria@carsil.com', '$2b$10$example', 2),
+('Pedro Antonio', 'Rodríguez Silva', '11223344', 'pedro@carsil.com', '$2b$10$example', 2);
+
+INSERT INTO EMPLEADO (IdUsuario, Cargo, Area, FechaContratacion, SueldoBase, Banco, NumeroCuenta) VALUES
+(2, 'Técnico en Bombas', 'Mantenimiento', '2024-01-15', 280.00, 'BCP', '1234567890'),
+(3, 'Operario', 'Instalaciones', '2024-02-01', 240.00, 'Interbank', '0987654321');
+
+-- Ejemplo de registros de asistencia
+INSERT INTO ASISTENCIA (IdEmpleado, Fecha, JornadaLaboral, HoraEntrada, HoraSalida, TipoAsistencia) VALUES
+(1, '2024-12-16', 'COMPLETA', '08:00:00', '17:00:00', 'REGULAR'),
+(1, '2024-12-17', 'COMPLETA', '08:15:00', '17:00:00', 'REGULAR'),
+(1, '2024-12-18', 'COMPLETA', '08:00:00', '17:00:00', 'REGULAR'),
+(1, '2024-12-19', 'COMPLETA', '08:30:00', '17:00:00', 'REGULAR'),
+(1, '2024-12-20', 'COMPLETA', '08:00:00', '17:00:00', 'REGULAR'),
+(1, '2024-12-21', 'MEDIO_MANANA', '09:00:00', '12:00:00', 'REGULAR'),
+(2, '2024-12-16', 'COMPLETA', '08:00:00', '17:00:00', 'REGULAR'),
+(2, '2024-12-17', 'COMPLETA', '08:00:00', '17:00:00', 'REGULAR'),
+(2, '2024-12-18', 'MEDIO_TARDE', '13:00:00', '17:50:00', 'REGULAR'),
+(2, '2024-12-19', 'COMPLETA', '08:00:00', '17:00:00', 'REGULAR'),
+(2, '2024-12-20', 'NOCTURNO', '22:00:00', '06:00:00', 'REGULAR');
+
+-- Ejemplo de cómo calcular un pago semanal
+-- CALL CalcularPagoSemanal(1, 51, 2024, '2024-12-16', '2024-12-22', 50.00, 10.00);
+
+-- Comandos para actualizar base de datos existente (ejecutar solo si es necesario)
+-- ============================================================================
+
+-- Si la tabla ASISTENCIA ya existe sin el campo JornadaLaboral, ejecutar:
+-- ALTER TABLE ASISTENCIA ADD COLUMN JornadaLaboral VARCHAR(20) DEFAULT 'COMPLETA' AFTER Fecha;
+
+-- Actualizar registros existentes con jornada por defecto:
+-- UPDATE ASISTENCIA SET JornadaLaboral = 'COMPLETA' WHERE JornadaLaboral IS NULL;
+
+-- Consultas útiles para verificar la estructura:
+-- DESCRIBE ASISTENCIA;
+-- SHOW CREATE TABLE ASISTENCIA;
+
+-- Consultas de ejemplo para análisis por jornada:
+-- SELECT JornadaLaboral, COUNT(*) as Total, AVG(HorasTrabajadas) as PromedioHoras
+-- FROM ASISTENCIA 
+-- WHERE Fecha >= '2024-12-01' 
+-- GROUP BY JornadaLaboral;
+
+-- Consulta para ver empleados por tipo de jornada más frecuente:
+-- SELECT 
+--     e.IdEmpleado,
+--     CONCAT(u.Nombres, ' ', u.Apellidos) as Empleado,
+--     a.JornadaLaboral,
+--     COUNT(*) as VecesUsada,
+--     AVG(a.HorasTrabajadas) as PromedioHoras
+-- FROM ASISTENCIA a
+-- INNER JOIN EMPLEADO e ON a.IdEmpleado = e.IdEmpleado  
+-- INNER JOIN USUARIO u ON e.IdUsuario = u.IdUsuario
+-- WHERE a.Fecha >= '2024-12-01'
+-- GROUP BY e.IdEmpleado, a.JornadaLaboral
+-- ORDER BY e.IdEmpleado, VecesUsada DESC;
+
+INSERT INTO PRODUCTO (Codigo, Nombre, Descripcion, Marca, Modelo, Tipo, UnidadMedida, PrecioUnitario) VALUES
+-- Bombas Sumergibles
+('BOM-SUM-001', 'Bomba Sumergible 1HP', 'Bomba sumergible para pozo profundo, acero inoxidable, 1HP, 220V', 'Pedrollo', '4SR1m/13', 'Sumergible', 'UNID', 850.00),
+('BOM-SUM-002', 'Bomba Sumergible 2HP', 'Bomba sumergible para aguas limpias, 2HP, 380V, caudal 5m³/h', 'Grundfos', 'SP 5-50', 'Sumergible', 'UNID', 1200.00),
+('BOM-SUM-003', 'Bomba Sumergible 0.5HP', 'Bomba sumergible compacta para pozos estrechos, 0.5HP', 'Lowara', 'SCUBE 50', 'Sumergible', 'UNID', 550.00),
+('BOM-SUM-004', 'Bomba Sumergible 3HP', 'Bomba sumergible para aguas residuales con sólidos hasta 50mm', 'Ebara', 'Drainage DVS', 'Sumergible', 'UNID', 1800.00),
+('BOM-SUM-005', 'Bomba Sumergible 5HP', 'Bomba sumergible industrial para minería, 5HP, acero inoxidable', 'KSB', 'Submersible S', 'Sumergible', 'UNID', 3200.00),
+
+-- Electrobombas
+('ELE-001', 'Electrobomba Centrífuga 1HP', 'Electrobomba horizontal monofásica, 1HP, caudal 1.5m³/h', 'Pedrollo', 'PKm 60', 'Centrífuga', 'UNID', 480.00),
+('ELE-002', 'Electrobomba Autocebante 2HP', 'Electrobomba autocebante para riego, 2HP, 380V', 'Lowara', 'EASY', 'Autocebante', 'UNID', 750.00),
+('ELE-003', 'Electrobomba Presurizadora 0.75HP', 'Electrobomba para sistema de presión constante, 0.75HP', 'Grundfos', 'SCALA2', 'Presurizadora', 'UNID', 920.00),
+('ELE-004', 'Electrobomba Multietapa 3HP', 'Electrobomba vertical multietapa para edificios, 3HP', 'Ebara', 'MEC-M', 'Multietapa', 'UNID', 1500.00),
+('ELE-005', 'Electrobomba Periférica 0.5HP', 'Electrobomba periférica para aumento de presión, 0.5HP', 'Wilo', 'PB-H', 'Periférica', 'UNID', 380.00),
+
+-- Bombas de Agua Superficie
+('BOM-SUP-001', 'Bomba Superficie 1HP', 'Bomba de superficie para riego, 1HP, caudal 3m³/h', 'Pedrollo', 'CPm 158', 'Superficie', 'UNID', 420.00),
+('BOM-SUP-002', 'Bomba Autoaspirante 1.5HP', 'Bomba autoaspirante para trasvase de líquidos, 1.5HP', 'Lowara', 'ESK', 'Autoaspirante', 'UNID', 680.00),
+('BOM-SUP-003', 'Bomba Jockey 1HP', 'Bomba presurizadora para sistemas hidroneumáticos, 1HP', 'Grundfos', 'Hydro MX', 'Jockey', 'UNID', 890.00),
+
+-- Bombas para Aguas Residuales
+('BOM-RES-001', 'Bomba Aguas Residuales 2HP', 'Bomba sumergible para aguas residuales con triturador', 'Franklin', 'SEWAGE', 'Residuales', 'UNID', 2100.00),
+('BOM-RES-002', 'Bomba Achique 1HP', 'Bomba sumergible para achique de aguas pluviales, 1HP', 'Pedrollo', 'TOP', 'Achique', 'UNID', 650.00),
+
+-- Sistemas de Bombeo Completo
+('SIS-BOM-001', 'Sistema Hidroneumático 500L', 'Tanque hidroneumático + bomba 2HP + controles, capacidad 500L', 'Grundfos', 'Hydro 500', 'Sistema', 'UNID', 2800.00),
+('SIS-BOM-002', 'Sistema de Presurización', 'Sistema completo con 2 bombas alternantes y control digital', 'Wilo', 'Stratos MAXO', 'Sistema', 'UNID', 4500.00),
+
+-- Accesorios y Repuestos
+('ACC-VAL-001', 'Válvula Check 1"', 'Válvula check latón para bombas, diámetro 1 pulgada', 'Genérico', 'VC-1', 'Accesorio', 'UNID', 25.00),
+('ACC-CON-001', 'Conector Rápido para Manguera', 'Conector rápido de acero inoxidable para mangueras de riego', 'Truper', 'CR-34', 'Accesorio', 'UNID', 15.00),
+('ACC-CON-002', 'Controlador de Bomba', 'Controlador electrónico para bomba con protección por sequía', 'Franklin', 'Control Pro', 'Accesorio', 'UNID', 120.00);
+
+
+
+-- Eliminar triggers si ya existen
+-- Primero eliminar los triggers si existen
+DROP TRIGGER IF EXISTS after_factura_insert;
+DROP TRIGGER IF EXISTS after_factura_update;
+
+-- Cambiar el delimitador temporalmente
+DELIMITER //
+
+-- Trigger para insertar
+CREATE TRIGGER after_factura_insert
+AFTER INSERT ON FACTURA
+FOR EACH ROW
+BEGIN
+    IF NEW.Estado = 'PAGADA' THEN
+        INSERT INTO VENTA (IdFactura, FechaVenta, Total, Estado)
+        VALUES (NEW.IdFactura, NEW.FechaEmision, NEW.Total, 'COMPLETADA');
+    ELSE
+        INSERT INTO VENTA (IdFactura, FechaVenta, Total, Estado)
+        VALUES (NEW.IdFactura, NEW.FechaEmision, NEW.Total, NEW.Estado);
+    END IF;
+END//
+
+-- Trigger para actualizar (versión corregida)
+CREATE TRIGGER after_factura_update
+AFTER UPDATE ON FACTURA
+FOR EACH ROW
+BEGIN
+    DECLARE venta_count INT;
+    
+    IF NEW.Estado = 'PAGADA' AND OLD.Estado != 'PAGADA' THEN
+        SELECT COUNT(*) INTO venta_count FROM VENTA WHERE IdFactura = NEW.IdFactura;
+        
+        IF venta_count > 0 THEN
+            UPDATE VENTA 
+            SET Estado = 'COMPLETADA', FechaVenta = NEW.FechaEmision, Total = NEW.Total
+            WHERE IdFactura = NEW.IdFactura;
+        ELSE
+            INSERT INTO VENTA (IdFactura, FechaVenta, Total, Estado)
+            VALUES (NEW.IdFactura, NEW.FechaEmision, NEW.Total, 'COMPLETADA');
+        END IF;
+    ELSE
+        UPDATE VENTA 
+        SET Estado = NEW.Estado, Total = NEW.Total
+        WHERE IdFactura = NEW.IdFactura;
+    END IF;
+END//
+
+-- Restaurar el delimitador original
+DELIMITER ;
+
+
+
+
+
+-- Agregar campos para identificar productos de proforma vs adicionales
+ALTER TABLE DETALLE_FACTURA 
+ADD COLUMN IdDetalleProforma INT NULL,
+ADD COLUMN TipoDetalle VARCHAR(20) DEFAULT 'ORIGINAL' COMMENT 'ORIGINAL (de proforma) o ADICIONAL (agregado después)',
+ADD FOREIGN KEY (IdDetalleProforma) REFERENCES DETALLE_PROFORMA(IdDetalleProforma);
+
+-- Índices para mejorar consultas
+CREATE INDEX idx_detalle_factura_proforma ON DETALLE_FACTURA(IdDetalleProforma);
+CREATE INDEX idx_detalle_factura_tipo ON DETALLE_FACTURA(TipoDetalle);
+
+use railway
+
+select * from usuario
+
+select * from detalle_proforma
+
+select * from producto
+
+

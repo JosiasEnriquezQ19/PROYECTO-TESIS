@@ -1,0 +1,896 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Contratos - CARSIL Equipos y Servicios SAC</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { 
+            font-family: 'Montserrat', sans-serif;
+            background: linear-gradient(135deg, #f8fafc 0%, #e9ecef 100%);
+            min-height: 100vh;
+        }
+        
+        .sidebar, .main-content { transition: all 0.3s; }
+        
+        .toggle-sidebar-btn {
+            position: absolute;
+            top: 1.2rem;
+            left: 290px;
+            z-index: 1100;
+            background: linear-gradient(135deg, #0056b3, #003366);
+            color: #fff;
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 12px rgba(0,86,179,0.3);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .toggle-sidebar-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(0,86,179,0.4);
+        }
+        
+        .sidebar.hide { transform: translateX(-100%); }
+        .main-content.full { margin-left: 0 !important; }
+        
+        @media (max-width: 768px) {
+            .toggle-sidebar-btn { left: 10px; top: 10px; }
+        }
+        
+        .sidebar {
+            width: 270px;
+            min-height: 100vh;
+            background: linear-gradient(180deg, #003366 0%, #001a33 100%);
+            color: #fff;
+            position: fixed;
+            left: 0;
+            top: 0;
+            padding-top: 1rem;
+            z-index: 1000;
+            box-shadow: 4px 0 20px rgba(0,0,0,0.1);
+        }
+        
+        .sidebar .sidebar-heading {
+            font-size: 1.5rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            color: #fff;
+        }
+        
+        .sidebar .company-slogan {
+            font-size: 0.9rem;
+            color: #b0c4de;
+            font-weight: 300;
+        }
+        
+        .sidebar .menu-item {
+            color: rgba(255,255,255,0.9);
+            padding: 0.8rem 1.2rem;
+            border-radius: 0.7rem;
+            margin: 0.2rem 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s;
+            position: relative;
+        }
+        
+        .sidebar .menu-item:hover {
+            background: rgba(0,86,179,0.3);
+            color: #fff;
+            transform: translateX(5px);
+        }
+        
+        .sidebar .menu-item.active {
+            background: linear-gradient(135deg, #0056b3, #0d6efd);
+            color: #fff;
+            box-shadow: 0 2px 8px rgba(0,86,179,0.3);
+        }
+        
+        .sidebar .logout-item {
+            color: #ff6b6b;
+        }
+        
+        .sidebar .logout-item:hover {
+            background: rgba(255,107,107,0.1);
+            color: #ff6b6b;
+        }
+        
+        .main-content {
+            margin-left: 270px;
+            min-height: 100vh;
+        }
+        
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+        
+        .user-avatar {
+            background: linear-gradient(135deg, #0056b3, #003366);
+            color: #fff;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 1.2rem;
+            box-shadow: 0 2px 8px rgba(0,86,179,0.3);
+        }
+        
+        .navbar-top {
+            background: rgba(255,255,255,0.95) !important;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 2px 20px rgba(0,0,0,0.08);
+            border: none !important;
+        }
+
+        .card-stats {
+            background: linear-gradient(135deg, #fff 0%, #f8fafc 100%);
+            border: none;
+            border-radius: 1.2rem;
+            color: #003366;
+            transition: all 0.3s;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.08);
+            border: 1px solid rgba(0,86,179,0.1);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .card-stats::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+        }
+        
+        .card-stats:nth-child(1)::before {
+            background: linear-gradient(90deg, #0056b3, #0d6efd);
+        }
+        
+        .card-stats:nth-child(2)::before {
+            background: linear-gradient(90deg, #28a745, #20c997);
+        }
+        
+        .card-stats:nth-child(3)::before {
+            background: linear-gradient(90deg, #6f42c1, #e83e8c);
+        }
+        
+        .card-stats:nth-child(4)::before {
+            background: linear-gradient(90deg, #ffc107, #fd7e14);
+        }
+        
+        .card-stats:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 16px 48px rgba(0,0,0,0.12);
+        }
+        
+        .card-stats .card-body {
+            position: relative;
+            z-index: 1;
+        }
+        
+        .card-stats h3 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #003366;
+        }
+        
+        .card-stats p {
+            color: #6c757d;
+            font-weight: 500;
+        }
+        
+        .card-stats i {
+            color: #0056b3;
+            opacity: 0.8;
+        }
+        
+        .estado-badge {
+            padding: 0.4rem 0.8rem;
+            border-radius: 1rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .estado-activo { 
+            background: linear-gradient(135deg, rgba(40,167,69,0.1), rgba(40,167,69,0.05));
+            color: #28a745; 
+            border: 1px solid rgba(40,167,69,0.2);
+        }
+        .estado-finalizado { 
+            background: linear-gradient(135deg, rgba(0,86,179,0.1), rgba(0,86,179,0.05));
+            color: #0056b3; 
+            border: 1px solid rgba(0,86,179,0.2);
+        }
+        .estado-suspendido { 
+            background: linear-gradient(135deg, rgba(255,193,7,0.1), rgba(255,193,7,0.05));
+            color: #ffc107; 
+            border: 1px solid rgba(255,193,7,0.2);
+        }
+        .estado-cancelado { 
+            background: linear-gradient(135deg, rgba(220,53,69,0.1), rgba(220,53,69,0.05));
+            color: #dc3545; 
+            border: 1px solid rgba(220,53,69,0.2);
+        }
+        
+        .card {
+            border: none;
+            border-radius: 1.2rem;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.08);
+            overflow: hidden;
+            background: rgba(255,255,255,0.95);
+            backdrop-filter: blur(10px);
+        }
+        
+        .card-header {
+            background: linear-gradient(135deg, #fff 0%, #f8fafc 100%);
+            border-bottom: 2px solid rgba(0,86,179,0.1);
+            padding: 1.5rem 2rem;
+            position: relative;
+        }
+        
+        .card-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #0056b3, #0d6efd, #6f42c1);
+        }
+        
+        .card-header h5 {
+            color: #003366;
+            font-weight: 700;
+            margin-bottom: 0;
+        }
+        
+        .table {
+            margin-bottom: 0;
+        }
+        
+        .table th {
+            background: linear-gradient(135deg, #f8fafc 0%, #e9ecef 100%);
+            border-top: none;
+            color: #003366;
+            font-weight: 700;
+            padding: 1.2rem 1rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-size: 0.8rem;
+            border-bottom: 2px solid rgba(0,86,179,0.1);
+        }
+        
+        .table td {
+            vertical-align: middle;
+            padding: 1rem;
+            border-bottom: 1px solid rgba(0,86,179,0.05);
+        }
+        
+        .table tbody tr {
+            transition: all 0.3s;
+        }
+        
+        .table tbody tr:hover {
+            background: rgba(0,86,179,0.02);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+        
+        .btn-action {
+            margin: 0.125rem;
+            padding: 0.5rem 0.8rem;
+            border-radius: 0.6rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            transition: all 0.3s;
+            border: 1px solid transparent;
+        }
+        
+        .btn-action:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+        
+        .btn-modern {
+            border-radius: 0.8rem;
+            padding: 0.8rem 2rem;
+            font-weight: 600;
+            border: none;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.6rem;
+            text-decoration: none;
+        }
+        
+        .btn-primary-modern {
+            background: linear-gradient(135deg, #0056b3, #0d6efd);
+            color: #fff;
+            box-shadow: 0 4px 15px rgba(0,86,179,0.3);
+        }
+        
+        .btn-primary-modern:hover {
+            background: linear-gradient(135deg, #003d82, #0b5ed7);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0,86,179,0.4);
+            color: #fff;
+        }
+        
+        .alert {
+            border: none;
+            border-radius: 0.8rem;
+            padding: 1rem 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .alert-danger {
+            background: linear-gradient(135deg, rgba(220,53,69,0.1), rgba(220,53,69,0.05));
+            color: #721c24;
+            border-left: 4px solid #dc3545;
+        }
+        
+        .alert-success {
+            background: linear-gradient(135deg, rgba(40,167,69,0.1), rgba(40,167,69,0.05));
+            color: #155724;
+            border-left: 4px solid #28a745;
+        }
+        
+        .page-header {
+            background: linear-gradient(135deg, #fff 0%, #f8fafc 100%);
+            border-radius: 1.2rem;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            border: 1px solid rgba(0,86,179,0.1);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .page-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #0056b3, #0d6efd, #6f42c1);
+        }
+        
+        .page-title {
+            color: #003366;
+            font-weight: 700;
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .page-subtitle {
+            color: #6c757d;
+            margin-bottom: 0;
+        }
+        
+        .floating-shapes {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            overflow: hidden;
+        }
+        
+        .shape {
+            position: absolute;
+            opacity: 0.05;
+            animation: float 6s ease-in-out infinite;
+        }
+        
+        .shape:nth-child(1) {
+            top: 20%;
+            left: 10%;
+            animation-delay: 0s;
+        }
+        
+        .shape:nth-child(2) {
+            top: 60%;
+            right: 10%;
+            animation-delay: 2s;
+        }
+        
+        .shape:nth-child(3) {
+            bottom: 20%;
+            left: 50%;
+            animation-delay: 4s;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+        
+        .form-control, .form-select {
+            border: 2px solid rgba(0,86,179,0.1);
+            border-radius: 0.6rem;
+            transition: all 0.3s;
+        }
+        
+        .form-control:focus, .form-select:focus {
+            border-color: #0056b3;
+            box-shadow: 0 0 0 0.2rem rgba(0,86,179,0.1);
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+            background: linear-gradient(135deg, #fff 0%, #f8fafc 100%);
+            border-radius: 1rem;
+            margin: 2rem 0;
+        }
+        
+        .empty-state i {
+            color: #0056b3;
+            opacity: 0.6;
+            margin-bottom: 1rem;
+        }
+        
+        .empty-state h5 {
+            color: #003366;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+        
+        .empty-state p {
+            color: #6c757d;
+            margin-bottom: 1.5rem;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="wrapper">
+        <!-- Sidebar -->
+        <%- include("../parciales/sidebar") %>
+
+        <!-- Botón para ocultar/mostrar barra -->
+        <button class="toggle-sidebar-btn" id="toggleSidebarBtn" title="Ocultar/Mostrar menú">
+            <i class="bi bi-chevron-left" id="toggleIcon"></i>
+        </button>
+
+        <!-- Main Content -->
+        <div class="main-content" id="main-content">
+            <nav class="navbar navbar-expand-lg navbar-light navbar-top border-bottom">
+                <div class="container-fluid">
+                    <h5 class="navbar-brand ms-3 mb-0">
+                        <i class="bi bi-file-earmark-check me-2"></i>
+                        Gestión de Contratos
+                    </h5>
+                    <div class="user-profile ms-auto">
+                        <span><%= user && user.Nombres ? user.Nombres : 'Administrador' %></span>
+                        <div class="user-avatar"><%= user && user.Nombres ? user.Nombres.charAt(0) : 'A' %></div>
+                    </div>
+                </div>
+            </nav>
+
+<div id="main-content" class="main-content">
+    <div class="container-fluid py-4">
+            <div class="container-fluid py-4">
+                <!-- Header modernizado -->
+                <div class="page-header">
+                    <div class="floating-shapes">
+                        <i class="bi bi-file-earmark-check shape" style="font-size: 3rem;"></i>
+                        <i class="bi bi-graph-up shape" style="font-size: 2.5rem;"></i>
+                        <i class="bi bi-people shape" style="font-size: 2rem;"></i>
+                    </div>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h1 class="page-title">
+                                <i class="bi bi-file-earmark-check me-3 text-primary"></i>
+                                Gestión de Contratos
+                            </h1>
+                            <p class="page-subtitle">Administre los contratos entre clientes y facturas</p>
+                        </div>
+                        <div>
+                            <a href="/contratos/crear" class="btn btn-primary-modern btn-modern">
+                                <i class="bi bi-plus-circle"></i>
+                                Nuevo Contrato
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+        <!-- Mensajes flash -->
+        <% if (error) { %>
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                <i class="bi bi-exclamation-triangle me-2"></i>
+                <%= error %>
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        <% } %>
+        <% if (success) { %>
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                <i class="bi bi-check-circle me-2"></i>
+                <%= success %>
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        <% } %>
+
+                <!-- Estadísticas modernizadas -->
+                <% if (estadisticas) { %>
+                <div class="row mb-4">
+                    <div class="col-md-3 mb-3">
+                        <div class="card card-stats h-100">
+                            <div class="card-body text-center">
+                                <i class="bi bi-file-earmark-check display-4 mb-3"></i>
+                                <h3 class="mb-1"><%= estadisticas.TotalContratos || 0 %></h3>
+                                <p class="mb-0">Total Contratos</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <div class="card card-stats h-100">
+                            <div class="card-body text-center">
+                                <i class="bi bi-check-circle display-4 mb-3" style="color: #28a745;"></i>
+                                <h3 class="mb-1"><%= estadisticas.ContratosActivos || 0 %></h3>
+                                <p class="mb-0">Contratos Activos</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <div class="card card-stats h-100">
+                            <div class="card-body text-center">
+                                <i class="bi bi-flag display-4 mb-3" style="color: #6f42c1;"></i>
+                                <h3 class="mb-1"><%= estadisticas.ContratosFinalizados || 0 %></h3>
+                                <p class="mb-0">Finalizados</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <div class="card card-stats h-100">
+                            <div class="card-body text-center">
+                                <i class="bi bi-currency-dollar display-4 mb-3" style="color: #ffc107;"></i>
+                                <h3 class="mb-1">S/ <%= parseFloat(estadisticas.PromedioPageSemanal || 0).toFixed(2) %></h3>
+                                <p class="mb-0">Promedio Semanal</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <% } %>
+
+        <div class="card shadow-sm">
+            <div class="card-header">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">
+                        <i class="bi bi-list-ul me-2"></i>
+                        Lista de Contratos
+                    </h5>
+                    <div class="d-flex align-items-center">
+                        <select class="form-select form-select-sm me-2" id="filtroEstado" style="width: auto;">
+                            <option value="">Todos los estados</option>
+                            <option value="ACTIVO">Activos</option>
+                            <option value="FINALIZADO">Finalizados</option>
+                            <option value="SUSPENDIDO">Suspendidos</option>
+                            <option value="CANCELADO">Cancelados</option>
+                        </select>
+                        <input type="text" class="form-control form-control-sm" id="buscarContrato" 
+                               placeholder="Buscar contrato..." style="width: 200px;">
+                    </div>
+                </div>
+            </div>
+            <div class="card-body p-0">
+                <% if (contratos && contratos.length > 0) { %>
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0" id="tablaContratos">
+                        <thead>
+                            <tr>
+                                <th>Código</th>
+                                <th>Cliente</th>
+                                <th>Factura</th>
+                                <th>Fecha Inicio</th>
+                                <th>Fecha Fin</th>
+                                <th>Pago Semanal</th>
+                                <th>Estado</th>
+                                <th class="text-center">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% contratos.forEach(function(contrato) { %>
+                            <tr data-estado="<%= contrato.Estado %>">
+                                <td>
+                                    <strong><%= contrato.Codigo %></strong>
+                                </td>
+                                <td>
+                                    <div>
+                                        <strong><%= contrato.ClienteNombre %></strong>
+                                        <br>
+                                        <small class="text-muted">
+                                            <i class="bi bi-card-text me-1"></i>
+                                            <%= contrato.ClienteDocumento %>
+                                        </small>
+                                    </div>
+                                </td>
+                                <td>
+                                    <% if (contrato.FacturaCodigo) { %>
+                                        <div>
+                                            <strong><%= contrato.FacturaCodigo %></strong>
+                                            <br>
+                                            <small class="text-muted">
+                                                S/ <%= parseFloat(contrato.FacturaTotal || 0).toFixed(2) %>
+                                            </small>
+                                        </div>
+                                    <% } else { %>
+                                        <span class="text-muted">Sin factura</span>
+                                    <% } %>
+                                </td>
+                                <td>
+                                    <%= new Date(contrato.FechaInicio).toLocaleDateString('es-PE') %>
+                                </td>
+                                <td>
+                                    <% if (contrato.FechaFin) { %>
+                                        <%= new Date(contrato.FechaFin).toLocaleDateString('es-PE') %>
+                                    <% } else { %>
+                                        <span class="text-muted">Indefinido</span>
+                                    <% } %>
+                                </td>
+                                <td>
+                                    <% if (contrato.PagoSemanal) { %>
+                                        <strong>S/ <%= parseFloat(contrato.PagoSemanal).toFixed(2) %></strong>
+                                    <% } else { %>
+                                        <span class="text-muted">No definido</span>
+                                    <% } %>
+                                </td>
+                                <td>
+                                    <span class="estado-badge estado-<%= contrato.Estado.toLowerCase() %>">
+                                        <%= contrato.Estado %>
+                                    </span>
+                                </td>
+                                <td class="text-center">
+                                    <div class="btn-group" role="group">
+                                        <a href="/contratos/<%= contrato.IdContrato %>" 
+                                           class="btn btn-sm btn-outline-primary btn-action" 
+                                           title="Ver detalle">
+                                            <i class="bi bi-eye"></i>
+                                        </a>
+                                        <a href="/contratos/<%= contrato.IdContrato %>/editar" 
+                                           class="btn btn-sm btn-outline-warning btn-action" 
+                                           title="Editar contrato">
+                                            <i class="bi bi-pencil"></i>
+                                        </a>
+                                        <% if (contrato.Estado === 'ACTIVO') { %>
+                                        <button type="button" 
+                                                class="btn btn-sm btn-outline-secondary btn-action btn-cambiar-estado" 
+                                                data-id="<%= contrato.IdContrato %>"
+                                                data-estado="SUSPENDIDO"
+                                                title="Suspender contrato">
+                                            <i class="bi bi-pause"></i>
+                                        </button>
+                                        <% } else if (contrato.Estado === 'SUSPENDIDO') { %>
+                                        <button type="button" 
+                                                class="btn btn-sm btn-outline-success btn-action btn-cambiar-estado" 
+                                                data-id="<%= contrato.IdContrato %>"
+                                                data-estado="ACTIVO"
+                                                title="Reactivar contrato">
+                                            <i class="bi bi-play"></i>
+                                        </button>
+                                        <% } %>
+                                        <button type="button" 
+                                                class="btn btn-sm btn-outline-danger btn-action btn-eliminar" 
+                                                data-id="<%= contrato.IdContrato %>"
+                                                data-codigo="<%= contrato.Codigo %>"
+                                                title="Eliminar contrato">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <% }); %>
+                        </tbody>
+                    </table>
+                </div>
+                <% } else { %>
+                <div class="empty-state">
+                    <i class="bi bi-file-earmark-check display-1 mb-3"></i>
+                    <h5>No hay contratos registrados</h5>
+                    <p>Comience creando su primer contrato para gestionar las relaciones entre clientes y facturas</p>
+                    <a href="/contratos/crear" class="btn btn-primary-modern btn-modern">
+                        <i class="bi bi-plus-circle"></i>
+                        Crear Primer Contrato
+                    </a>
+                </div>
+                <% } %>
+            </div>
+        </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Sidebar functionality
+    const toggleBtn = document.getElementById('toggleSidebarBtn');
+    const sidebar = document.getElementById('sidebar');
+    const mainContent = document.getElementById('main-content');
+    const toggleIcon = document.getElementById('toggleIcon');
+    const userAvatar = document.querySelector('.user-avatar');
+    const userName = '<%= user && user.Nombres ? user.Nombres : "Administrador" %>';
+    
+    if (userAvatar) {
+        userAvatar.textContent = userName.charAt(0);
+    }
+
+    // Toggle sidebar
+    if (toggleBtn) {
+        toggleBtn.addEventListener('click', function() {
+            sidebar.classList.toggle('hide');
+            mainContent.classList.toggle('full');
+            if (sidebar.classList.contains('hide')) {
+                toggleIcon.classList.remove('bi-chevron-left');
+                toggleIcon.classList.add('bi-chevron-right');
+            } else {
+                toggleIcon.classList.remove('bi-chevron-right');
+                toggleIcon.classList.add('bi-chevron-left');
+            }
+        });
+    }
+
+    // Filtro por estado
+    const filtroEstado = document.getElementById('filtroEstado');
+    const buscarContrato = document.getElementById('buscarContrato');
+    const tabla = document.getElementById('tablaContratos');
+    
+    if (filtroEstado && tabla) {
+        filtroEstado.addEventListener('change', filtrarTabla);
+        buscarContrato.addEventListener('input', filtrarTabla);
+    }
+    
+    function filtrarTabla() {
+        const estadoSeleccionado = filtroEstado.value.toLowerCase();
+        const textoBusqueda = buscarContrato.value.toLowerCase();
+        const filas = tabla.getElementsByTagName('tbody')[0].getElementsByTagName('tr');
+        
+        Array.from(filas).forEach(fila => {
+            const estado = fila.dataset.estado.toLowerCase();
+            const textoFila = fila.textContent.toLowerCase();
+            
+            const coincideEstado = !estadoSeleccionado || estado === estadoSeleccionado;
+            const coincideTexto = !textoBusqueda || textoFila.includes(textoBusqueda);
+            
+            fila.style.display = (coincideEstado && coincideTexto) ? '' : 'none';
+        });
+    }
+    
+    // Cambiar estado
+    document.querySelectorAll('.btn-cambiar-estado').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const id = this.dataset.id;
+            const nuevoEstado = this.dataset.estado;
+            const accion = nuevoEstado === 'ACTIVO' ? 'reactivar' : 'suspender';
+            
+            if (confirm(`¿Está seguro de que desea ${accion} este contrato?`)) {
+                cambiarEstadoContrato(id, nuevoEstado);
+            }
+        });
+    });
+    
+    // Eliminar contrato
+    document.querySelectorAll('.btn-eliminar').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const id = this.dataset.id;
+            const codigo = this.dataset.codigo;
+            
+            if (confirm(`¿Está seguro de que desea eliminar el contrato ${codigo}? Esta acción no se puede deshacer.`)) {
+                eliminarContrato(id);
+            }
+        });
+    });
+    
+    async function cambiarEstadoContrato(id, estado) {
+        try {
+            const response = await fetch(`/contratos/${id}/estado`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ estado: estado })
+            });
+            
+            const result = await response.json();
+            
+            if (result.success) {
+                location.reload();
+            } else {
+                alert('Error: ' + result.message);
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            alert('Error al cambiar el estado del contrato');
+        }
+    }
+    
+    async function eliminarContrato(id) {
+        try {
+            const response = await fetch(`/contratos/${id}`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            });
+            
+            const result = await response.json();
+            
+            if (result.success) {
+                location.reload();
+            } else {
+                alert('Error: ' + result.message);
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            alert('Error al eliminar el contrato');
+        }
+    }
+
+    // Animación de contadores en las estadísticas
+    function animateCounters() {
+        const counters = document.querySelectorAll('.card-stats h3');
+        counters.forEach(counter => {
+            const text = counter.textContent;
+            const isMonetary = text.includes('S/');
+            const numberMatch = text.match(/[\d,]+\.?\d*/);
+            
+            if (numberMatch) {
+                const target = parseFloat(numberMatch[0].replace(',', '')) || 0;
+                const increment = target > 0 ? Math.max(Math.ceil(target / 50), 1) : 0;
+                let current = 0;
+                
+                // Establecer valor inicial como 0
+                if (isMonetary) {
+                    counter.textContent = 'S/ 0.00';
+                } else {
+                    counter.textContent = '0';
+                }
+                
+                const timer = setInterval(() => {
+                    current += increment;
+                    if (current >= target) {
+                        current = target;
+                        clearInterval(timer);
+                    }
+                    
+                    if (isMonetary) {
+                        counter.textContent = `S/ ${Math.floor(current).toFixed(2)}`;
+                    } else {
+                        counter.textContent = Math.floor(current);
+                    }
+                }, 30);
+            }
+        });
+    }
+
+    // Ejecutar animación de contadores después de un breve delay
+    setTimeout(animateCounters, 500);
+});
+</script>
+
+</body>
+</html>

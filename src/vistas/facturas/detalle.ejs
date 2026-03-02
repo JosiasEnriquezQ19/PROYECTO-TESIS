@@ -1,0 +1,718 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Factura <%= factura.Codigo %> - CARSIL Equipos y Servicios SAC</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <style>
+        @page {
+            size: A4;
+            margin: 1cm;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-size: 10pt;
+            line-height: 1.4;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+            background: #fff;
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+        }
+        .document-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+        }
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 15px;
+            border-bottom: 2px solid #2c3e50;
+            padding-bottom: 10px;
+        }
+        .logo-empresa {
+            display: flex;
+            align-items: center;
+            width: auto;
+            flex-shrink: 0;
+        }
+        .logo-empresa img {
+            max-width: 400px;
+            height: auto;
+            filter: drop-shadow(1px 1px 2px rgba(0,0,0,0.1));
+        }
+        .documento-info {
+            text-align: right;
+            min-width: 180px;
+            max-width: 200px;
+            background: #f8f9fa;
+            padding: 8px 12px;
+            border-radius: 4px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            flex-shrink: 0;
+        }
+        .documento-info .tipo {
+            font-size: 16pt;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 3px;
+        }
+        .documento-info .numero {
+            font-size: 15pt;
+            color: #555;
+        }
+        .documento-info div:last-child {
+            font-size: 9pt;
+            color: #666;
+        }
+        .documento-info .estado {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-size: 8pt;
+            font-weight: 600;
+            text-transform: uppercase;
+            margin-left: 8px;
+        }
+        .estado-pendiente { background: #fff3cd; color: #856404; }
+        .estado-pagada { background: #d4edda; color: #155724; }
+        .estado-vencida { background: #f8d7da; color: #721c24; }
+        .estado-anulada { background: #e2e3e5; color: #383d41; }
+        .cliente-info {
+            width: 100%;
+            margin-bottom: 15px;
+            background: #f8f9fa !important;
+            padding: 10px;
+            border-radius: 4px;
+            border-left: 4px solid #2c3e50;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        .cliente-info h3 {
+            font-size: 11pt;
+            color: #2c3e50;
+            margin: 0 0 10px 0;
+            padding-bottom: 5px;
+            border-bottom: 1px solid #dee2e6;
+        }
+        .cliente-info table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .cliente-info td {
+            padding: 3px 0;
+            vertical-align: top;
+        }
+        .cliente-info .label {
+            font-weight: 600;
+            width: 15%;
+            color: #2c3e50;
+        }
+        .productos {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+            font-size: 9pt;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        .productos th {
+            background-color: #2c3e50 !important;
+            color: white !important;
+            font-weight: 600;
+            padding: 6px 8px;
+            text-align: left;
+            text-transform: uppercase;
+            font-size: 8.5pt;
+            letter-spacing: 0.5px;
+        }
+        .productos th.vvu,
+        .productos th.vtotal,
+        .productos td.vvu,
+        .productos td.vtotal {
+            text-align: right;
+        }
+        .productos td {
+            padding: 6px 8px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        .productos .item {
+            text-align: center;
+            width: 5%;
+        }
+        .productos .cant {
+            text-align: center;
+            width: 5%;
+        }
+        .productos .unid {
+            text-align: center;
+            width: 8%;
+        }
+        .productos .desc {
+            width: 52%;
+        }
+        .productos .vvu {
+            text-align: right;
+            width: 15%;
+        }
+        .productos .vtotal {
+            text-align: right;
+            width: 15%;
+            font-weight: 600;
+        }
+        .productos tr:nth-child(even) {
+            background-color: #f9f9f9 !important;
+        }
+        .productos tr:last-child td {
+            border-bottom: none;
+        }
+        .totales {
+            width: 30%;
+            margin-left: 70%;
+            border-collapse: collapse;
+            font-size: 10pt;
+            background: #f8f9fa;
+            border-radius: 4px;
+            overflow: hidden;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        .totales td {
+            padding: 8px 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        .totales .label {
+            font-weight: 600;
+            background-color: #2c3e50 !important;
+            color: white !important;
+        }
+        .totales .valor {
+            text-align: right;
+            font-weight: 600;
+        }
+        .totales tr:last-child td {
+            border-bottom: none;
+            background-color: #e9ecef;
+        }
+        .condiciones {
+            margin-top: 20px;
+            padding: 12px 15px;
+            background: #f8f9fa !important;
+            border-radius: 4px;
+            border-left: 4px solid #2c3e50;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        .condiciones h3 {
+            font-size: 10pt;
+            margin: 0 0 8px 0;
+            color: #2c3e50;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .condiciones p {
+            margin: 5px 0;
+            padding-left: 5px;
+        }
+        .condiciones strong {
+            color: #2c3e50;
+        }
+        .firma {
+            margin-top: 40px;
+            text-align: left;
+            width: 100%;
+            padding-top: 20px;
+            border-top: 1px solid #e0e0e0;
+        }
+        .firma p {
+            margin: 0;
+            font-size: 10pt;
+        }
+        .firma .nombre {
+            font-weight: 600;
+            margin-top: 30px;
+            color: #2c3e50;
+            text-transform: uppercase;
+        }
+        .firma .empresa {
+            font-size: 9pt;
+            color: #555;
+            margin-top: 5px;
+        }
+        .nota {
+            font-size: 8pt;
+            text-align: center;
+            margin-top: 15px;
+            color: #888;
+            font-style: italic;
+        }
+        .qr-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 20px;
+            padding: 15px;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            background: #fafafa;
+        }
+        .qr-info {
+            flex: 1;
+            padding-right: 15px;
+        }
+        .qr-info h4 {
+            font-size: 10pt;
+            color: #2c3e50;
+            margin: 0 0 8px 0;
+            font-weight: 600;
+        }
+        .qr-info p {
+            font-size: 8pt;
+            color: #666;
+            margin: 2px 0;
+            line-height: 1.3;
+        }
+        .qr-code {
+            width: 100px;
+            height: 100px;
+            border: 1px solid #ddd;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: white;
+            flex-shrink: 0;
+        }
+        .qr-code img {
+            max-width: 90px;
+            max-height: 90px;
+        }
+        .action-buttons {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .btn-action {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            font-size: 14px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            transition: all 0.3s ease;
+            text-decoration: none;
+            min-width: 140px;
+        }
+        .btn-print {
+            background: linear-gradient(135deg, #28a745, #20c997);
+            color: white;
+        }
+        .btn-print:hover {
+            background: linear-gradient(135deg, #218838, #1bb88a);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(40, 167, 69, 0.3);
+        }
+        .btn-close {
+            background: linear-gradient(135deg, #6c757d, #5a6268);
+            color: white;
+            text-decoration: none;
+        }
+        .btn-close:hover {
+            background: linear-gradient(135deg, #5a6268, #495057);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(108, 117, 125, 0.3);
+            color: white;
+            text-decoration: none;
+        }
+        @media print {
+            .action-buttons {
+                display: none;
+            }
+            body {
+                padding: 0;
+            }
+            body, .header-container, .cliente-info, .productos, .condiciones, .firma {
+                page-break-inside: avoid;
+                break-inside: avoid;
+            }
+        }
+        @media (max-width: 768px) {
+            .header-container {
+                flex-direction: column;
+                align-items: center;
+            }
+            .logo-empresa {
+                width: auto;
+                justify-content: center;
+                margin-bottom: 10px;
+            }
+            .documento-info {
+                text-align: center;
+                max-width: none;
+                width: 100%;
+            }
+            .totales {
+                width: 100%;
+                margin-left: 0;
+            }
+            .qr-container {
+                flex-direction: column;
+                text-align: center;
+            }
+            .qr-info {
+                padding-right: 0;
+                margin-bottom: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="action-buttons">
+        <button onclick="generatePDF()" class="btn-action btn-print">
+            <i class="bi bi-file-earmark-pdf"></i> Descargar PDF
+        </button>
+        <a href="/facturas" class="btn-action btn-close">
+            <i class="bi bi-x-circle"></i> Cancelar
+        </a>
+    </div>
+
+    <div class="document-container">
+        <div class="header-container">
+            <div class="logo-empresa">
+                <img src="/img/Carsil.png" alt="Logo CARSIL" onerror="this.style.display='none'">
+            </div>
+            
+            <div class="documento-info">
+                <div class="tipo">FACTURA ELECTRÓNICA</div>
+                <div>
+                    <span class="numero">N° <%= factura.Codigo %></span>
+                    <span class="estado estado-<%= factura.Estado ? factura.Estado.toLowerCase() : 'pendiente' %>">
+                        <%= factura.Estado || 'PENDIENTE' %>
+                    </span>
+                </div>
+                <div>Fecha: <%= factura.FechaEmision ? factura.FechaEmision.toISOString ? factura.FechaEmision.toISOString().split('T')[0] : factura.FechaEmision : new Date().toISOString().split('T')[0] %></div>
+                <% if (factura.FechaVencimiento) { %>
+                    <div>Vencimiento: <%= factura.FechaVencimiento.toISOString ? factura.FechaVencimiento.toISOString().split('T')[0] : factura.FechaVencimiento %></div>
+                <% } %>
+            </div>
+        </div>
+
+        <div class="cliente-info">
+            <h3>DATOS DEL CLIENTE</h3>
+            <table>
+                <tr>
+                    <td class="label">Razón Social:</td>
+                    <td><%= cliente.RazonSocial || 'Cliente no encontrado' %></td>
+                </tr>
+                <tr>
+                    <td class="label">RUC/DNI:</td>
+                    <td><%= cliente.Documento || '-' %></td>
+                </tr>
+                <tr>
+                    <td class="label">Dirección:</td>
+                    <td><%= cliente.Direccion || '-' %></td>
+                </tr>
+                <tr>
+                    <td class="label">Contacto:</td>
+                    <td><%= cliente.Contacto || '-' %></td>
+                </tr>
+                <tr>
+                    <td class="label">Email:</td>
+                    <td><%= cliente.Email || '-' %></td>
+                </tr>
+                <% if (factura.IdProforma) { %>
+                <tr>
+                    <td class="label">Referencia:</td>
+                    <td>Generada desde proforma aprobada</td>
+                </tr>
+                <% } %>
+            </table>
+        </div>
+
+        <table class="productos">
+            <thead>
+                <tr>
+                    <th class="item">#</th>
+                    <th class="cant">CANT</th>
+                    <th class="unid">UNID</th>
+                    <th class="desc">DESCRIPCIÓN</th>
+                    <th class="vvu">P. UNIT.</th>
+                    <th class="vtotal">TOTAL</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% if (productos && productos.length > 0) { %>
+                    <% productos.forEach(function(item, index) { %>
+                        <tr>
+                            <td class="item"><%= index + 1 %></td>
+                            <td class="cant"><%= item.Cantidad || 1 %></td>
+                            <td class="unid"><%= item.UnidadMedida || item.Unidad || 'UND' %></td>
+                            <td class="desc">
+                                <strong><%= item.ProductoNombre || item.Nombre || 'Producto no encontrado' %></strong>
+                                <% if (item.ProductoDescripcion && item.ProductoDescripcion.trim() !== '') { %>
+                                    <br><small><%= item.ProductoDescripcion %></small>
+                                <% } %>
+                                <% if (item.Descripcion && item.Descripcion.trim() !== '' && (!item.ProductoDescripcion || item.ProductoDescripcion.trim() === '')) { %>
+                                    <br><small><%= item.Descripcion %></small>
+                                <% } %>
+                            </td>
+                            <td class="vvu"><%= !isNaN(parseFloat(item.PrecioUnitario)) ? parseFloat(item.PrecioUnitario).toFixed(2) : '0.00' %></td>
+                            <td class="vtotal"><%= !isNaN(parseFloat(item.Total)) ? parseFloat(item.Total).toFixed(2) : '0.00' %></td>
+                        </tr>
+                    <% }); %>
+                <% } else { %>
+                    <tr>
+                        <td colspan="6" style="text-align: center; padding: 20px;">
+                            No hay productos registrados en esta factura.<br>
+                            <% if (factura.IdProforma) { %>
+                                <small>Esta factura fue generada desde una proforma pero no se encontraron productos asociados.</small>
+                            <% } %>
+                        </td>
+                    </tr>
+                <% } %>
+            </tbody>
+        </table>
+
+        <table class="totales">
+            <tr>
+                <td class="label">SUB TOTAL</td>
+                <td class="valor"><%= !isNaN(parseFloat(factura.SubTotal)) ? parseFloat(factura.SubTotal).toFixed(2) : '0.00' %></td>
+            </tr>
+            <tr>
+                <td class="label">IGV (18%)</td>
+                <td class="valor"><%= !isNaN(parseFloat(factura.TotalIGV)) ? parseFloat(factura.TotalIGV).toFixed(2) : '0.00' %></td>
+            </tr>
+            <tr>
+                <td class="label">TOTAL S/</td>
+                <td class="valor"><%= !isNaN(parseFloat(factura.Total)) ? parseFloat(factura.Total).toFixed(2) : '0.00' %></td>
+            </tr>
+        </table>
+
+        <div class="condiciones">
+            <h3>CONDICIONES DE PAGO</h3>
+            <p><strong>Forma de pago:</strong> <%= factura.FormaPago || 'Según acuerdo comercial' %></p>
+            <p><strong>Estado:</strong> 
+                <span class="estado estado-<%= factura.Estado ? factura.Estado.toLowerCase() : 'pendiente' %>">
+                    <%= factura.Estado || 'PENDIENTE' %>
+                </span>
+            </p>
+            <% if (factura.FechaVencimiento) { %>
+            <p><strong>Vencimiento:</strong> <%= factura.FechaVencimiento.toISOString ? factura.FechaVencimiento.toISOString().split('T')[0] : factura.FechaVencimiento %></p>
+            <% } %>
+            <p><strong>Cuenta bancaria:</strong>
+                <% if (empresa && empresa.CuentaBancaria) { %>
+                    <%= empresa.NombreCuentaBancaria || 'CARSIL EQUIPOS Y SERVICIOS S.A.C.' %> - N° <%= empresa.CuentaBancaria %>
+                <% } else { %>
+                    Solicitar datos de cuenta
+                <% } %>
+            </p>
+        </div>
+
+        <% if (factura.Observaciones && factura.Observaciones.trim() !== '') { %>
+        <div class="condiciones" style="margin-top: 15px;">
+            <h3>OBSERVACIONES</h3>
+            <p><%= factura.Observaciones %></p>
+        </div>
+        <% } %>
+
+        <div class="firma">
+            <p>Atentamente,</p>
+            <p class="nombre">
+                <% if (usuario && usuario.Nombres) { %>
+                    <%= usuario.Nombres %> <%= usuario.Apellidos || '' %>
+                <% } else { %>
+                    REPRESENTANTE DE VENTAS
+                <% } %>
+            </p>
+            <p class="empresa">CARSIL EQUIPOS Y SERVICIOS S.A.C.</p>
+        </div>
+
+        <div class="nota">
+            <p>Documento con validez legal y tributaria</p>
+        </div>
+
+        <div class="qr-container">
+            <div class="qr-info">
+                <h4>Representación impresa de la Factura Electrónica</h4>
+                <p><strong>RUC:</strong> 20606030451</p>
+                <p><strong>FACTURA ELECTRÓNICA:</strong> <%= factura.Codigo %></p>
+                <p><strong>Fecha de emisión:</strong> <%= factura.FechaEmision ? factura.FechaEmision.toISOString ? factura.FechaEmision.toISOString().split('T')[0] : factura.FechaEmision : new Date().toISOString().split('T')[0] %></p>
+                <p><strong>Monto total:</strong> S/ <%= !isNaN(parseFloat(factura.Total)) ? parseFloat(factura.Total).toFixed(2) : '0.00' %></p>
+                <p>Consulte el documento en: <strong>www.sunat.gob.pe</strong></p>
+            </div>
+            <div class="qr-code">
+                <!-- QR Code generado dinámicamente - En este ejemplo usamos un servicio externo -->
+                <img src="https://api.qrserver.com/v1/create-qr-code/?size=90x90&data=20606030451|01|<%= factura.Codigo %>|<%= factura.FechaEmision ? factura.FechaEmision.toISOString ? factura.FechaEmision.toISOString().split('T')[0] : factura.FechaEmision : new Date().toISOString().split('T')[0] %>|<%= !isNaN(parseFloat(factura.Total)) ? parseFloat(factura.Total).toFixed(2) : '0.00' %>" 
+                     alt="Código QR" 
+                     style="width: 90px; height: 90px;">
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Función para generar PDF mejorada
+        async function generatePDF() {
+            // Verificar si las librerías están disponibles
+            if (typeof window.html2canvas === 'undefined') {
+                alert('Error: html2canvas no está disponible. Usando impresión simple...');
+                window.print();
+                return;
+            }
+            
+            if (typeof window.jspdf === 'undefined') {
+                alert('Error: jsPDF no está disponible. Usando impresión simple...');
+                window.print();
+                return;
+            }
+
+            const { jsPDF } = window.jspdf;
+            
+            // Mostrar mensaje de carga
+            const buttons = document.querySelector('.action-buttons');
+            const originalHTML = buttons.innerHTML;
+            buttons.innerHTML = '<div style="padding: 12px 20px; background: #ffc107; color: #000; border-radius: 8px; font-weight: 600;">Generando PDF...</div>';
+            
+            try {
+                const element = document.querySelector('.document-container');
+                
+                // Configuración mejorada para html2canvas
+                const canvas = await html2canvas(element, {
+                    scale: 1.5,
+                    useCORS: true,
+                    allowTaint: false,
+                    backgroundColor: '#ffffff',
+                    logging: false,
+                    width: element.offsetWidth,
+                    height: element.offsetHeight,
+                    windowWidth: element.offsetWidth,
+                    windowHeight: element.offsetHeight,
+                    removeContainer: false,
+                    async: true,
+                    foreignObjectRendering: false
+                });
+                
+                const imgData = canvas.toDataURL('image/png', 0.95);
+                
+                // Crear PDF con mejor configuración
+                const pdf = new jsPDF({
+                    orientation: 'portrait',
+                    unit: 'mm',
+                    format: 'a4',
+                    compress: true
+                });
+                
+                const pdfWidth = pdf.internal.pageSize.getWidth();
+                const pdfHeight = pdf.internal.pageSize.getHeight();
+                const imgWidth = canvas.width;
+                const imgHeight = canvas.height;
+                
+                // Definir márgenes en mm para una hoja A4
+                const marginTop = 10;
+                const marginLeft = 22; // Ajustado para mejor visualización
+                const marginRight = 15;
+                
+                // Área útil del PDF (descontando márgenes)
+                const usableWidth = pdfWidth - marginLeft - marginRight;
+                
+                // Convertir dimensiones de píxeles a mm (1 píxel = 0.264583 mm)
+                const imgWidthMM = imgWidth * 0.264583;
+                const imgHeightMM = imgHeight * 0.264583;
+                
+                // Calcular escala para ajustar al ancho útil
+                const scale = usableWidth / imgWidthMM;
+                
+                // Dimensiones finales de la imagen en el PDF
+                const finalWidth = imgWidthMM * scale;
+                const finalHeight = imgHeightMM * scale;
+                
+                // Posicionar desde arriba (como documento normal)
+                const imgX = marginLeft;
+                const imgY = marginTop;
+                
+                // Si el contenido es muy alto, podría necesitar múltiples páginas
+                if (finalHeight > (pdfHeight - marginTop - 10)) {
+                    // Ajustar para que quepa en una página
+                    const pageScale = (pdfHeight - marginTop - 10) / imgHeightMM;
+                    const pageWidth = imgWidthMM * pageScale;
+                    const pageHeight = imgHeightMM * pageScale;
+                    
+                    // Centrar horizontalmente si es necesario
+                    const finalX = marginLeft + (usableWidth - pageWidth) / 2;
+                    
+                    pdf.addImage(imgData, 'PNG', finalX, imgY, pageWidth, pageHeight, '', 'FAST');
+                } else {
+                    // Centrar horizontalmente
+                    const finalX = marginLeft + (usableWidth - finalWidth) / 2;
+                    pdf.addImage(imgData, 'PNG', finalX, imgY, finalWidth, finalHeight, '', 'FAST');
+                }
+                
+                // Obtener datos de la factura para el nombre del archivo
+                const facturaData = window.facturaInfo || {
+                    codigo: 'SIN_CODIGO',
+                    estado: 'PENDIENTE'
+                };
+                const fecha = new Date().toLocaleDateString('es-ES').replace(/\//g, '-');
+                const fileName = `Factura_${facturaData.codigo}_${fecha}.pdf`;
+                
+                // Guardar el PDF
+                pdf.save(fileName);
+                
+                // Mostrar mensaje de éxito
+                buttons.innerHTML = '<div style="padding: 12px 20px; background: #28a745; color: white; border-radius: 8px; font-weight: 600;">¡PDF generado exitosamente!</div>';
+                setTimeout(() => {
+                    buttons.innerHTML = originalHTML;
+                }, 2000);
+                
+            } catch (error) {
+                console.error('Error detallado generando PDF:', error);
+                
+                // Restaurar botones
+                buttons.innerHTML = originalHTML;
+                
+                // Mostrar error más específico
+                let errorMsg = 'Error al generar el PDF: ';
+                if (error.message.includes('canvas')) {
+                    errorMsg += 'Problema al capturar la imagen del documento.';
+                } else if (error.message.includes('CORS')) {
+                    errorMsg += 'Problema de permisos con las imágenes.';
+                } else if (error.message.includes('addImage')) {
+                    errorMsg += 'Error al crear el PDF.';
+                } else {
+                    errorMsg += error.message || 'Error desconocido.';
+                }
+                
+                errorMsg += '\n\n¿Deseas usar la impresión simple en su lugar?';
+                
+                if (confirm(errorMsg)) {
+                    window.print();
+                }
+            }
+        }
+
+        // Verificación de datos en consola (solo para desarrollo)
+        console.log('Datos básicos disponibles:');
+        console.log('Código factura:', '<%= factura.Codigo || "No disponible" %>');
+        console.log('Estado factura:', '<%= factura.Estado || "No disponible" %>');
+        console.log('Total factura:', '<%= factura.Total || "0.00" %>');
+        
+        // Variables globales seguras para usar en las funciones
+        window.facturaInfo = {
+            codigo: '<%= factura.Codigo || "SIN_CODIGO" %>',
+            estado: '<%= factura.Estado || "PENDIENTE" %>',
+            total: '<%= factura.Total || "0.00" %>'
+        };
+    </script>
+</body>
+</html>

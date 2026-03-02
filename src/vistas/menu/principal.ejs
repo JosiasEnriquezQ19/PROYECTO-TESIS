@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Menú Principal - CARSIL Equipos y Servicios SAC</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { 
+            font-family: 'Montserrat', sans-serif;
+            background: linear-gradient(135deg, #f8fafc 0%, #e9ecef 100%);
+        }
+        .sidebar, .main-content { transition: all 0.3s; }
+        .toggle-sidebar-btn {
+            position: absolute;
+            top: 1.2rem;
+            left: 290px;
+            z-index: 1100;
+            background: linear-gradient(135deg, #0056b3, #003366);
+            color: #fff;
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 12px rgba(0,86,179,0.3);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .toggle-sidebar-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(0,86,179,0.4);
+        }
+        .sidebar.hide { transform: translateX(-100%); }
+        .main-content.full { margin-left: 0 !important; }
+        @media (max-width: 768px) {
+            .toggle-sidebar-btn { left: 10px; top: 10px; }
+        }
+        .sidebar {
+            width: 270px;
+            min-height: 100vh;
+            background: linear-gradient(180deg, #003366 0%, #001a33 100%);
+            color: #fff;
+            position: fixed;
+            left: 0;
+            top: 0;
+            padding-top: 1rem;
+            z-index: 1000;
+            box-shadow: 4px 0 20px rgba(0,0,0,0.1);
+        }
+        .sidebar .sidebar-heading {
+            font-size: 1.5rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            color: #fff;
+        }
+        .sidebar .company-slogan {
+            font-size: 0.9rem;
+            color: #b0c4de;
+            font-weight: 300;
+        }
+        .sidebar .menu-item {
+            color: rgba(255,255,255,0.9);
+            padding: 0.8rem 1.2rem;
+            border-radius: 0.7rem;
+            margin: 0.2rem 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s;
+            position: relative;
+        }
+        .sidebar .menu-item:hover {
+            background: rgba(0,86,179,0.3);
+            color: #fff;
+            transform: translateX(5px);
+        }
+        .sidebar .menu-item.active {
+            background: linear-gradient(135deg, #0056b3, #0d6efd);
+            color: #fff;
+            box-shadow: 0 2px 8px rgba(0,86,179,0.3);
+        }
+        .sidebar .logout-item {
+            color: #ff6b6b;
+        }
+        .sidebar .logout-item:hover {
+            background: rgba(255,107,107,0.1);
+            color: #ff6b6b;
+        }
+        .main-content {
+            margin-left: 270px;
+            min-height: 100vh;
+        }
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+        .user-avatar {
+            background: linear-gradient(135deg, #0056b3, #003366);
+            color: #fff;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 1.2rem;
+            box-shadow: 0 2px 8px rgba(0,86,179,0.3);
+        }
+        .navbar-top {
+            background: rgba(255,255,255,0.95) !important;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 2px 20px rgba(0,0,0,0.08);
+            border: none !important;
+        }
+        .welcome-container {
+            background: linear-gradient(135deg, #fff 0%, #f8fafc 100%);
+            border-radius: 1.5rem;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.08);
+            padding: 3rem;
+            margin-bottom: 2.5rem;
+            border: 1px solid rgba(0,86,179,0.1);
+            position: relative;
+            overflow: hidden;
+        }
+        .welcome-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #0056b3, #0d6efd, #6f42c1);
+        }
+        .welcome-title {
+            color: #003366;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            font-size: 2.2rem;
+        }
+        .welcome-lead {
+            color: #555;
+            font-size: 1.1rem;
+            line-height: 1.6;
+            margin-bottom: 2rem;
+        }
+        .btn-modern {
+            border-radius: 0.7rem;
+            padding: 0.7rem 1.8rem;
+            font-weight: 600;
+            border: none;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .btn-primary-modern {
+            background: linear-gradient(135deg, #0056b3, #0d6efd);
+            color: #fff;
+            box-shadow: 0 4px 12px rgba(0,86,179,0.3);
+        }
+        .btn-primary-modern:hover {
+            background: linear-gradient(135deg, #003d82, #0b5ed7);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(0,86,179,0.4);
+            color: #fff;
+        }
+        .btn-outline-modern {
+            background: rgba(255,255,255,0.9);
+            color: #0056b3;
+            border: 2px solid rgba(0,86,179,0.2);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+        .btn-outline-modern:hover {
+            background: #0056b3;
+            color: #fff;
+            border-color: #0056b3;
+            transform: translateY(-2px);
+        }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+        .stat-card {
+            background: linear-gradient(135deg, #fff 0%, #f8fafc 100%);
+            border-radius: 1.2rem;
+            padding: 2rem;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.08);
+            border: 1px solid rgba(0,86,179,0.1);
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: var(--gradient);
+        }
+        .stat-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 16px 48px rgba(0,0,0,0.12);
+        }
+        .stat-card.clients::before {
+            background: linear-gradient(90deg, #0056b3, #0d6efd);
+        }
+        .stat-card.employees::before {
+            background: linear-gradient(90deg, #28a745, #20c997);
+        }
+        .stat-card.proformas::before {
+            background: linear-gradient(90deg, #6f42c1, #e83e8c);
+        }
+        .stat-card.products::before {
+            background: linear-gradient(90deg, #ffc107, #fd7e14);
+        }
+        .stat-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 1.2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            margin-bottom: 1.5rem;
+            color: #fff;
+        }
+        .stat-icon.success {
+            background: linear-gradient(135deg, #28a745, #20c997);
+        }
+        .stat-icon.primary {
+            background: linear-gradient(135deg, #0056b3, #0d6efd);
+        }
+        .stat-icon.purple {
+            background: linear-gradient(135deg, #6f42c1, #e83e8c);
+        }
+        .stat-icon.warning {
+            background: linear-gradient(135deg, #ffc107, #fd7e14);
+        }
+        .stat-title {
+            color: #6c757d;
+            font-size: 0.9rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 0.5rem;
+        }
+        .stat-value {
+            color: #003366;
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+        .stat-description {
+            color: #6c757d;
+            font-size: 0.9rem;
+            line-height: 1.4;
+        }
+        .stat-badge {
+            position: absolute;
+            top: 1.5rem;
+            right: 1.5rem;
+            padding: 0.4rem 0.8rem;
+            border-radius: 1rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+        .badge-success {
+            background: rgba(40,167,69,0.1);
+            color: #28a745;
+            border: 1px solid rgba(40,167,69,0.2);
+        }
+        .badge-primary {
+            background: rgba(0,86,179,0.1);
+            color: #0056b3;
+            border: 1px solid rgba(0,86,179,0.2);
+        }
+        .badge-purple {
+            background: rgba(111,66,193,0.1);
+            color: #6f42c1;
+            border: 1px solid rgba(111,66,193,0.2);
+        }
+        .badge-warning {
+            background: rgba(255,193,7,0.1);
+            color: #ffc107;
+            border: 1px solid rgba(255,193,7,0.2);
+        }
+        .quick-actions {
+            background: linear-gradient(135deg, #fff 0%, #f8fafc 100%);
+            border-radius: 1.2rem;
+            padding: 2rem;
+            margin-top: 2rem;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.08);
+            border: 1px solid rgba(0,86,179,0.1);
+        }
+        .action-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+        .action-btn {
+            background: rgba(255,255,255,0.9);
+            border: 2px solid rgba(0,86,179,0.1);
+            border-radius: 0.8rem;
+            padding: 1.5rem;
+            text-decoration: none;
+            color: #003366;
+            transition: all 0.3s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.8rem;
+        }
+        .action-btn:hover {
+            background: #0056b3;
+            color: #fff;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 24px rgba(0,86,179,0.2);
+            border-color: #0056b3;
+        }
+        .action-icon {
+            font-size: 2rem;
+            color: #0056b3;
+            transition: color 0.3s;
+        }
+        .action-btn:hover .action-icon {
+            color: #fff;
+        }
+        .section-title {
+            color: #003366;
+            font-weight: 700;
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .time-greeting {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #fff;
+            padding: 1rem 1.5rem;
+            border-radius: 0.8rem;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+        .floating-shapes {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            overflow: hidden;
+        }
+        .shape {
+            position: absolute;
+            opacity: 0.1;
+            animation: float 6s ease-in-out infinite;
+        }
+        .shape:nth-child(1) {
+            top: 20%;
+            left: 10%;
+            animation-delay: 0s;
+        }
+        .shape:nth-child(2) {
+            top: 60%;
+            right: 10%;
+            animation-delay: 2s;
+        }
+        .shape:nth-child(3) {
+            bottom: 20%;
+            left: 50%;
+            animation-delay: 4s;
+        }
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+    </style>
+</head>
+<body>
+    <div class="wrapper">
+        <!-- Sidebar -->
+        <%- include("../parciales/sidebar") %>
+        <!-- Botón para ocultar/mostrar barra -->
+        <button class="toggle-sidebar-btn" id="toggleSidebarBtn" title="Ocultar/Mostrar menú">
+            <i class="bi bi-chevron-left" id="toggleIcon"></i>
+        </button>
+        <!-- Main Content -->
+        <div class="main-content" id="main-content">
+            <nav class="navbar navbar-expand-lg navbar-light navbar-top border-bottom">
+                <div class="container-fluid">
+                    <h5 class="navbar-brand ms-3 mb-0">
+                        <i class="bi bi-speedometer2 me-2"></i>
+                        Panel de Control
+                    </h5>
+                    <div class="user-profile ms-auto">
+                        <span><%= user && user.Nombres ? user.Nombres : 'Administrador' %></span>
+                        <div class="user-avatar"><%= user && user.Nombres ? user.Nombres.charAt(0) : 'A' %></div>
+                    </div>
+                </div>
+            </nav>
+            <div class="container-fluid py-4">
+                <!-- Saludo con hora -->
+                <div class="time-greeting" id="timeGreeting">
+                    <h4 class="mb-1" id="greetingText">¡Buen día, <%= user && user.Nombres ? user.Nombres : 'Administrador' %>!</h4>
+                    <p class="mb-0" id="currentDateTime"></p>
+                </div>
+
+                <!-- Contenedor de bienvenida modernizado -->
+                <div class="welcome-container">
+                    <div class="floating-shapes">
+                        <i class="bi bi-gear shape" style="font-size: 3rem;"></i>
+                        <i class="bi bi-graph-up shape" style="font-size: 2.5rem;"></i>
+                        <i class="bi bi-award shape" style="font-size: 2rem;"></i>
+                    </div>
+                    <h1 class="welcome-title">
+                        <i class="bi bi-house-door me-3"></i>
+                        Sistema de Gestión CARSIL
+                    </h1>
+                    <p class="welcome-lead">
+                        Bienvenido al sistema de gestión integral de CARSIL Equipos y Servicios SAC. 
+                        Desde este panel podrás administrar todas las operaciones de la empresa, 
+                        incluyendo proformas, ventas, inventario, clientes y recursos humanos. 
+                        Utiliza el menú lateral para acceder a las diferentes secciones del sistema.
+                    </p>
+                    <div class="d-flex flex-wrap gap-3">
+                        <button class="btn btn-primary-modern btn-modern">
+                            <i class="bi bi-speedometer2"></i>
+                            Ver Dashboard
+                        </button>
+                        <button class="btn btn-outline-modern btn-modern">
+                            <i class="bi bi-question-circle"></i>
+                            Centro de Ayuda
+                        </button>
+                        <button class="btn btn-outline-modern btn-modern">
+                            <i class="bi bi-bell"></i>
+                            Notificaciones
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Grid de estadísticas modernizado -->
+                <div class="stats-grid">
+                    <div class="stat-card clients">
+                        <div class="stat-badge badge-primary">Activos</div>
+                        <div class="stat-icon primary">
+                            <i class="bi bi-people"></i>
+                        </div>
+                        <div class="stat-title">Total de Clientes</div>
+                        <div class="stat-value"><%= typeof estadisticas !== 'undefined' && estadisticas.clientes ? estadisticas.clientes : 0 %></div>
+                        <div class="stat-description">
+                            Clientes registrados en el sistema.
+                        </div>
+                    </div>
+
+                    <div class="stat-card employees">
+                        <div class="stat-badge badge-success">Activos</div>
+                        <div class="stat-icon success">
+                            <i class="bi bi-person-badge"></i>
+                        </div>
+                        <div class="stat-title">Total de Empleados</div>
+                        <div class="stat-value"><%= typeof estadisticas !== 'undefined' && estadisticas.empleados ? estadisticas.empleados : 0 %></div>
+                        <div class="stat-description">
+                            Empleados registrados en el sistema.
+                        </div>
+                    </div>
+
+                    <div class="stat-card proformas">
+                        <div class="stat-badge badge-purple">Generadas</div>
+                        <div class="stat-icon purple">
+                            <i class="bi bi-file-earmark-text"></i>
+                        </div>
+                        <div class="stat-title">Total de Proformas</div>
+                        <div class="stat-value"><%= typeof estadisticas !== 'undefined' && estadisticas.proformas ? estadisticas.proformas : 0 %></div>
+                        <div class="stat-description">
+                            Proformas generadas en el sistema.
+                        </div>
+                    </div>
+
+                    <div class="stat-card products">
+                        <div class="stat-badge badge-warning">Disponibles</div>
+                        <div class="stat-icon warning">
+                            <i class="bi bi-boxes"></i>
+                        </div>
+                        <div class="stat-title">Total de Productos</div>
+                        <div class="stat-value"><%= typeof estadisticas !== 'undefined' && estadisticas.productos ? estadisticas.productos : 0 %></div>
+                        <div class="stat-description">
+                            Productos en el catálogo.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Acciones rápidas -->
+                <div class="quick-actions">
+                    <h3 class="section-title">
+                        <i class="bi bi-lightning"></i>
+                        Acciones Rápidas
+                    </h3>
+                    <div class="action-grid">
+                        <a href="/proformas/nueva" class="action-btn">
+                            <i class="bi bi-file-earmark-plus action-icon"></i>
+                            <span>Nueva Proforma</span>
+                        </a>
+                        <a href="/clientes" class="action-btn">
+                            <i class="bi bi-person-plus action-icon"></i>
+                            <span>Agregar Cliente</span>
+                        </a>
+                        <a href="/productos" class="action-btn">
+                            <i class="bi bi-box-seam action-icon"></i>
+                            <span>Gestionar Productos</span>
+                        </a>
+                        <a href="/empleados" class="action-btn">
+                            <i class="bi bi-person-badge action-icon"></i>
+                            <span>Ver Empleados</span>
+                        </a>
+                        <a href="/reportes" class="action-btn">
+                            <i class="bi bi-graph-up action-icon"></i>
+                            <span>Reportes</span>
+                        </a>
+                        <a href="/empresa" class="action-btn">
+                            <i class="bi bi-gear action-icon"></i>
+                            <span>Configuración</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const toggleBtn = document.getElementById('toggleSidebarBtn');
+        const sidebar = document.getElementById('sidebar');
+        const mainContent = document.getElementById('main-content');
+        const toggleIcon = document.getElementById('toggleIcon');
+        const menuItems = document.querySelectorAll('.menu-item');
+        const userAvatar = document.querySelector('.user-avatar');
+        const userName = '<%= user && user.Nombres ? user.Nombres : "Administrador" %>';
+        userAvatar.textContent = userName.charAt(0);
+
+        // Toggle sidebar
+        toggleBtn.addEventListener('click', function() {
+            sidebar.classList.toggle('hide');
+            mainContent.classList.toggle('full');
+            if (sidebar.classList.contains('hide')) {
+                toggleIcon.classList.remove('bi-chevron-left');
+                toggleIcon.classList.add('bi-chevron-right');
+            } else {
+                toggleIcon.classList.remove('bi-chevron-right');
+                toggleIcon.classList.add('bi-chevron-left');
+            }
+        });
+
+        // Menú activo
+        menuItems.forEach(item => {
+            item.addEventListener('click', function() {
+                menuItems.forEach(i => i.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+
+        // Saludo dinámico basado en la hora
+        function updateGreeting() {
+            const now = new Date();
+            const hour = now.getHours();
+            const greetingText = document.getElementById('greetingText');
+            const currentDateTime = document.getElementById('currentDateTime');
+            
+            let greeting;
+            if (hour >= 5 && hour < 12) {
+                greeting = '¡Buenos días, ' + userName + '!';
+            } else if (hour >= 12 && hour < 18) {
+                greeting = '¡Buenas tardes, ' + userName + '!';
+            } else {
+                greeting = '¡Buenas noches, ' + userName + '!';
+            }
+            
+            greetingText.textContent = greeting;
+            currentDateTime.textContent = now.toLocaleDateString('es-PE', {
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+        }
+
+        updateGreeting();
+        setInterval(updateGreeting, 60000); // Actualiza cada minuto
+
+        // Animación de contadores
+        function animateCounters() {
+            const counters = document.querySelectorAll('.stat-value');
+            counters.forEach(counter => {
+                const target = parseInt(counter.textContent) || 0;
+                const increment = target > 0 ? Math.max(Math.ceil(target / 50), 1) : 0;
+                let current = 0;
+                
+                // Establecer valor inicial como 0
+                counter.textContent = 0;
+                
+                const timer = setInterval(() => {
+                    current += increment;
+                    if (current >= target) {
+                        current = target;
+                        clearInterval(timer);
+                    }
+                    
+                    counter.textContent = Math.floor(current);
+                }, 30);
+            });
+        }
+
+        // Ejecutar animación de contadores después de un breve delay
+        setTimeout(animateCounters, 500);
+    });
+    </script>
+</body>
+</html>

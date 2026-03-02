@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Proforma - {{numero}}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        @page {
+            size: A4;
+            margin: 1cm;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-size: 10pt;
+            line-height: 1.4;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            background: #fff;
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+        }
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            position: relative;
+            border-bottom: 2px solid #2c3e50;
+            padding-bottom: 10px;
+        }
+        .logo-empresa {
+            display: flex;
+            align-items: center;
+            position: absolute;
+            left: 0;
+        }
+        .logo-container img {
+            height: 70px;
+            max-width: 100%;
+            filter: drop-shadow(1px 1px 2px rgba(0,0,0,0.1));
+        }
+        .empresa-info {
+            width: 100%;
+            text-align: center;
+            padding-top: 5px;
+        }
+        .empresa-info h1 {
+            margin: 0 auto;
+            padding: 0;
+            font-size: 14pt;
+            font-weight: 600;
+            color: #2c3e50;
+            letter-spacing: 0.5px;
+        }
+        .empresa-info p {
+            margin: 2px 0;
+            font-size: 8pt;
+            text-align: center;
+            color: #555;
+        }
+        .documento-info {
+            text-align: right;
+            min-width: 180px;
+            background: #f8f9fa;
+            padding: 8px 12px;
+            border-radius: 4px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        .documento-info .tipo {
+            font-size: 16pt;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 3px;
+        }
+        .documento-info .numero {
+            font-size: 15pt;
+            color: #555;
+        }
+        .documento-info div:last-child {
+            font-size: 9pt;
+            color: #666;
+        }
+        .cliente-info {
+            width: 100%;
+            margin-bottom: 15px;
+            background: #f8f9fa !important;
+            padding: 10px;
+            border-radius: 4px;
+            border-left: 4px solid #2c3e50;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        .cliente-info table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .cliente-info td {
+            padding: 3px 0;
+            vertical-align: top;
+        }
+        .cliente-info .label {
+            font-weight: 600;
+            width: 15%;
+            color: #2c3e50;
+        }
+        .intro-text {
+            margin: 10px 0;
+            font-style: italic;
+            color: #555;
+            text-align: center;
+            padding: 5px;
+        }
+        .productos {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+            font-size: 9pt;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        .productos th {
+            background-color: #2c3e50 !important;
+            color: white !important;
+            font-weight: 600;
+            padding: 6px 8px;
+            text-align: left;
+            text-transform: uppercase;
+            font-size: 8.5pt;
+            letter-spacing: 0.5px;
+        }
+        .productos th.vvu,
+        .productos th.vtotal,
+        .productos td.vvu,
+        .productos td.vtotal {
+            text-align: right;
+        }
+        .productos td {
+            padding: 6px 8px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        .productos .item,
+        .productos .cant,
+        .productos .unid {
+            text-align: center;
+            width: 5%;
+        }
+        .productos .desc {
+            width: 60%;
+        }
+        .productos .vvu {
+            text-align: right;
+            width: 10%;
+        }
+        .productos .vtotal {
+            text-align: right;
+            width: 15%;
+            font-weight: 600;
+            font-family: 'Segoe UI', Arial, sans-serif;
+            font-size: 10pt;
+        }
+        .productos tr:nth-child(even) {
+            background-color: #f9f9f9 !important;
+        }
+        .productos tr:last-child td {
+            border-bottom: none;
+        }
+        .totales {
+            width: 30%;
+            margin-left: 70%;
+            border-collapse: collapse;
+            font-size: 10pt;
+            background: #f8f9fa;
+            border-radius: 4px;
+            overflow: hidden;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        .totales td {
+            padding: 8px 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        .totales .label {
+            font-weight: 600;
+            background-color: #2c3e50 !important;
+            color: white !important;
+        }
+        .totales .valor {
+            text-align: right;
+            font-weight: 600;
+        }
+        .totales tr:last-child td {
+            border-bottom: none;
+            background-color: #e9ecef;
+        }
+        .condiciones {
+            margin-top: 20px;
+            padding: 12px 15px;
+            background: #f8f9fa !important;
+            font-size: 9pt;
+            border-radius: 4px;
+            border-left: 4px solid #2c3e50;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        .condiciones h3 {
+            font-size: 10pt;
+            margin-bottom: 8px;
+            color: #2c3e50;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .condiciones p {
+            margin: 5px 0;
+            padding-left: 5px;
+        }
+        .condiciones strong {
+            color: #2c3e50;
+        }
+        .firma {
+            margin-top: 40px;
+            text-align: left; /* Cambiado de center a left */
+            width: 100%;
+            padding-top: 20px;
+            border-top: 1px solid #e0e0e0;
+        }
+        .firma p {
+            margin: 0;
+            font-size: 10pt;
+        }
+        .firma .nombre {
+            font-weight: 600;
+            margin-top: 30px;
+            color: #2c3e50;
+            text-transform: uppercase;
+        }
+        .firma .empresa {
+            font-size: 9pt;
+            color: #555;
+            margin-top: 5px;
+        }
+        .nota {
+            font-size: 8pt;
+            text-align: center;
+            margin-top: 15px;
+            color: #888;
+            font-style: italic;
+        }
+        @media print {
+            body, .header-container, .cliente-info, .productos, .condiciones, .firma {
+                page-break-inside: avoid;
+                break-inside: avoid;
+            }
+        }
+        @media (max-width: 768px) {
+            .header-container {
+                flex-direction: column;
+            }
+            .logo-empresa {
+                position: static;
+                justify-content: center;
+                margin-bottom: 10px;
+            }
+            .documento-info {
+                text-align: center;
+                margin-top: 10px;
+            }
+            .totales {
+                width: 100%;
+                margin-left: 0;
+            }
+        }
+        .empresa-info-footer {
+            text-align: center;
+            font-size: 9pt;
+            color: #555;
+            margin-top: 40px;
+            margin-bottom: 10px;
+        }
+        .empresa-info-footer p {
+            margin: 2px 0;
+        }
+        .tipo-numero {
+            font-size: 16pt;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="header-container">
+        <div class="logo-empresa">
+            <div class="logo-container">
+                <img src="Logo Carsil 1.png" alt="Logo">
+            </div>
+        </div>
+        
+        <div class="documento-info">
+            <div class="tipo-numero">
+                PROFORMA {{numero}}
+            </div>
+            <div>Fecha: {{fecha}}</div>
+        </div>
+    </div>
+
+    <div class="cliente-info">
+        <table>
+            <tr>
+                <td class="label">Señores:</td>
+                <td>{{cliente}}</td>
+            </tr>
+            <tr>
+                <td class="label">Att:</td>
+                <td>{{contacto}}</td>
+            </tr>
+            <tr>
+                <td class="label">Dirección:</td>
+                <td>{{direccion}}</td>
+            </tr>
+            <tr>
+                <td class="label">Referencia:</td>
+                <td>{{referencia}}</td>
+            </tr>
+            <tr>
+                <td class="label">Correo electronico:</td>
+                <td>{{email}}</td>
+            </tr>
+            <tr>
+                <td class="label">RUC:</td>
+                <td>{{ruc}}</td>
+            </tr>
+        </table>
+    </div>
+
+    <p class="intro-text">En atención a nuestra solicitud, tenemos el agrado de cotizarles lo siguiente:</p>
+
+    <table class="productos">
+        <thead>
+            <tr>
+                <th class="item">ITEM</th>
+                <th class="cant">CANT</th>
+                <th class="unid">UNID</th>
+                <th class="desc">DESCRIPCIÓN</th>
+                <th class="vvu">V.V.U $</th>
+                <th class="vtotal">V.TOTAL $</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- INICIO_PRODUCTOS -->
+            <tr>
+                <td>{{ITEM}}</td>
+                <td>{{CANT}}</td>
+                <td>{{UNID}}</td>
+                <td>{{DESCRIPCIÓN}}</td>
+                <td class="vvu">{{VVU}}</td>
+                <td class="vtotal">{{VTOTAL}}</td>
+            </tr>
+            <!-- FIN_PRODUCTOS -->
+            <tr>
+                <td colspan="5" style="text-align: right; font-weight: 600;">SUB TOTAL</td>
+                <td class="vtotal">{{subtotal}}</td>
+            </tr>
+            <tr>
+                <td colspan="5" style="text-align: right; font-weight: 600;">IGV (18%)</td>
+                <td class="vtotal">{{igv}}</td>
+            </tr>
+            <tr>
+                <td colspan="5" style="text-align: right; font-weight: 600;">TOTAL $</td>
+                <td class="vtotal">{{total}}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="condiciones">
+        <h3>CONDICIONES DE VENTA</h3>
+        <p><strong>Forma de pago:</strong> {{formapago}}</p>
+        <p><strong>Cuenta bancaria:</strong> {{cuentabancaria}}</p>
+        <p><strong>Tiempo de entrega:</strong> {{tiempoentrega}}</p>
+        <p><strong>Lugar de entrega:</strong> {{lugarentrega}}</p>
+        <p><strong>Garantía:</strong> {{garantia}}</p>
+        <p><strong>Validez de oferta:</strong> {{validez}}</p>
+    </div>
+
+    <div class="firma">
+        <p>Atentamente,</p>
+        <p class="nombre">{{representante}}</p>
+        <p class="empresa">CARSIL EQUIPOS Y SERVICIOS S.A.C.</p>
+    </div>
+
+    <div class="nota">
+        <p>Documento sin valor contractual</p>
+    </div>
+
+    <div class="empresa-info-footer">
+        <p>RUC: 20601234567</p>
+        <p>Jr Mariano Arredondo N° 2711 - Los Cipreses L-01</p>
+        <p>Teléfono: (01) 688-4578 | Celular: 96376908</p>
+    </div>
+</body>
+</html>

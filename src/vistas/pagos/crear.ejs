@@ -1,0 +1,991 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registrar Remuneración - CARSIL Equipos y Servicios SAC</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { 
+            font-family: 'Montserrat', sans-serif;
+            background: linear-gradient(135deg, #f8fafc 0%, #e9ecef 100%);
+        }
+        .sidebar, .main-content { transition: all 0.3s; }
+        .toggle-sidebar-btn {
+            position: absolute;
+            top: 1.2rem;
+            left: 290px;
+            z-index: 1100;
+            background: linear-gradient(135deg, #0056b3, #003366);
+            color: #fff;
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 12px rgba(0,86,179,0.3);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .toggle-sidebar-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(0,86,179,0.4);
+        }
+        .sidebar.hide { transform: translateX(-100%); }
+        .main-content.full { margin-left: 0 !important; }
+        @media (max-width: 768px) {
+            .toggle-sidebar-btn { left: 10px; top: 10px; }
+        }
+        .sidebar {
+            width: 270px;
+            min-height: 100vh;
+            background: linear-gradient(180deg, #003366 0%, #001a33 100%);
+            color: #fff;
+            position: fixed;
+            left: 0;
+            top: 0;
+            padding-top: 1rem;
+            z-index: 1000;
+            box-shadow: 4px 0 20px rgba(0,0,0,0.1);
+        }
+        .sidebar .sidebar-heading {
+            font-size: 1.5rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            color: #fff;
+        }
+        .sidebar .company-slogan {
+            font-size: 0.9rem;
+            color: #b0c4de;
+            font-weight: 300;
+        }
+        .sidebar .menu-item {
+            color: rgba(255,255,255,0.9);
+            padding: 0.8rem 1.2rem;
+            border-radius: 0.7rem;
+            margin: 0.2rem 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s;
+            position: relative;
+        }
+        .sidebar .menu-item:hover {
+            background: rgba(0,86,179,0.3);
+            color: #fff;
+            transform: translateX(5px);
+        }
+        .sidebar .menu-item.active {
+            background: linear-gradient(135deg, #0056b3, #0d6efd);
+            color: #fff;
+            box-shadow: 0 2px 8px rgba(0,86,179,0.3);
+        }
+        .sidebar .logout-item {
+            color: #ff6b6b;
+        }
+        .sidebar .logout-item:hover {
+            background: rgba(255,107,107,0.1);
+            color: #ff6b6b;
+        }
+        .sidebar .company-slogan {
+            font-size: 1rem;
+            color: #b0c4de;
+        }
+        .sidebar .menu-item {
+            color: #fff;
+            padding: 0.75rem 1.2rem;
+            border-radius: 0.5rem;
+            margin-bottom: 0.2rem;
+            display: flex;
+            align-items: center;
+            gap: 0.7rem;
+            text-decoration: none;
+            font-weight: 500;
+            transition: background 0.2s;
+        }
+        .sidebar .menu-item.active, .sidebar .menu-item:hover {
+            background: #0056b3;
+            color: #fff;
+        }
+        .sidebar .logout-item {
+            color: #ff4d4f;
+        }
+        .main-content {
+            margin-left: 270px;
+            min-height: 100vh;
+            background: #f8fafc;
+        }
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 0.7rem;
+        }
+        .user-avatar {
+            background: #003366;
+            color: #fff;
+            border-radius: 50%;
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 1.2rem;
+        }
+        .form-section { background: #fff; border-radius: 1rem; box-shadow: 0 2px 12px rgba(0,0,0,0.06); padding: 2rem 2.5rem; margin-bottom: 2rem; }
+        .form-section-title { color: #003366; font-weight: 700; margin-bottom: 1.2rem; }
+        
+        /* Estilos para el total */
+        #TotalPago {
+            font-size: 1.1rem;
+            font-weight: 600;
+            text-align: center;
+            transition: background-color 0.3s ease;
+        }
+        
+        /* Estilos para campos automáticos */
+        .campo-auto {
+            background: linear-gradient(45deg, #f8f9fa 25%, transparent 25%), 
+                        linear-gradient(-45deg, #f8f9fa 25%, transparent 25%), 
+                        linear-gradient(45deg, transparent 75%, #f8f9fa 75%), 
+                        linear-gradient(-45deg, transparent 75%, #f8f9fa 75%);
+            background-size: 4px 4px;
+            background-position: 0 0, 0 2px, 2px -2px, -2px 0px;
+        }
+        
+        /* Animación para campos que se calculan automáticamente */
+        .campo-calculado {
+            position: relative;
+        }
+        
+        .campo-calculado::after {
+            content: "🔄";
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            animation: rotation 1s infinite linear;
+            opacity: 0;
+            z-index: 10;
+        }
+        
+        .campo-calculado.calculando::after {
+            opacity: 1;
+        }
+        
+        .campo-calculado.calculando {
+            background: linear-gradient(90deg, #e3f2fd, #bbdefb, #e3f2fd);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+        }
+        
+        @keyframes rotation {
+            from { transform: translateY(-50%) rotate(0deg); }
+            to { transform: translateY(-50%) rotate(359deg); }
+        }
+        
+        @keyframes shimmer {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
+        }
+        
+        /* Tooltip mejorado para horas trabajadas */
+        #HorasTrabajadas[title]:hover::before {
+            content: attr(title);
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #333;
+            color: white;
+            padding: 8px 12px;
+            border-radius: 4px;
+            font-size: 12px;
+            white-space: pre-line;
+            z-index: 1000;
+            max-width: 300px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+    </style>
+</head>
+<body>
+    <div class="wrapper">
+        <%- include("../parciales/sidebar") %>
+        <!-- Botón para ocultar/mostrar barra -->
+        <button class="toggle-sidebar-btn" id="toggleSidebarBtn" title="Ocultar/Mostrar menú">
+            <i class="bi bi-chevron-left" id="toggleIcon"></i>
+        </button>
+        <!-- Main Content -->
+        <div class="main-content" id="main-content">
+            <nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom">
+                <div class="container-fluid">
+                    <span class="navbar-brand ms-3">Panel de Control</span>
+                    <div class="user-profile ms-auto">
+                        <span><%= typeof user !== 'undefined' && user && user.Nombres ? user.Nombres : 'Administrador' %></span>
+                        <div class="user-avatar"><%= typeof user !== 'undefined' && user && user.Nombres ? user.Nombres.charAt(0) : 'A' %></div>
+                    </div>
+                </div>
+            </nav>
+            <div class="container-fluid py-4">
+                <!-- Mensajes de éxito y error eliminados según solicitud del usuario -->
+                
+
+                
+                <div class="form-section">
+                    <h1 class="form-section-title"><i class="bi bi-cash-coin me-2"></i> Registrar Pago</h1>
+                    <form action="/pagos/crear" method="POST">
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label for="IdEmpleado" class="form-label">Empleado</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="bi bi-person"></i></span>
+                                    <select class="form-select" id="IdEmpleado" name="IdEmpleado" required>
+                                        <option value="">Seleccione un empleado</option>
+                                        <% if (typeof empleados !== 'undefined' && empleados) { %>
+                                            <% empleados.forEach(empleado => { %>
+                                                <option value="<%= empleado.IdEmpleado %>" data-sueldo="<%= empleado.SueldoBase %>" data-horasbase="<%= empleado.HorasBase %>">
+                                                    <%= empleado.Nombres %> <%= empleado.Apellidos %> - S/ <%= empleado.SueldoBase %>
+                                                </option>
+                                            <% }); %>
+                                        <% } %>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <label for="Semana" class="form-label">Semana</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="bi bi-calendar-week"></i></span>
+                                    <input type="number" class="form-control" id="Semana" name="Semana" min="1" max="53" readonly required>
+                                    <span class="input-group-text text-muted">
+                                        <small>Auto</small>
+                                    </span>
+                                </div>
+                                <small class="form-text text-muted">
+                                    Se calcula automáticamente desde la fecha de inicio
+                                </small>
+                            </div>
+                            <div class="col-md-3">
+                                <label for="Anio" class="form-label">Año</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="bi bi-calendar"></i></span>
+                                    <input type="number" class="form-control" id="Anio" name="Anio" min="2020" max="2030" readonly required>
+                                    <span class="input-group-text text-muted">
+                                        <small>Auto</small>
+                                    </span>
+                                </div>
+                                <small class="form-text text-muted">
+                                    Se calcula automáticamente desde la fecha de inicio
+                                </small>
+                            </div>
+                            <div class="col-md-4">
+                                <label for="FechaInicio" class="form-label">Fecha Inicio</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="bi bi-calendar-event"></i></span>
+                                    <input type="date" class="form-control" id="FechaInicio" name="FechaInicio" required>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <label for="FechaFin" class="form-label">Fecha Fin</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="bi bi-calendar-event"></i></span>
+                                    <input type="date" class="form-control" id="FechaFin" name="FechaFin" required>
+                                </div>
+                                <small class="form-text text-muted">
+                                    Se sugiere automáticamente (puede modificarse)
+                                </small>
+                            </div>
+                            <div class="col-md-4">
+                                <label for="FechaPago" class="form-label">Fecha de Pago</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="bi bi-calendar-check"></i></span>
+                                    <input type="date" class="form-control" id="FechaPago" name="FechaPago">
+                                </div>
+                                <small class="form-text text-muted">
+                                    Opcional - Dejar vacío si aún no se ha pagado
+                                </small>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="HorasTrabajadas" class="form-label">Horas Trabajadas</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="bi bi-clock-history"></i></span>
+                                    <input type="number" step="0.01" class="form-control" id="HorasTrabajadas" name="HorasTrabajadas" required>
+                                    <span class="input-group-text text-muted">
+                                        <small>Auto</small>
+                                    </span>
+                                </div>
+                                <small class="form-text text-muted">
+                                    <i class="bi bi-magic me-1"></i>Se calcula automáticamente desde las asistencias registradas
+                                </small>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="SueldoSemanal" class="form-label">Sueldo Calculado</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="bi bi-calculator"></i></span>
+                                    <input type="number" step="0.01" class="form-control" id="SueldoSemanal" name="SueldoSemanal" readonly required>
+                                    <span class="input-group-text text-muted">
+                                        <small>Proporcional</small>
+                                    </span>
+                                </div>
+                                <small class="form-text text-muted">
+                                    Calculado automáticamente: (SueldoBase ÷ HorasBase) × HorasTrabajadas reales. <br>
+                                    <b>Nunca excede el sueldo base semanal.</b>
+                                </small>
+                            </div>
+                            <div class="col-md-4">
+                                <label for="Bonificaciones" class="form-label">Bonificaciones</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="bi bi-gift"></i></span>
+                                    <input type="number" step="0.01" class="form-control" id="Bonificaciones" name="Bonificaciones" value="0.00">
+                                </div>
+                                <small class="form-text text-muted">
+                                    Bonos, incentivos, horas extras, etc.
+                                </small>
+                            </div>
+                            <div class="col-md-4">
+                                <label for="Descuentos" class="form-label">Descuentos</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="bi bi-dash-circle"></i></span>
+                                    <input type="number" step="0.01" class="form-control" id="Descuentos" name="Descuentos" value="0.00">
+                                </div>
+                                <small class="form-text text-muted">
+                                    Tardanzas, faltas, anticipos, etc.
+                                </small>
+                            </div>
+                            <div class="col-md-4">
+                                <label for="TotalPago" class="form-label">Total a Pagar</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="bi bi-cash-stack"></i></span>
+                                    <input type="number" step="0.01" class="form-control fw-bold" id="TotalPago" name="TotalPago" readonly required style="background-color: #f8f9fa; border: 2px solid #28a745;">
+                                    <span class="input-group-text text-success fw-bold fs-6">S/</span>
+                                </div>
+                                <small class="form-text text-success fw-semibold">
+                                    <i class="bi bi-calculator me-1"></i>Sueldo + Bonificaciones - Descuentos
+                                </small>
+                            </div>
+                            <div class="col-md-4">
+                                <label for="MetodoPago" class="form-label">Método de Pago</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="bi bi-credit-card"></i></span>
+                                    <select class="form-select" id="MetodoPago" name="MetodoPago">
+                                        <option value="TRANSFERENCIA">Transferencia Bancaria</option>
+                                        <option value="EFECTIVO">Efectivo</option>
+                                        <option value="CHEQUE">Cheque</option>
+                                        <option value="DEPOSITO">Depósito Bancario</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <label for="Estado" class="form-label">Estado del Pago</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="bi bi-toggle-on"></i></span>
+                                    <select class="form-select" id="Estado" name="Estado">
+                                        <option value="PENDIENTE">Pendiente</option>
+                                        <option value="PAGADO">Pagado</option>
+                                        <option value="PARCIAL">Pago Parcial</option>
+                                        <option value="CANCELADO">Cancelado</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <label for="SueldoBaseInfo" class="form-label">Sueldo Base Semanal</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="bi bi-info-circle"></i></span>
+                                    <input type="number" step="0.01" class="form-control" id="SueldoBaseInfo" readonly>
+                                    <span class="input-group-text">S/</span>
+                                </div>
+                                <small class="form-text text-muted">
+                                    Sueldo base del empleado seleccionado
+                                </small>
+                            </div>
+                            <div class="col-md-12">
+                                <label for="Comentarios" class="form-label">Comentarios</label>
+                                <textarea class="form-control" id="Comentarios" name="Comentarios" rows="3" placeholder="Observaciones adicionales sobre el pago..."></textarea>
+                            </div>
+                        </div>
+                        <div class="d-flex justify-content-end mt-4 gap-2">
+                            <a href="/pagos/listar" class="btn btn-outline-secondary">
+                                <i class="bi bi-x-circle me-2"></i> Cancelar
+                            </a>
+                            <button type="submit" class="btn btn-primary btn-primary-custom">
+                                <i class="bi bi-save me-2"></i> Registrar Pago
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const toggleBtn = document.getElementById('toggleSidebarBtn');
+        const sidebar = document.getElementById('sidebar');
+        const mainContent = document.getElementById('main-content');
+        const toggleIcon = document.getElementById('toggleIcon');
+        const menuItems = document.querySelectorAll('.menu-item');
+        
+        // Campos del formulario
+        const empleadoSelect = document.getElementById('IdEmpleado');
+        const fechaInicio = document.getElementById('FechaInicio');
+        const fechaFin = document.getElementById('FechaFin');
+        const horasTrabajadas = document.getElementById('HorasTrabajadas');
+        const sueldoBaseInfo = document.getElementById('SueldoBaseInfo');
+        const sueldoSemanal = document.getElementById('SueldoSemanal');
+        const bonificaciones = document.getElementById('Bonificaciones');
+        const descuentos = document.getElementById('Descuentos');
+        const totalPago = document.getElementById('TotalPago');
+        const semana = document.getElementById('Semana');
+        const anio = document.getElementById('Anio');
+        
+        // Función para obtener el sueldo base del empleado seleccionado
+        function obtenerSueldoBaseEmpleado() {
+            const selectedOption = empleadoSelect.options[empleadoSelect.selectedIndex];
+            if (selectedOption && selectedOption.value) {
+                const sueldoBase = parseFloat(selectedOption.getAttribute('data-sueldo')) || 0;
+                sueldoBaseInfo.value = sueldoBase.toFixed(2);
+                calcularSueldoProporcional();
+                return sueldoBase;
+            }
+            sueldoBaseInfo.value = '';
+            return 0;
+        }
+        
+        // Función para calcular semana y año automáticamente basado en fecha de inicio
+        function calcularSemanaAnio() {
+            if (!fechaInicio.value) return;
+            
+            const fecha = new Date(fechaInicio.value);
+            
+            // Ejemplos de cálculo de semana ISO 8601:
+            // 2024-01-01 (lunes) → Semana 1 del 2024
+            // 2024-01-08 (lunes) → Semana 2 del 2024
+            // 2024-12-30 (lunes) → Semana 1 del 2025 (si el jueves cae en 2025)
+            // 2023-12-31 (domingo) → Puede ser semana 52 o 1 dependiendo del año
+            
+            // Calcular el número de semana según ISO 8601 (más preciso)
+            const fechaTemp = new Date(fecha);
+            fechaTemp.setHours(0, 0, 0, 0);
+            
+            // Jueves de la semana actual (ISO 8601 usa jueves como referencia)
+            fechaTemp.setDate(fechaTemp.getDate() + 3 - (fechaTemp.getDay() + 6) % 7);
+            
+            // 1 de enero del año del jueves
+            const primerJueves = new Date(fechaTemp.getFullYear(), 0, 4);
+            
+            // Calcular el número de semana
+            const numeroSemana = 1 + Math.round(((fechaTemp.getTime() - primerJueves.getTime()) / 86400000 - 3 + (primerJueves.getDay() + 6) % 7) / 7);
+            
+            semana.value = numeroSemana;
+            anio.value = fecha.getFullYear();
+            
+            // Feedback visual
+            semana.style.backgroundColor = '#d4edda';
+            anio.style.backgroundColor = '#d4edda';
+            setTimeout(() => {
+                semana.style.backgroundColor = '';
+                anio.style.backgroundColor = '';
+            }, 800);
+        }
+        
+        // Función para sugerir fecha de fin basada en fecha de inicio (semana laboral)
+        function sugerirFechaFin() {
+            if (!fechaInicio.value || fechaFin.value) return; // No sobrescribir si ya hay fecha fin
+            
+            const inicio = new Date(fechaInicio.value);
+            const diaSemanaInicio = inicio.getDay(); // 0 = domingo, 1 = lunes, etc.
+            
+            let diasASumar = 6; // Por defecto, una semana
+            
+            // Ejemplos de sugerencias:
+            // Si empieza Lunes → Termina Sábado (5 días después)
+            // Si empieza Martes → Termina Sábado (4 días después)  
+            // Si empieza Miércoles → Termina Sábado (3 días después)
+            // Si empieza Jueves → Termina Sábado (2 días después)
+            // Si empieza Viernes → Termina Sábado (1 día después)
+            // Si empieza Sábado → Termina Sábado siguiente (7 días después)
+            // Si empieza Domingo → Termina Sábado siguiente (6 días después)
+            
+            if (diaSemanaInicio === 1) { // Lunes
+                diasASumar = 5; // Termina el sábado (5 días después)
+            } else if (diaSemanaInicio === 0) { // Domingo
+                diasASumar = 6; // Termina el sábado siguiente (6 días después)
+            } else if (diaSemanaInicio >= 2 && diaSemanaInicio <= 6) { // Martes a sábado
+                diasASumar = 6 - diaSemanaInicio; // Hasta el sábado de esa semana
+                if (diasASumar === 0) diasASumar = 7; // Si empieza en sábado, va hasta el sábado siguiente
+            }
+            
+            const fechaFinSugerida = new Date(inicio);
+            fechaFinSugerida.setDate(inicio.getDate() + diasASumar);
+            
+            // Formatear fecha para el input
+            const año = fechaFinSugerida.getFullYear();
+            const mes = String(fechaFinSugerida.getMonth() + 1).padStart(2, '0');
+            const dia = String(fechaFinSugerida.getDate()).padStart(2, '0');
+            
+            fechaFin.value = `${año}-${mes}-${dia}`;
+            
+            // Feedback visual
+            fechaFin.style.backgroundColor = '#fff3cd';
+            setTimeout(() => {
+                fechaFin.style.backgroundColor = '';
+            }, 1500);
+        }
+        
+        // Función para calcular el sueldo proporcional basado en las horas trabajadas
+        function calcularSueldoProporcional() {
+            const opcionSeleccionada = empleadoSelect.options[empleadoSelect.selectedIndex];
+            const sueldoBase = parseFloat(opcionSeleccionada.getAttribute('data-sueldo')) || 0;
+            const horasBase = parseFloat(opcionSeleccionada.getAttribute('data-horasbase')) || 43; // Por defecto 43 si no hay dato
+            const horasReales = parseFloat(horasTrabajadas.value) || 0;
+
+            if (sueldoBase > 0 && horasReales > 0 && horasBase > 0) {
+                const valorPorHora = sueldoBase / horasBase;
+                let sueldoCalculado = valorPorHora * horasReales;
+                // Limitar el sueldo calculado al sueldo base semanal
+                if (sueldoCalculado > sueldoBase) {
+                    sueldoCalculado = sueldoBase;
+                }
+                sueldoSemanal.value = sueldoCalculado.toFixed(2);
+                calcularTotal();
+            } else {
+                sueldoSemanal.value = '0.00';
+            }
+        }
+
+        // Función para calcular el total a pagar
+        function calcularTotal() {
+            const sueldo = parseFloat(sueldoSemanal.value) || 0;
+            const bonos = parseFloat(bonificaciones.value) || 0;
+            const descuentosAplicados = parseFloat(descuentos.value) || 0;
+            const total = sueldo + bonos - descuentosAplicados;
+            totalPago.value = total.toFixed(2);
+        }
+
+        // Función para obtener horas trabajadas desde las asistencias
+        async function obtenerHorasDesdeAsistencias() {
+            const idEmpleado = empleadoSelect.value;
+            const fechaInicioVal = fechaInicio.value;
+            const fechaFinVal = fechaFin.value;
+            
+            if (!idEmpleado || !fechaInicioVal || !fechaFinVal) {
+                horasTrabajadas.value = '0.00';
+                horasTrabajadas.title = 'Seleccione empleado y fechas para calcular.';
+                calcularSueldoProporcional();
+                return;
+            }
+            
+            const horasContainer = horasTrabajadas.closest('.col-md-6');
+            // Limpiar alertas previas
+            horasContainer.querySelectorAll('.alert').forEach(a => a.remove());
+
+            try {
+                // Agregar indicador visual de carga
+                horasTrabajadas.parentElement.classList.add('campo-calculado', 'calculando');
+                horasTrabajadas.value = 'Calculando...';
+                
+                const response = await fetch(`/pagos/calcular-horas?idEmpleado=${idEmpleado}&fechaInicio=${fechaInicioVal}&fechaFin=${fechaFinVal}`);
+                const data = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(data.message || 'Error de conexión con el servidor.');
+                }
+                
+                if (data.success) {
+                    horasTrabajadas.value = data.horasTrabajadas; // Viene formateado desde el backend
+                    
+                    // Mostrar desglose de asistencias si está disponible
+                    if (data.desglose && data.desglose.length > 0) {
+                        let tooltipText = 'Desglose de asistencias:\n';
+                        data.desglose.forEach(asist => {
+                            // Formatear fecha para que sea más legible
+                            const fechaAsistencia = new Date(asist.Fecha).toLocaleDateString('es-ES', { year: 'numeric', month: '2-digit', day: '2-digit' });
+                            tooltipText += `${fechaAsistencia}: ${asist.HorasTrabajadas}h (${asist.JornadaLaboral})\n`;
+                        });
+                        horasTrabajadas.title = tooltipText.trim();
+                    } else {
+                        horasTrabajadas.title = 'No se encontraron asistencias para este período.';
+                        if (parseFloat(data.horasTrabajadas) === 0) {
+                             mostrarMensajeInformativo('No se encontraron asistencias en el período seleccionado.', horasContainer);
+                        }
+                    }
+                    
+                    // Feedback visual exitoso
+                    horasTrabajadas.style.backgroundColor = '#d4edda';
+                } else {
+                    horasTrabajadas.value = '0.00';
+                    horasTrabajadas.title = data.message || 'No se pudo calcular.';
+                    mostrarMensajeError(data.message || 'No se encontraron asistencias.', horasContainer);
+                }
+                
+            } catch (error) {
+                console.error('Error al calcular horas:', error);
+                horasTrabajadas.value = '0.00';
+                horasTrabajadas.title = 'Error al calcular. Puede ingresarlo manualmente.';
+                mostrarMensajeError(error.message, horasContainer);
+                horasTrabajadas.style.backgroundColor = '#f8d7da';
+                
+            } finally {
+                // Remover indicador de carga y feedback de color
+                horasTrabajadas.parentElement.classList.remove('campo-calculado', 'calculando');
+                setTimeout(() => {
+                    horasTrabajadas.style.backgroundColor = '';
+                }, 1500);
+                // Recalcular todo al final
+                calcularSueldoProporcional();
+            }
+        }
+        
+        // Función para mostrar mensajes informativos
+        function mostrarMensajeInformativo(mensaje, container) {
+            const alertDiv = document.createElement('div');
+            alertDiv.className = 'alert alert-info alert-dismissible fade show mt-2';
+            alertDiv.style.fontSize = '0.85rem';
+            alertDiv.innerHTML = `
+                <i class="bi bi-info-circle me-2"></i>${mensaje}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            `;
+            container.appendChild(alertDiv);
+        }
+        
+        // Función para mostrar mensajes de error
+        function mostrarMensajeError(mensaje, container) {
+            const alertDiv = document.createElement('div');
+            alertDiv.className = 'alert alert-warning alert-dismissible fade show mt-2';
+            alertDiv.style.fontSize = '0.85rem';
+            alertDiv.innerHTML = `
+                <i class="bi bi-exclamation-triangle me-2"></i>${mensaje}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            `;
+            container.appendChild(alertDiv);
+        }
+        
+        // Eventos
+        if (empleadoSelect) empleadoSelect.addEventListener('change', function() {
+            obtenerSueldoBaseEmpleado();
+            obtenerHorasDesdeAsistencias();
+        });
+        
+        if (fechaInicio) fechaInicio.addEventListener('change', function() {
+            calcularSemanaAnio();
+            sugerirFechaFin();
+            obtenerHorasDesdeAsistencias();
+        });
+        
+        if (fechaFin) fechaFin.addEventListener('change', obtenerHorasDesdeAsistencias);
+        
+        horasTrabajadas.addEventListener('input', function () {
+            calcularSueldoProporcional();
+        });
+        
+        bonificaciones.addEventListener('input', calcularTotal);
+        descuentos.addEventListener('input', calcularTotal);
+        
+        // Permitir edición manual de horas si es necesario
+        if (horasTrabajadas) {
+            horasTrabajadas.addEventListener('input', function() {
+                calcularSueldoProporcional();
+                // Remover tooltip automático si se edita manualmente
+                this.title = 'Editado manualmente';
+            });
+            
+            horasTrabajadas.addEventListener('blur', function() {
+                let valor = parseFloat(this.value) || 0;
+                if (valor < 0) valor = 0;
+                this.value = valor.toFixed(2);
+                calcularSueldoProporcional();
+            });
+        }
+        
+        // Eventos para cálculo automático del total con validación
+        if (bonificaciones) {
+            bonificaciones.addEventListener('input', calcularTotal);
+            bonificaciones.addEventListener('blur', function() { validarYFormatearNumero(this); });
+        }
+        
+        if (descuentos) {
+            descuentos.addEventListener('input', calcularTotal);
+            descuentos.addEventListener('blur', function() { validarYFormatearNumero(this); });
+        }
+        
+        // Inicializar cálculo al cargar la página
+        calcularTotal();
+
+        toggleBtn.addEventListener('click', function() {
+            sidebar.classList.toggle('hide');
+            mainContent.classList.toggle('full');
+            if (sidebar.classList.contains('hide')) {
+                toggleIcon.classList.remove('bi-chevron-left');
+                toggleIcon.classList.add('bi-chevron-right');
+            } else {
+                toggleIcon.classList.remove('bi-chevron-right');
+                toggleIcon.classList.add('bi-chevron-left');
+            }
+        });
+        
+        menuItems.forEach(item => {
+            item.addEventListener('click', function() {
+                menuItems.forEach(i => i.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+    });
+    </script>
+    <script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const empleadoSelect = document.getElementById('empleado'); // Selector de empleado
+        const fechaInicio = document.getElementById('fechaInicio'); // Fecha de inicio
+        const fechaFin = document.getElementById('fechaFin'); // Fecha de fin
+        const horasTrabajadas = document.getElementById('horasTrabajadas'); // Campo de horas trabajadas
+        const sueldoSemanal = document.getElementById('sueldoSemanal'); // Campo de sueldo semanal
+        const bonificaciones = document.getElementById('bonificaciones'); // Campo de bonificaciones
+        const descuentos = document.getElementById('descuentos'); // Campo de descuentos
+        const totalPago = document.getElementById('totalPago'); // Campo de total a pagar
+
+        // Función para obtener horas trabajadas desde las asistencias
+        async function obtenerHorasDesdeAsistencias() {
+            const idEmpleado = empleadoSelect.value;
+            const fechaInicioVal = fechaInicio.value;
+            const fechaFinVal = fechaFin.value;
+
+            if (!idEmpleado || !fechaInicioVal || !fechaFinVal) {
+                horasTrabajadas.value = '0.00';
+                horasTrabajadas.title = 'Seleccione empleado y fechas para calcular.';
+                calcularSueldoProporcional();
+                return;
+            }
+
+            try {
+                // Mostrar indicador de carga
+                horasTrabajadas.value = 'Calculando...';
+
+                // Llamada a la API para obtener las horas trabajadas
+                const response = await fetch(`/pagos/calcular-horas?idEmpleado=${idEmpleado}&fechaInicio=${fechaInicioVal}&fechaFin=${fechaFinVal}`);
+                const data = await response.json();
+
+                if (data.success) {
+                    horasTrabajadas.value = data.horasTrabajadas; // Actualizar el campo con las horas trabajadas
+                    calcularSueldoProporcional(); // Recalcular sueldo proporcional
+                } else {
+                    horasTrabajadas.value = '0.00';
+                    alert(data.message || 'No se encontraron asistencias.');
+                }
+            } catch (error) {
+                console.error('Error al calcular horas:', error);
+                horasTrabajadas.value = '0.00';
+                alert('Error al calcular horas trabajadas. Intente nuevamente.');
+            }
+        }
+
+        // Función para calcular el sueldo proporcional basado en las horas trabajadas
+        function calcularSueldoProporcional() {
+            const sueldoBaseSemanal = parseFloat(empleadoSelect.options[empleadoSelect.selectedIndex].dataset.sueldoBase) || 0; // Sueldo base semanal del empleado
+            const horasReales = parseFloat(horasTrabajadas.value) || 0; // Horas trabajadas en la semana
+
+            if (sueldoBaseSemanal === 0 || horasReales === 0) {
+                sueldoSemanal.value = '0.00';
+                calcularTotal();
+                return;
+            }
+
+            // Calcular valor por hora
+            const horasSemanaNormal = 43; // Horas estándar de una semana laboral completa
+            const valorPorHora = sueldoBaseSemanal / horasSemanaNormal;
+
+            // Calcular sueldo proporcional
+            const sueldoProporcional = valorPorHora * horasReales;
+
+            // Actualizar el campo de sueldo semanal
+            sueldoSemanal.value = sueldoProporcional.toFixed(2);
+
+            // Recalcular el total
+            calcularTotal();
+        }
+
+        // Función para calcular el total automáticamente
+        function calcularTotal() {
+            const sueldo = parseFloat(sueldoSemanal.value) || 0;
+            const bonos = parseFloat(bonificaciones.value) || 0;
+            const desc = parseFloat(descuentos.value) || 0;
+            
+            // Ejemplos de cálculo del total a pagar:
+            // Sueldo $800 + Bonos $100 - Descuentos $50 = $850
+            // Sueldo $500 + Bonos $0 - Descuentos $25 = $475
+            // Sueldo $1000 + Bonos $200 - Descuentos $100 = $1100
+            // Si descuentos > sueldo+bonos, resultado puede ser negativo
+            
+            const totalCalculado = sueldo + bonos - desc;
+            totalPago.value = totalCalculado.toFixed(2);
+            
+            // Agregar efectos visuales para resaltar el cambio
+            totalPago.style.backgroundColor = totalCalculado > 0 ? '#d4edda' : '#f8d7da';
+            setTimeout(() => {
+                totalPago.style.backgroundColor = '#f8f9fa';
+            }, 1000);
+        }
+        
+        // Función para validar y formatear valores numéricos
+        function validarYFormatearNumero(input) {
+            let valor = parseFloat(input.value) || 0;
+            if (valor < 0) valor = 0; // No permitir valores negativos
+            input.value = valor.toFixed(2);
+            calcularTotal();
+        }
+        
+        // Función para obtener horas trabajadas desde las asistencias
+        async function obtenerHorasDesdeAsistencias() {
+            const idEmpleado = empleadoSelect.value;
+            const fechaInicioVal = fechaInicio.value;
+            const fechaFinVal = fechaFin.value;
+            
+            if (!idEmpleado || !fechaInicioVal || !fechaFinVal) {
+                horasTrabajadas.value = '0.00';
+                horasTrabajadas.title = 'Seleccione empleado y fechas para calcular.';
+                calcularSueldoProporcional();
+                return;
+            }
+            
+            const horasContainer = horasTrabajadas.closest('.col-md-6');
+            // Limpiar alertas previas
+            horasContainer.querySelectorAll('.alert').forEach(a => a.remove());
+
+            try {
+                // Agregar indicador visual de carga
+                horasTrabajadas.parentElement.classList.add('campo-calculado', 'calculando');
+                horasTrabajadas.value = 'Calculando...';
+                
+                const response = await fetch(`/pagos/calcular-horas?idEmpleado=${idEmpleado}&fechaInicio=${fechaInicioVal}&fechaFin=${fechaFinVal}`);
+                const data = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(data.message || 'Error de conexión con el servidor.');
+                }
+                
+                if (data.success) {
+                    horasTrabajadas.value = data.horasTrabajadas; // Viene formateado desde el backend
+                    
+                    // Mostrar desglose de asistencias si está disponible
+                    if (data.desglose && data.desglose.length > 0) {
+                        let tooltipText = 'Desglose de asistencias:\n';
+                        data.desglose.forEach(asist => {
+                            // Formatear fecha para que sea más legible
+                            const fechaAsistencia = new Date(asist.Fecha).toLocaleDateString('es-ES', { year: 'numeric', month: '2-digit', day: '2-digit' });
+                            tooltipText += `${fechaAsistencia}: ${asist.HorasTrabajadas}h (${asist.JornadaLaboral})\n`;
+                        });
+                        horasTrabajadas.title = tooltipText.trim();
+                    } else {
+                        horasTrabajadas.title = 'No se encontraron asistencias para este período.';
+                        if (parseFloat(data.horasTrabajadas) === 0) {
+                             mostrarMensajeInformativo('No se encontraron asistencias en el período seleccionado.', horasContainer);
+                        }
+                    }
+                    
+                    // Feedback visual exitoso
+                    horasTrabajadas.style.backgroundColor = '#d4edda';
+                } else {
+                    horasTrabajadas.value = '0.00';
+                    horasTrabajadas.title = data.message || 'No se pudo calcular.';
+                    mostrarMensajeError(data.message || 'No se encontraron asistencias.', horasContainer);
+                }
+                
+            } catch (error) {
+                console.error('Error al calcular horas:', error);
+                horasTrabajadas.value = '0.00';
+                horasTrabajadas.title = 'Error al calcular. Puede ingresarlo manualmente.';
+                mostrarMensajeError(error.message, horasContainer);
+                horasTrabajadas.style.backgroundColor = '#f8d7da';
+                
+            } finally {
+                // Remover indicador de carga y feedback de color
+                horasTrabajadas.parentElement.classList.remove('campo-calculado', 'calculando');
+                setTimeout(() => {
+                    horasTrabajadas.style.backgroundColor = '';
+                }, 1500);
+                // Recalcular todo al final
+                calcularSueldoProporcional();
+            }
+        }
+        
+        // Función para mostrar mensajes informativos
+        function mostrarMensajeInformativo(mensaje, container) {
+            const alertDiv = document.createElement('div');
+            alertDiv.className = 'alert alert-info alert-dismissible fade show mt-2';
+            alertDiv.style.fontSize = '0.85rem';
+            alertDiv.innerHTML = `
+                <i class="bi bi-info-circle me-2"></i>${mensaje}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            `;
+            container.appendChild(alertDiv);
+        }
+        
+        // Función para mostrar mensajes de error
+        function mostrarMensajeError(mensaje, container) {
+            const alertDiv = document.createElement('div');
+            alertDiv.className = 'alert alert-warning alert-dismissible fade show mt-2';
+            alertDiv.style.fontSize = '0.85rem';
+            alertDiv.innerHTML = `
+                <i class="bi bi-exclamation-triangle me-2"></i>${mensaje}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            `;
+            container.appendChild(alertDiv);
+        }
+        
+        // Eventos
+        if (empleadoSelect) empleadoSelect.addEventListener('change', function() {
+            obtenerSueldoBaseEmpleado();
+            obtenerHorasDesdeAsistencias();
+        });
+        
+        if (fechaInicio) fechaInicio.addEventListener('change', function() {
+            calcularSemanaAnio();
+            sugerirFechaFin();
+            obtenerHorasDesdeAsistencias();
+        });
+        
+        if (fechaFin) fechaFin.addEventListener('change', obtenerHorasDesdeAsistencias);
+        
+        horasTrabajadas.addEventListener('input', function () {
+            calcularSueldoProporcional();
+        });
+        
+        bonificaciones.addEventListener('input', calcularTotal);
+        descuentos.addEventListener('input', calcularTotal);
+        
+        // Permitir edición manual de horas si es necesario
+        if (horasTrabajadas) {
+            horasTrabajadas.addEventListener('input', function() {
+                calcularSueldoProporcional();
+                // Remover tooltip automático si se edita manualmente
+                this.title = 'Editado manualmente';
+            });
+            
+            horasTrabajadas.addEventListener('blur', function() {
+                let valor = parseFloat(this.value) || 0;
+                if (valor < 0) valor = 0;
+                this.value = valor.toFixed(2);
+                calcularSueldoProporcional();
+            });
+        }
+        
+        // Eventos para cálculo automático del total con validación
+        if (bonificaciones) {
+            bonificaciones.addEventListener('input', calcularTotal);
+            bonificaciones.addEventListener('blur', function() { validarYFormatearNumero(this); });
+        }
+        
+        if (descuentos) {
+            descuentos.addEventListener('input', calcularTotal);
+            descuentos.addEventListener('blur', function() { validarYFormatearNumero(this); });
+        }
+        
+        // Inicializar cálculo al cargar la página
+        calcularTotal();
+    });
+    </script>
+</body>
+</html>
