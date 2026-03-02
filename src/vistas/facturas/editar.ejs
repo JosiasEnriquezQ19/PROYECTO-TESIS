@@ -6,123 +6,12 @@
     <title>Editar Factura - CARSIL Equipos y Servicios SAC</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/publico/css/layout.css">
 <style>
-    body { 
-        font-family: 'Montserrat', sans-serif;
-        background: linear-gradient(135deg, #f8fafc 0%, #e9ecef 100%);
-    }
-    .toggle-sidebar-btn {
-        position: absolute;
-        top: 1.2rem;
-        left: 290px;
-        z-index: 1100;
-        background: linear-gradient(135deg, #0056b3, #003366);
-        color: #fff;
-        border: none;
-        border-radius: 50%;
-        width: 40px;
-        height: 40px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        box-shadow: 0 4px 12px rgba(0,86,179,0.3);
-        cursor: pointer;
-        transition: all 0.3s;
-    }
-    .toggle-sidebar-btn:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 6px 16px rgba(0,86,179,0.4);
-    }
-    .sidebar.hide { transform: translateX(-100%); }
-    .main-content.full { margin-left: 0 !important; }
-    @media (max-width: 768px) {
-        .toggle-sidebar-btn { left: 10px; top: 10px; }
-    }
-    .sidebar {
-        width: 270px;
-        min-height: 100vh;
-        background: linear-gradient(180deg, #003366 0%, #001a33 100%);
-        color: #fff;
-        position: fixed;
-        left: 0;
-        top: 0;
-        padding-top: 1rem;
-        z-index: 1000;
-        box-shadow: 4px 0 20px rgba(0,0,0,0.1);
-    }
-    .sidebar .sidebar-heading {
-        font-size: 1.5rem;
-        font-weight: 700;
-        letter-spacing: 2px;
-        color: #fff;
-    }
-    .sidebar .company-slogan {
-        font-size: 0.9rem;
-        color: #b0c4de;
-        font-weight: 300;
-    }
-    .sidebar .menu-item {
-        color: rgba(255,255,255,0.9);
-        padding: 0.8rem 1.2rem;
-        border-radius: 0.7rem;
-        margin: 0.2rem 0.5rem;
-        display: flex;
-        align-items: center;
-        gap: 0.8rem;
-        text-decoration: none;
-        font-weight: 500;
-        transition: all 0.3s;
-        position: relative;
-    }
-    .sidebar .menu-item:hover {
-        background: rgba(0,86,179,0.3);
-        color: #fff;
-        transform: translateX(5px);
-    }
-    .sidebar .menu-item.active {
-        background: linear-gradient(135deg, #0056b3, #0d6efd);
-        color: #fff;
-        box-shadow: 0 2px 8px rgba(0,86,179,0.3);
-    }
-    .sidebar .logout-item {
-        color: #ff6b6b;
-    }
-    .sidebar .logout-item:hover {
-        background: rgba(255,107,107,0.1);
-        color: #ff6b6b;
-    }
-    .main-content {
-        margin-left: 270px;
-        min-height: 100vh;
-        transition: margin 0.3s;
-    }
-    .user-profile {
-        display: flex;
-        align-items: center;
-        gap: 0.8rem;
-    }
-    .user-avatar {
-        background: linear-gradient(135deg, #0056b3, #003366);
-        color: #fff;
-        border-radius: 50%;
-        width: 40px;
-        height: 40px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-weight: 600;
-        font-size: 1.2rem;
-        box-shadow: 0 2px 8px rgba(0,86,179,0.3);
-    }
-    .navbar-top {
-        background: rgba(255,255,255,0.95);
-        backdrop-filter: blur(10px);
-        box-shadow: 0 2px 20px rgba(0,0,0,0.08);
-        border: none;
-    }
-
-    .section-title {
+@media (max-width: 768px) {
+}
+.section-title {
         color: #2c3e50;
         font-weight: 600;
         margin-bottom: 20px;
@@ -450,9 +339,6 @@
 <div class="wrapper">
         <%- include("../parciales/sidebar") %>
     <!-- Botón para ocultar/mostrar barra -->
-    <button class="toggle-sidebar-btn" id="toggleSidebarBtn" title="Ocultar/Mostrar menú">
-        <i class="bi bi-chevron-left" id="toggleIcon"></i>
-    </button>
     <!-- Main Content -->
     <div class="main-content" id="main-content">
         <nav class="navbar navbar-expand-lg navbar-top border-bottom">
@@ -806,25 +692,7 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    // Toggle sidebar
-    const toggleBtn = document.getElementById('toggleSidebarBtn');
-    const sidebar = document.getElementById('sidebar');
-    const mainContent = document.getElementById('main-content');
-    const toggleIcon = document.getElementById('toggleIcon');
-    
-    toggleBtn.addEventListener('click', function() {
-        sidebar.classList.toggle('hide');
-        mainContent.classList.toggle('full');
-        if (sidebar.classList.contains('hide')) {
-            toggleIcon.classList.remove('bi-chevron-left');
-            toggleIcon.classList.add('bi-chevron-right');
-        } else {
-            toggleIcon.classList.remove('bi-chevron-right');
-            toggleIcon.classList.add('bi-chevron-left');
-        }
-    });
-
-    // Variables globales
+    // Toggle sidebar// Variables globales
     let productosDisponibles = [];
     let contadorNuevosProductos = 0;
     let productosModificados = [];
@@ -1169,5 +1037,6 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 </script>
 
+    <script src="/publico/js/layout.js"></script>
 </body>
 </html>
