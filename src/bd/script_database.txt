@@ -674,7 +674,7 @@ ADD FOREIGN KEY (IdDetalleProforma) REFERENCES DETALLE_PROFORMA(IdDetalleProform
 CREATE INDEX idx_detalle_factura_proforma ON DETALLE_FACTURA(IdDetalleProforma);
 CREATE INDEX idx_detalle_factura_tipo ON DETALLE_FACTURA(TipoDetalle);
 
-use railway
+
 
 select * from usuario
 
