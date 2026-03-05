@@ -5,20 +5,20 @@ exports.listarClientes = async (req, res) => {
     try {
         const terminoBusqueda = req.query.termino || ''; // Obtener el término de búsqueda desde la URL
         const clientes = await Cliente.listar(terminoBusqueda); // Filtrar clientes si se proporciona un término
-        res.render('clientes/lista', { 
-            clientes, 
-            title: 'Lista de Clientes', 
-            terminoBusqueda, 
-            success: req.query.success || null, 
+        res.render('clientes/lista', {
+            clientes,
+            title: 'Lista de Clientes',
+            terminoBusqueda,
+            success: req.query.success || null,
             error: req.query.error || null,
             user: req.user
         });
     } catch (error) {
         console.error('Error al listar clientes:', error);
-        res.render('clientes/lista', { 
-            clientes: [], 
-            title: 'Lista de Clientes', 
-            terminoBusqueda: '', 
+        res.render('clientes/lista', {
+            clientes: [],
+            title: 'Lista de Clientes',
+            terminoBusqueda: '',
             success: null,
             error: 'Error al cargar la lista de clientes.',
             user: req.user
@@ -28,27 +28,27 @@ exports.listarClientes = async (req, res) => {
 
 // Buscar clientes
 exports.buscarClientes = async (req, res) => {
-  try {
-    const termino = req.query.termino || '';
-    const clientes = await Cliente.search(termino);
-    res.render('clientes/listar', {
-      title: 'Resultados de Búsqueda',
-      clientes,
-      terminoBusqueda: termino,
-      success: req.flash('success'),
-      error: req.flash('error'),
-      user: req.user
-    });
-  } catch (error) {
-    console.error('Error al buscar clientes:', error);
-    req.flash('error', 'Error al buscar clientes');
-    res.redirect('/clientes');
-  }
+    try {
+        const termino = req.query.termino || '';
+        const clientes = await Cliente.search(termino);
+        res.render('clientes/listar', {
+            title: 'Resultados de Búsqueda',
+            clientes,
+            terminoBusqueda: termino,
+            success: req.flash('success'),
+            error: req.flash('error'),
+            user: req.user
+        });
+    } catch (error) {
+        console.error('Error al buscar clientes:', error);
+        req.flash('error', 'Error al buscar clientes');
+        res.redirect('/clientes');
+    }
 };
 
 // Mostrar formulario de creación
 exports.mostrarFormularioCrear = (req, res) => {
-    res.render('clientes/crear', { 
+    res.render('clientes/crear', {
         title: 'Crear Cliente',
         user: req.user
     });
@@ -99,13 +99,13 @@ exports.actualizarCliente = async (req, res) => {
     }
 };
 
-// Eliminar cliente
+// Eliminar cliente (Inactivar)
 exports.eliminarCliente = async (req, res) => {
     try {
         await Cliente.eliminar(req.params.id);
         res.redirect('/clientes');
     } catch (error) {
-        console.error('Error al eliminar cliente:', error);
+        console.error('Error al inactivar cliente:', error);
         res.redirect('/clientes');
     }
 };

@@ -90,7 +90,7 @@ class Empleado {
 
     static async delete(id) {
         try {
-            const [result] = await db.query(`DELETE FROM EMPLEADO WHERE IdEmpleado = ?`, [id]);
+            const [result] = await db.query(`UPDATE EMPLEADO SET Estado = 'INACTIVO' WHERE IdEmpleado = ?`, [id]);
             return result.affectedRows;
         } catch (error) {
             throw error;

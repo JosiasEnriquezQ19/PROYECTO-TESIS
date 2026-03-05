@@ -4,184 +4,239 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Nuevo Usuario - CARSIL Equipos y Servicios SAC</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"><\/script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+    <script id="tailwind-config">
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: { "primary": "#3b4bc9", "background-light": "#f6f6f8" },
+                    fontFamily: { "display": ["Inter", "sans-serif"] },
+                },
+            },
+        }
+    <\/script>
     <link rel="stylesheet" href="/publico/css/layout.css?v=1772427290148">
-    <link rel="stylesheet" href="/publico/css/form-views.css?v=1772427290148">
-    
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        .main-content { padding: 0 !important; background: #f6f6f8; }
+    </style>
 </head>
-<body>
-    <div class="wrapper">
-        <%- include("../parciales/sidebar") %>
-        
-        <!-- Botón para ocultar/mostrar barra -->
-        
-        <!-- Main Content -->
-        <div class="main-content" id="main-content">
-            <nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom">
-                <div class="container-fluid">
-                    <span class="navbar-brand ms-3 fw-bold">Nuevo Usuario</span>
-                    <div class="user-profile ms-auto">
-                        <span>Administrador</span>
-                        <div class="user-avatar">A</div>
-                    </div>
+<body class="bg-[#f6f6f8] text-slate-900 font-display">
+<div class="wrapper">
+    <%- include("../parciales/sidebar") %>
+
+    <div class="main-content" id="main-content">
+
+        <!-- Top Nav -->
+        <header class="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-8 sticky top-0 z-10 shadow-sm">
+            <div class="flex items-center gap-2">
+                <span class="text-slate-400 text-sm">Panel</span>
+                <span class="material-symbols-outlined text-sm text-slate-300">chevron_right</span>
+                <span class="font-semibold text-sm">Nuevo Usuario</span>
+            </div>
+            <div class="flex items-center gap-3">
+                <div class="h-8 w-px bg-slate-200"></div>
+                <div class="w-8 h-8 rounded-full bg-[#3b4bc9] flex items-center justify-center text-white text-xs font-bold">
+                    <%= user && user.Nombres ? user.Nombres.charAt(0) : 'A' %>
                 </div>
-            </nav>
-            
-            <div class="container-fluid py-4">
+                <span class="text-sm font-medium hidden sm:inline-block">
+                    <%= user && user.Nombres ? user.Nombres : 'Administrador' %>
+                </span>
+            </div>
+        </header>
+
+        <!-- Page Content -->
+        <div class="flex items-start justify-center min-h-[calc(100vh-4rem)] p-8">
+            <div class="bg-white w-full max-w-2xl rounded-xl shadow-xl flex flex-col border border-slate-200 overflow-hidden">
+
+                <!-- Modal Header -->
+                <div class="px-8 py-6 border-b border-slate-100 flex justify-between items-center bg-slate-50/50">
+                    <div>
+                        <h2 class="text-xl font-bold text-slate-900">Crear Nuevo Usuario</h2>
+                        <p class="text-sm text-slate-500 mt-0.5">Registra un nuevo miembro en el sistema CARSIL.</p>
+                    </div>
+                    <a href="/usuarios" class="text-slate-400 hover:text-slate-600 transition-colors" title="Cancelar">
+                        <span class="material-symbols-outlined">close</span>
+                    </a>
+                </div>
+
+                <!-- Alerts -->
                 <% if (error && error.length > 0) { %>
-                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                        <%= error %>
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                    </div>
-                <% } %>
-                
-                <div class="card mb-4">
-                    <div class="card-header d-flex justify-content-between align-items-center">
-                        <h5 class="mb-0"><i class="bi bi-person-plus me-2"></i> Registrar Nuevo Usuario</h5>
-                        <a href="/usuarios" class="btn btn-outline-light btn-sm">
-                            <i class="bi bi-arrow-left me-1"></i> Volver
-                        </a>
-                    </div>
-                    <div class="card-body">
-                        <form action="/usuarios/crear" method="POST">
-                            <!-- Información Personal -->
-                            <div class="form-section">
-                                <h6 class="form-section-title"><i class="bi bi-person-lines-fill me-2"></i> Información Personal</h6>
-                                <div class="row g-3">
-                                    <div class="col-md-6">
-                                        <label for="Nombres" class="form-label">Nombres</label>
-                                        <input type="text" class="form-control-modern" id="Nombres" name="Nombres" required>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <label for="Apellidos" class="form-label">Apellidos</label>
-                                        <input type="text" class="form-control-modern" id="Apellidos" name="Apellidos" required>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <label for="TipoDocumento" class="form-label">Tipo de Documento</label>
-                                        <select class="form-control-modern form-select-modern" id="TipoDocumento" name="TipoDocumento">
-                                            <option value="DNI" selected>DNI</option>
-                                            <option value="RUC">RUC</option>
-                                            <option value="CE">Carné de Extranjería</option>
-                                            <option value="PASAPORTE">Pasaporte</option>
-                                        </select>
-                                    </div>
-                                    <div class="col-md-8">
-                                        <label for="NumeroDocumento" class="form-label">Número de Documento</label>
-                                        <input type="text" class="form-control-modern" id="NumeroDocumento" name="NumeroDocumento" required>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <!-- Información de Contacto -->
-                            <div class="form-section">
-                                <h6 class="form-section-title"><i class="bi bi-telephone me-2"></i> Información de Contacto</h6>
-                                <div class="row g-3">
-                                    <div class="col-md-6">
-                                        <label for="Correo" class="form-label">Correo Electrónico</label>
-                                        <input type="email" class="form-control-modern" id="Correo" name="Correo" required>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <label for="Telefono" class="form-label">Teléfono</label>
-                                        <input type="text" class="form-control-modern" id="Telefono" name="Telefono">
-                                    </div>
-                                    <div class="col-12">
-                                        <label for="Direccion" class="form-label">Dirección</label>
-                                        <input type="text" class="form-control-modern" id="Direccion" name="Direccion">
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <!-- Credenciales y Rol -->
-                            <div class="form-section">
-                                <h6 class="form-section-title"><i class="bi bi-shield-lock me-2"></i> Credenciales y Rol</h6>
-                                <div class="row g-3">
-                                    <div class="col-md-6">
-                                        <label for="Clave" class="form-label">Contraseña</label>
-                                        <div class="input-group">
-                                            <input type="password" class="form-control-modern" id="Clave" name="Clave">
-                                            <button class="btn btn-form btn-form-cancel toggle-password" type="button" tabindex="-1" data-target="Clave">
-                                                <i class="bi bi-eye" id="iconClave"></i>
-                                            </button>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <label for="ConfirmarClave" class="form-label">Confirmar Contraseña</label>
-                                        <div class="input-group">
-                                            <input type="password" class="form-control-modern" id="ConfirmarClave" name="ConfirmarClave">
-                                            <button class="btn btn-form btn-form-cancel toggle-password" type="button" tabindex="-1" data-target="ConfirmarClave">
-                                                <i class="bi bi-eye" id="iconConfirmarClave"></i>
-                                            </button>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <label for="IdRol" class="form-label">Rol</label>
-                                        <select class="form-control-modern form-select-modern" id="IdRol" name="IdRol" required>
-                                            <option value="">Seleccionar rol...</option>
-                                            <% roles.forEach(rol => { %>
-                                                <option value="<%= rol.IdRol %>"><%= rol.Descripcion %></option>
-                                            <% }); %>
-                                        </select>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <label for="Estado" class="form-label">Estado</label>
-                                        <select class="form-control-modern form-select-modern" id="Estado" name="Estado">
-                                            <option value="1" selected>Activo</option>
-                                            <option value="0">Inactivo</option>
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <div class="d-flex justify-content-end mt-4">
-                                <button type="submit" class="btn-form btn-form-primary">
-                                    <i class="bi bi-save me-2"></i> Guardar Usuario
-                                </button>
-                            </div>
-                        </form>
-                    </div>
+                <div class="mx-8 mt-6 flex items-center gap-3 bg-rose-50 border border-rose-200 text-rose-800 px-4 py-3 rounded-xl text-sm">
+                    <span class="material-symbols-outlined text-rose-500">error</span>
+                    <span><%= error %></span>
                 </div>
+                <% } %>
+
+                <form action="/usuarios/crear" method="POST">
+                <div class="flex-1 overflow-y-auto px-8 py-6 space-y-8">
+
+                    <!-- Sección 1: Información Personal -->
+                    <section>
+                        <div class="flex items-center gap-2 mb-4">
+                            <div class="p-1.5 bg-[#3b4bc9]/10 rounded-lg">
+                                <span class="material-symbols-outlined text-[#3b4bc9] text-[20px]">person</span>
+                            </div>
+                            <h3 class="font-semibold text-slate-800">Información Personal</h3>
+                        </div>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div class="space-y-1.5">
+                                <label class="text-xs font-semibold text-slate-500 uppercase tracking-wider ml-1" for="Nombres">Nombres</label>
+                                <div class="relative">
+                                    <input class="w-full pl-10 pr-4 py-2.5 rounded-lg border border-slate-200 bg-white focus:ring-2 focus:ring-[#3b4bc9]/20 focus:border-[#3b4bc9] outline-none transition-all text-sm" id="Nombres" name="Nombres" placeholder="Ej: Juan" type="text" required>
+                                    <span class="material-symbols-outlined absolute left-3 top-2.5 text-slate-400 text-[18px]">badge</span>
+                                </div>
+                            </div>
+                            <div class="space-y-1.5">
+                                <label class="text-xs font-semibold text-slate-500 uppercase tracking-wider ml-1" for="Apellidos">Apellidos</label>
+                                <div class="relative">
+                                    <input class="w-full pl-10 pr-4 py-2.5 rounded-lg border border-slate-200 bg-white focus:ring-2 focus:ring-[#3b4bc9]/20 focus:border-[#3b4bc9] outline-none transition-all text-sm" id="Apellidos" name="Apellidos" placeholder="Ej: Pérez" type="text" required>
+                                    <span class="material-symbols-outlined absolute left-3 top-2.5 text-slate-400 text-[18px]">badge</span>
+                                </div>
+                            </div>
+                            <div class="space-y-1.5">
+                                <label class="text-xs font-semibold text-slate-500 uppercase tracking-wider ml-1" for="TipoDocumento">Tipo de Documento</label>
+                                <div class="relative">
+                                    <select class="w-full pl-10 pr-4 py-2.5 rounded-lg border border-slate-200 bg-white focus:ring-2 focus:ring-[#3b4bc9]/20 focus:border-[#3b4bc9] outline-none appearance-none transition-all text-sm" id="TipoDocumento" name="TipoDocumento">
+                                        <option value="DNI">DNI</option>
+                                        <option value="RUC">RUC</option>
+                                        <option value="CE">Carné de Extranjería</option>
+                                        <option value="PASAPORTE">Pasaporte</option>
+                                    </select>
+                                    <span class="material-symbols-outlined absolute left-3 top-2.5 text-slate-400 text-[18px]">contact_page</span>
+                                </div>
+                            </div>
+                            <div class="space-y-1.5">
+                                <label class="text-xs font-semibold text-slate-500 uppercase tracking-wider ml-1" for="NumeroDocumento">Número de Documento</label>
+                                <div class="relative">
+                                    <input class="w-full pl-10 pr-4 py-2.5 rounded-lg border border-slate-200 bg-white focus:ring-2 focus:ring-[#3b4bc9]/20 focus:border-[#3b4bc9] outline-none transition-all text-sm" id="NumeroDocumento" name="NumeroDocumento" placeholder="00000000" type="text" required>
+                                    <span class="material-symbols-outlined absolute left-3 top-2.5 text-slate-400 text-[18px]">fingerprint</span>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Sección 2: Información de Contacto -->
+                    <section>
+                        <div class="flex items-center gap-2 mb-4">
+                            <div class="p-1.5 bg-[#3b4bc9]/10 rounded-lg">
+                                <span class="material-symbols-outlined text-[#3b4bc9] text-[20px]">alternate_email</span>
+                            </div>
+                            <h3 class="font-semibold text-slate-800">Información de Contacto</h3>
+                        </div>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div class="space-y-1.5">
+                                <label class="text-xs font-semibold text-slate-500 uppercase tracking-wider ml-1" for="Correo">Correo Electrónico</label>
+                                <div class="relative">
+                                    <input class="w-full pl-10 pr-4 py-2.5 rounded-lg border border-slate-200 bg-white focus:ring-2 focus:ring-[#3b4bc9]/20 focus:border-[#3b4bc9] outline-none transition-all text-sm" id="Correo" name="Correo" placeholder="usuario@carsil.com" type="email" required>
+                                    <span class="material-symbols-outlined absolute left-3 top-2.5 text-slate-400 text-[18px]">mail</span>
+                                </div>
+                            </div>
+                            <div class="space-y-1.5">
+                                <label class="text-xs font-semibold text-slate-500 uppercase tracking-wider ml-1" for="Telefono">Teléfono</label>
+                                <div class="relative">
+                                    <input class="w-full pl-10 pr-4 py-2.5 rounded-lg border border-slate-200 bg-white focus:ring-2 focus:ring-[#3b4bc9]/20 focus:border-[#3b4bc9] outline-none transition-all text-sm" id="Telefono" name="Telefono" placeholder="+51 987 654 321" type="tel">
+                                    <span class="material-symbols-outlined absolute left-3 top-2.5 text-slate-400 text-[18px]">phone</span>
+                                </div>
+                            </div>
+                            <div class="col-span-2 space-y-1.5">
+                                <label class="text-xs font-semibold text-slate-500 uppercase tracking-wider ml-1" for="Direccion">Dirección</label>
+                                <div class="relative">
+                                    <input class="w-full pl-10 pr-4 py-2.5 rounded-lg border border-slate-200 bg-white focus:ring-2 focus:ring-[#3b4bc9]/20 focus:border-[#3b4bc9] outline-none transition-all text-sm" id="Direccion" name="Direccion" placeholder="Av. Principal 123, Lima" type="text">
+                                    <span class="material-symbols-outlined absolute left-3 top-2.5 text-slate-400 text-[18px]">location_on</span>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Sección 3: Credenciales y Rol -->
+                    <section>
+                        <div class="flex items-center gap-2 mb-4">
+                            <div class="p-1.5 bg-[#3b4bc9]/10 rounded-lg">
+                                <span class="material-symbols-outlined text-[#3b4bc9] text-[20px]">lock</span>
+                            </div>
+                            <h3 class="font-semibold text-slate-800">Credenciales y Rol</h3>
+                        </div>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div class="space-y-1.5">
+                                <label class="text-xs font-semibold text-slate-500 uppercase tracking-wider ml-1" for="Clave">Contraseña</label>
+                                <div class="relative">
+                                    <input class="w-full pl-10 pr-10 py-2.5 rounded-lg border border-slate-200 bg-white focus:ring-2 focus:ring-[#3b4bc9]/20 focus:border-[#3b4bc9] outline-none transition-all text-sm" id="Clave" name="Clave" placeholder="••••••••" type="password">
+                                    <span class="material-symbols-outlined absolute left-3 top-2.5 text-slate-400 text-[18px]">key</span>
+                                    <button type="button" class="toggle-password absolute right-3 top-2.5 text-slate-400 hover:text-slate-600" data-target="Clave">
+                                        <span class="material-symbols-outlined text-[18px]">visibility</span>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="space-y-1.5">
+                                <label class="text-xs font-semibold text-slate-500 uppercase tracking-wider ml-1" for="ConfirmarClave">Confirmar Contraseña</label>
+                                <div class="relative">
+                                    <input class="w-full pl-10 pr-10 py-2.5 rounded-lg border border-slate-200 bg-white focus:ring-2 focus:ring-[#3b4bc9]/20 focus:border-[#3b4bc9] outline-none transition-all text-sm" id="ConfirmarClave" name="ConfirmarClave" placeholder="••••••••" type="password">
+                                    <span class="material-symbols-outlined absolute left-3 top-2.5 text-slate-400 text-[18px]">verified_user</span>
+                                    <button type="button" class="toggle-password absolute right-3 top-2.5 text-slate-400 hover:text-slate-600" data-target="ConfirmarClave">
+                                        <span class="material-symbols-outlined text-[18px]">visibility</span>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="space-y-1.5">
+                                <label class="text-xs font-semibold text-slate-500 uppercase tracking-wider ml-1" for="IdRol">Rol del Sistema</label>
+                                <div class="relative">
+                                    <select class="w-full pl-10 pr-4 py-2.5 rounded-lg border border-slate-200 bg-white focus:ring-2 focus:ring-[#3b4bc9]/20 focus:border-[#3b4bc9] outline-none appearance-none transition-all text-sm" id="IdRol" name="IdRol" required>
+                                        <option value="">Seleccionar rol...</option>
+                                        <% roles.forEach(rol => { %>
+                                        <option value="<%= rol.IdRol %>"><%= rol.Descripcion %></option>
+                                        <% }); %>
+                                    </select>
+                                    <span class="material-symbols-outlined absolute left-3 top-2.5 text-slate-400 text-[18px]">manage_accounts</span>
+                                </div>
+                            </div>
+                            <div class="space-y-1.5">
+                                <label class="text-xs font-semibold text-slate-500 uppercase tracking-wider ml-1" for="Estado">Estado de Cuenta</label>
+                                <div class="relative">
+                                    <select class="w-full pl-10 pr-4 py-2.5 rounded-lg border border-slate-200 bg-white focus:ring-2 focus:ring-[#3b4bc9]/20 focus:border-[#3b4bc9] outline-none appearance-none transition-all text-sm" id="Estado" name="Estado">
+                                        <option value="1">Activo</option>
+                                        <option value="0">Inactivo</option>
+                                    </select>
+                                    <span class="material-symbols-outlined absolute left-3 top-2.5 text-slate-400 text-[18px]">toggle_on</span>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                </div>
+
+                <!-- Modal Footer -->
+                <div class="px-8 py-5 border-t border-slate-100 flex justify-end gap-3 bg-slate-50">
+                    <a href="/usuarios" class="px-5 py-2.5 rounded-lg font-semibold text-slate-600 hover:bg-slate-200 transition-colors border border-slate-200">
+                        Cancelar
+                    </a>
+                    <button type="submit" class="px-6 py-2.5 rounded-lg font-semibold text-white bg-[#3b4bc9] hover:bg-[#3b4bc9]/90 transition-all shadow-lg shadow-[#3b4bc9]/20 active:scale-[0.98]">
+                        Guardar Usuario
+                    </button>
+                </div>
+                </form>
+
             </div>
         </div>
     </div>
+</div>
     
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const toggleBtn = document.getElementById('toggleSidebarBtn');
-        const sidebar = document.getElementById('sidebar');
-        const mainContent = document.getElementById('main-content');
-        const toggleIcon = document.getElementById('toggleIcon');
-        // Sidebar toggle
-        toggleBtn.addEventListener('click', function() {
-            sidebar.classList.toggle('hide');
-            mainContent.classList.toggle('full');
-            if (sidebar.classList.contains('hide')) {
-                toggleIcon.classList.remove('bi-chevron-left');
-                toggleIcon.classList.add('bi-chevron-right');
+    document.querySelectorAll('.toggle-password').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+            const input = document.getElementById(btn.getAttribute('data-target'));
+            const icon = btn.querySelector('.material-symbols-outlined');
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.textContent = 'visibility_off';
             } else {
-                toggleIcon.classList.remove('bi-chevron-right');
-                toggleIcon.classList.add('bi-chevron-left');
+                input.type = 'password';
+                icon.textContent = 'visibility';
             }
-        });
-
-        // Mostrar/ocultar contraseña
-        document.querySelectorAll('.toggle-password').forEach(function(btn) {
-            btn.addEventListener('click', function() {
-                const targetId = btn.getAttribute('data-target');
-                const input = document.getElementById(targetId);
-                const icon = btn.querySelector('i');
-                if (input.type === 'password') {
-                    input.type = 'text';
-                    icon.classList.remove('bi-eye');
-                    icon.classList.add('bi-eye-slash');
-                } else {
-                    input.type = 'password';
-                    icon.classList.remove('bi-eye-slash');
-                    icon.classList.add('bi-eye');
-                }
-            });
         });
     });
     </script>

@@ -196,11 +196,11 @@ exports.update = async (req, res) => {
 exports.delete = async (req, res) => {
     try {
         await Proforma.eliminar(req.params.id);
-        req.flash('success', 'Proforma eliminada correctamente');
+        req.flash('success', 'Proforma inactivada correctamente');
         res.redirect('/proformas');
     } catch (error) {
         console.error('Error en controlador delete:', error);
-        req.flash('error', 'Error al eliminar la proforma: ' + error.message);
+        req.flash('error', 'Error al inactivar la proforma: ' + error.message);
         res.redirect('/proformas');
     }
 };

@@ -8,8 +8,8 @@ exports.list = async (req, res) => {
             Usuario.getAll()
         ]);
         const user = req.session && req.session.usuario ? req.session.usuario : null;
-        
-        res.render('empleados/lista', { 
+
+        res.render('empleados/lista', {
             empleados,
             usuarios,
             user: user,
@@ -27,8 +27,8 @@ exports.createForm = async (req, res) => {
     try {
         const usuarios = await Usuario.getAll();
         const user = req.session && req.session.usuario ? req.session.usuario : null;
-        
-        res.render('empleados/create', { 
+
+        res.render('empleados/create', {
             usuarios,
             user: user,
             messages: {
@@ -60,13 +60,13 @@ exports.editForm = async (req, res) => {
         const empleado = await Empleado.getById(req.params.id);
         const usuarios = await Usuario.getAll();
         const user = req.session && req.session.usuario ? req.session.usuario : null;
-        
+
         if (!empleado) {
             req.flash('error', 'Empleado no encontrado');
             return res.redirect('/empleados');
         }
-        
-        res.render('empleados/edit', { 
+
+        res.render('empleados/edit', {
             empleado,
             usuarios,
             user: user,
@@ -97,11 +97,11 @@ exports.update = async (req, res) => {
 exports.delete = async (req, res) => {
     try {
         await Empleado.delete(req.params.id);
-        req.flash('success', 'Empleado eliminado exitosamente');
+        req.flash('success', 'Empleado inactivado exitosamente');
         res.redirect('/empleados');
     } catch (error) {
-        console.error('Error al eliminar empleado:', error);
-        req.flash('error', 'Error al eliminar empleado');
+        console.error('Error al inactivar empleado:', error);
+        req.flash('error', 'Error al inactivar empleado');
         res.redirect('/empleados');
     }
 };

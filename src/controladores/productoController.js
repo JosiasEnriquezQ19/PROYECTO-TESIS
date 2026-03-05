@@ -5,7 +5,7 @@ exports.listarProductos = async (req, res) => {
     try {
         const terminoBusqueda = req.query.termino || '';
         const codigo = req.query.codigo || '';
-        
+
         // Obtener productos según los filtros aplicados
         let productos;
         if (codigo) {
@@ -18,7 +18,7 @@ exports.listarProductos = async (req, res) => {
             // Sin filtros, mostrar todos
             productos = await Producto.listar();
         }
-        
+
         res.render('productos/lista', {
             productos,
             title: 'Lista de Productos',
@@ -44,7 +44,7 @@ exports.listarProductos = async (req, res) => {
 
 // Mostrar formulario de creación
 exports.mostrarFormularioCrear = (req, res) => {
-    res.render('productos/crear', { 
+    res.render('productos/crear', {
         title: 'Crear Producto',
         user: req.user
     });
@@ -87,8 +87,8 @@ exports.crearProducto = async (req, res) => {
 exports.mostrarFormularioEditar = async (req, res) => {
     try {
         const producto = await Producto.obtenerPorId(req.params.id);
-        res.render('productos/editar', { 
-            producto, 
+        res.render('productos/editar', {
+            producto,
             title: 'Editar Producto',
             user: req.user
         });
@@ -119,14 +119,14 @@ exports.actualizarProducto = async (req, res) => {
     }
 };
 
-// Eliminar producto
+// Eliminar producto (Inactivar)
 exports.eliminarProducto = async (req, res) => {
     try {
         await Producto.eliminar(req.params.id);
-        res.redirect('/productos?success=Producto eliminado exitosamente');
+        res.redirect('/productos?success=Producto inactivado exitosamente');
     } catch (error) {
-        console.error('Error al eliminar producto:', error);
-        res.redirect('/productos?error=Error al eliminar el producto');
+        console.error('Error al inactivar producto:', error);
+        res.redirect('/productos?error=Error al inactivar el producto');
     }
 };
 

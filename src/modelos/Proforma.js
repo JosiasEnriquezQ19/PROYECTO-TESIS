@@ -411,33 +411,15 @@ class Proforma {
     }
 
     static async eliminar(id) {
-        const connection = await conexion.getConnection();
         try {
-            // Iniciar transacción
-            await connection.beginTransaction();
-
-            // 1. Eliminar detalles primero (por integridad referencial)
-            const sqlEliminarDetalles = 'DELETE FROM DETALLE_PROFORMA WHERE IdProforma = ?';
-            await connection.query(sqlEliminarDetalles, [id]);
-            console.log('Detalles de proforma eliminados');
-
-            // 2. Eliminar proforma principal
-            const sqlEliminarProforma = 'DELETE FROM PROFORMA WHERE IdProforma = ?';
-            await connection.query(sqlEliminarProforma, [id]);
-            console.log('Proforma eliminada');
-
-            // Confirmar transacción
-            await connection.commit();
-            console.log('Proforma y detalles eliminados exitosamente');
-
+            // Cambiar estado de proforma a ANULADA
+            const sqlInactivarProforma = "UPDATE PROFORMA SET Estado = 'ANULADA' WHERE IdProforma = ?";
+            await conexion.query(sqlInactivarProforma, [id]);
+            console.log('Proforma inactivada (anulada)');
+            console.log('Proforma inactivada exitosamente');
         } catch (error) {
-            // Revertir transacción en caso de error
-            await connection.rollback();
             console.error('Error en Proforma.eliminar:', error);
             throw error;
-        } finally {
-            // Liberar conexión
-            connection.release();
         }
     }
 

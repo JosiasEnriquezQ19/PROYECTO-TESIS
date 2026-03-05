@@ -79,9 +79,9 @@ class FacturaController {
                 });
             }
 
-            const { 
+            const {
                 IdProforma, IdCliente, IdEmpresa, FechaEmision, FechaVencimiento,
-                FormaPago, Observaciones, productos 
+                FormaPago, Observaciones, productos
             } = req.body;
 
             // Validaciones básicas
@@ -100,9 +100,9 @@ class FacturaController {
                 const cantidad = parseFloat(prod.cantidad);
                 const precio = parseFloat(prod.precio);
                 const total = cantidad * precio;
-                
+
                 subTotal += total;
-                
+
                 detallesFactura.push({
                     IdProducto: prod.idProducto,
                     Cantidad: cantidad,
@@ -145,7 +145,7 @@ class FacturaController {
 
         } catch (error) {
             console.error('Error al crear factura:', error);
-            
+
             if (req.headers['content-type'] && req.headers['content-type'].includes('application/json')) {
                 res.status(500).json({
                     success: false,
@@ -245,7 +245,7 @@ class FacturaController {
         let idFactura = null;
         try {
             idFactura = req.params.id;
-            const { 
+            const {
                 IdProforma, IdCliente, FechaEmision, FechaVencimiento,
                 FormaPago, Observaciones, Estado,
                 productosModificados, productosEliminados, nuevosProductos
@@ -316,7 +316,7 @@ class FacturaController {
             // Recalcular totales de la factura
             const detallesActualizados = await this.facturaModel.obtenerDetallesPorFactura(idFactura);
             let subTotal = 0;
-            
+
             for (const detalle of detallesActualizados) {
                 subTotal += parseFloat(detalle.Total);
             }
@@ -358,7 +358,7 @@ class FacturaController {
 
         } catch (error) {
             console.error('Error al actualizar factura:', error);
-            
+
             if (req.headers['content-type'] && req.headers['content-type'].includes('application/json')) {
                 res.status(500).json({
                     success: false,
@@ -376,10 +376,10 @@ class FacturaController {
     async eliminar(req, res) {
         try {
             const idFactura = req.params.id;
-            
+
             // Verificar si la factura puede ser eliminada
             const verificacion = await this.facturaModel.puedeEliminar(idFactura);
-            
+
             if (!verificacion.facturaExiste) {
                 if (req.headers['content-type'] && req.headers['content-type'].includes('application/json')) {
                     return res.status(404).json({
@@ -390,7 +390,7 @@ class FacturaController {
                     return res.redirect('/facturas?error=' + encodeURIComponent('Factura no encontrada'));
                 }
             }
-            
+
             if (!verificacion.puedeEliminar) {
                 if (req.headers['content-type'] && req.headers['content-type'].includes('application/json')) {
                     return res.status(400).json({
@@ -401,15 +401,15 @@ class FacturaController {
                     return res.redirect('/facturas?error=' + encodeURIComponent(verificacion.razon));
                 }
             }
-            
+
             // Log para información
-            console.log(`Eliminando factura ${idFactura}:`, verificacion);
-            
+            console.log(`Inactivando factura ${idFactura}:`, verificacion);
+
             await this.facturaModel.eliminar(idFactura);
 
-            const mensaje = verificacion.tieneVentas || verificacion.tieneContratos ? 
-                `Factura eliminada exitosamente. ${verificacion.razon}` : 
-                'Factura eliminada exitosamente';
+            const mensaje = verificacion.tieneVentas || verificacion.tieneContratos ?
+                `Factura inactivada exitosamente. ${verificacion.razon}` :
+                'Factura inactivada exitosamente';
 
             if (req.headers['content-type'] && req.headers['content-type'].includes('application/json')) {
                 res.json({
@@ -423,18 +423,18 @@ class FacturaController {
 
         } catch (error) {
             console.error('Error al eliminar factura:', error);
-            
-            let errorMessage = 'Error al eliminar la factura';
-            
+
+            let errorMessage = 'Error al inactivar la factura';
+
             // Manejar errores específicos de MySQL/base de datos
             if (error.code === 'ER_ROW_IS_REFERENCED_2') {
-                errorMessage = 'No se puede eliminar la factura porque tiene registros relacionados';
+                errorMessage = 'No se puede inactivar la factura porque tiene registros relacionados';
             } else if (error.code === 'ER_NO_REFERENCED_ROW_2') {
                 errorMessage = 'Error de integridad referencial en la base de datos';
             } else if (error.message) {
-                errorMessage = `Error al eliminar la factura: ${error.message}`;
+                errorMessage = `Error al inactivar la factura: ${error.message}`;
             }
-            
+
             if (req.headers['content-type'] && req.headers['content-type'].includes('application/json')) {
                 res.status(500).json({
                     success: false,
@@ -464,7 +464,7 @@ class FacturaController {
 
             // Primero verificar que la proforma existe y está aprobada
             const proformaData = await Proforma.obtenerPorId(idProforma);
-            
+
             if (!proformaData) {
                 return res.status(404).json({
                     success: false,
@@ -473,7 +473,7 @@ class FacturaController {
             }
 
             const { proforma } = proformaData;
-            
+
             // Verificar que la proforma esté aprobada
             if (proforma.Estado !== 'APROBADA') {
                 return res.status(400).json({
@@ -506,7 +506,7 @@ class FacturaController {
 
         } catch (error) {
             console.error('Error al crear factura desde proforma:', error);
-            
+
             if (req.headers['content-type'] && req.headers['content-type'].includes('application/json')) {
                 res.status(500).json({
                     success: false,
@@ -562,7 +562,7 @@ class FacturaController {
 
             // Verificar que la proforma existe y está aprobada
             const proformaData = await Proforma.obtenerPorId(idProforma);
-            
+
             if (!proformaData) {
                 const [clientes, productos, empresas, proformas] = await Promise.all([
                     Cliente.listar(),
@@ -603,7 +603,7 @@ class FacturaController {
                     success: null
                 });
             }
-            
+
             // Verificar que no exista ya una factura para esta proforma
             const facturaExistente = await this.facturaModel.obtenerPorProforma(idProforma);
             if (facturaExistente) {
@@ -629,7 +629,7 @@ class FacturaController {
             // Procesar productos de la proforma original
             let detallesFactura = [];
             let subtotalOriginal = 0;
-            
+
             if (proformaData.detalle && Array.isArray(proformaData.detalle)) {
                 detallesFactura = proformaData.detalle.map(detalle => {
                     const detalleFactura = {
@@ -642,7 +642,7 @@ class FacturaController {
                         IdDetalleProforma: detalle.IdDetalleProforma,
                         TipoDetalle: 'ORIGINAL'
                     };
-                    
+
                     subtotalOriginal += parseFloat(detalleFactura.Total);
                     return detalleFactura;
                 });
@@ -654,7 +654,7 @@ class FacturaController {
                 for (const productoAdicional of productosAdicionales) {
                     if (productoAdicional.IdProducto && productoAdicional.Cantidad > 0) {
                         const totalProducto = parseFloat(productoAdicional.Cantidad) * parseFloat(productoAdicional.PrecioUnitario);
-                        
+
                         detallesFactura.push({
                             IdProducto: parseInt(productoAdicional.IdProducto),
                             Cantidad: parseFloat(productoAdicional.Cantidad),
@@ -665,7 +665,7 @@ class FacturaController {
                             IdDetalleProforma: null,
                             TipoDetalle: 'ADICIONAL'
                         });
-                        
+
                         subtotalAdicionales += totalProducto;
                     }
                 }
@@ -698,7 +698,7 @@ class FacturaController {
 
         } catch (error) {
             console.error('Error al crear factura desde proforma:', error);
-            
+
             // Obtener datos para el formulario en caso de error
             try {
                 const [clientes, productos, empresas, proformas] = await Promise.all([
@@ -739,7 +739,7 @@ class FacturaController {
         try {
             const termino = req.query.q || '';
             const facturas = await this.facturaModel.buscar(termino);
-            
+
             res.json({
                 success: true,
                 data: facturas
@@ -759,7 +759,7 @@ class FacturaController {
     async obtenerDatosAPI(req, res) {
         try {
             const estadisticas = await this.facturaModel.obtenerEstadisticas();
-            
+
             res.json({
                 success: true,
                 data: estadisticas
@@ -838,7 +838,7 @@ class FacturaController {
             const codigo = req.params.codigo;
 
             const resultado = await Proforma.obtenerPorCodigo(codigo);
-            
+
             if (!resultado) {
                 return res.json({
                     success: false,

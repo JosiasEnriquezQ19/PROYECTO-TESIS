@@ -5,7 +5,7 @@ class Usuario {
     static async crear(usuarioData) {
         try {
             // Validar campos obligatorios
-            if (!usuarioData.Nombres || !usuarioData.Apellidos || !usuarioData.NumeroDocumento || 
+            if (!usuarioData.Nombres || !usuarioData.Apellidos || !usuarioData.NumeroDocumento ||
                 !usuarioData.Correo || !usuarioData.Clave || !usuarioData.IdRol) {
                 throw new Error('Todos los campos obligatorios deben ser completados');
             }
@@ -41,7 +41,7 @@ class Usuario {
 
             // Guardar la contraseña tal cual, sin hashear
             const [result] = await db.query(
-                'INSERT INTO USUARIO SET ?', 
+                'INSERT INTO USUARIO SET ?',
                 {
                     ...usuarioData,
                     FechaRegistro: new Date()
@@ -75,16 +75,16 @@ class Usuario {
             if ('ConfirmarClave' in usuarioData) {
                 delete usuarioData.ConfirmarClave;
             }
-            
+
             // Validar que no se esté intentando actualizar con una contraseña vacía
-            if (usuarioData.hasOwnProperty('Clave') && 
+            if (usuarioData.hasOwnProperty('Clave') &&
                 (!usuarioData.Clave || usuarioData.Clave.trim() === '')) {
                 delete usuarioData.Clave;
                 console.log('Contraseña vacía detectada en modelo - eliminada del update');
             }
-            
+
             console.log('Datos que se actualizarán:', Object.keys(usuarioData));
-            
+
             await db.query('UPDATE USUARIO SET ? WHERE IdUsuario = ?', [usuarioData, id]);
             return true;
         } catch (error) {
@@ -93,7 +93,7 @@ class Usuario {
     }
 
     static async eliminar(id) {
-        await db.query('DELETE FROM USUARIO WHERE IdUsuario = ?', [id]);
+        await db.query('UPDATE USUARIO SET Estado = 0 WHERE IdUsuario = ?', [id]);
         return true;
     }
 

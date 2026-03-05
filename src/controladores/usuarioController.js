@@ -4,9 +4,11 @@ exports.listarUsuarios = async (req, res) => {
     try {
         //console.log('Entrando a listarUsuarios');
         const usuarios = await Usuario.listar();
-        res.render('usuarios/listar', { 
+        const roles = await Usuario.obtenerRoles();
+        res.render('usuarios/listar', {
             title: 'Lista de Usuarios',
             usuarios,
+            roles,
             success: req.flash('success'),
             error: req.flash('error')
         });
@@ -35,7 +37,7 @@ exports.crearUsuario = async (req, res) => {
     } catch (error) {
         req.flash('error', error.message);
         const roles = await Usuario.obtenerRoles();
-        res.render('usuarios/crear', { 
+        res.render('usuarios/crear', {
             title: 'Crear Nuevo Usuario',
             usuario: req.body,
             roles,
@@ -63,14 +65,14 @@ exports.mostrarFormularioEditar = async (req, res) => {
 exports.actualizarUsuario = async (req, res) => {
     try {
         const datosActualizacion = { ...req.body };
-        
+
         // Limpiar y validar campos de contraseña
         const clave = datosActualizacion.Clave ? datosActualizacion.Clave.trim() : '';
         const confirmarClave = datosActualizacion.ConfirmarClave ? datosActualizacion.ConfirmarClave.trim() : '';
-        
+
         // Siempre eliminar los campos de confirmación
         delete datosActualizacion.ConfirmarClave;
-        
+
         // Manejo de la contraseña
         if (clave === '' && confirmarClave === '') {
             // Ambos campos vacíos = no cambiar contraseña
@@ -91,7 +93,7 @@ exports.actualizarUsuario = async (req, res) => {
             // Un campo lleno y otro vacío = error
             throw new Error('Si desea cambiar la contraseña, debe completar ambos campos');
         }
-        
+
         await Usuario.actualizar(req.params.id, datosActualizacion);
         req.flash('success', 'Usuario actualizado exitosamente');
         res.redirect('/usuarios');
@@ -100,7 +102,7 @@ exports.actualizarUsuario = async (req, res) => {
         try {
             const usuario = await Usuario.obtenerPorId(req.params.id);
             const roles = await Usuario.obtenerRoles();
-            res.render('usuarios/editar', { 
+            res.render('usuarios/editar', {
                 title: 'Editar Usuario',
                 usuario: usuario,
                 roles,
@@ -118,10 +120,10 @@ exports.actualizarUsuario = async (req, res) => {
 exports.eliminarUsuario = async (req, res) => {
     try {
         await Usuario.eliminar(req.params.id);
-        req.flash('success', 'Usuario eliminado exitosamente');
+        req.flash('success', 'Usuario inactivado exitosamente');
         res.redirect('/usuarios');
     } catch (error) {
-        req.flash('error', 'Error al eliminar usuario');
+        req.flash('error', 'Error al inactivar usuario');
         res.redirect('/usuarios');
     }
 };
