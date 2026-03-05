@@ -1,719 +1,933 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Editar Factura - CARSIL Equipos y Servicios SAC</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="/publico/css/layout.css?v=1772427290141">
-    <link rel="stylesheet" href="/publico/css/form-views.css?v=1772427290141">
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Editar Factura <%= factura.Codigo %> - CARSIL ERP</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
+        rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+        rel="stylesheet" />
+    <!-- Alertas personalizadas -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.3/dist/sweetalert2.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.3/dist/sweetalert2.all.min.js"></script>
+
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#3b4bc9",
+                        "background-light": "#f6f6f8",
+                        "background-dark": "#13151f",
+                    },
+                    fontFamily: {
+                        "display": ["Inter"]
+                    },
+                    borderRadius: { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "fullscreen": "9999px" },
+                },
+            },
+        }
+    </script>
+    <style>
+        .wrapper {
+            background: #f6f6f8;
+            display: flex;
+            width: 100%;
+            min-height: 100vh;
+        }
+
+        .main-content {
+            width: 100%;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            background: #f6f6f8;
+        }
+    </style>
 </head>
 
-<body>
-<div class="wrapper">
+<body class="font-display bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 min-h-screen">
+    <div class="wrapper">
+        <!-- Incluir Sidebar Original -->
         <%- include("../parciales/sidebar") %>
-    <!-- Botón para ocultar/mostrar barra -->
-    <!-- Main Content -->
-    <div class="main-content" id="main-content">
-        <nav class="navbar navbar-expand-lg navbar-top border-bottom">
-            <div class="container-fluid">
-                <h5 class="page-title mb-0">
-                    <i class="bi bi-receipt"></i>
-                    Editar Factura
-                </h5>
-                <div class="user-profile ms-auto">
-                    <span><%= user && user.Nombres ? user.Nombres : 'Usuario' %></span>
-                    <div class="user-avatar"><%= user && user.Nombres ? user.Nombres.charAt(0) : 'U' %></div>
-                </div>
-            </div>
-        </nav>
-        <div class="container-fluid py-4">
-            <!-- Mensajes flash -->
-            <% if (typeof error !== 'undefined' && error) { %>
-                <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                    <i class="bi bi-exclamation-triangle me-2"></i><%= error %>
-                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                </div>
-            <% } %>
-            <% if (typeof success !== 'undefined' && success) { %>
-                <div class="alert alert-success alert-dismissible fade show" role="alert">
-                    <i class="bi bi-check-circle me-2"></i><%= success %>
-                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                </div>
-            <% } %>
 
-            <!-- Formulario de edición de factura -->
-            <div class="card">
-                <div class="card-header">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <h2 class="mb-0">
-                            <i class="bi bi-receipt me-2"></i>
-                            Editar Factura <%= factura.Codigo %>
-                        </h2>
-                        <span class="estado-badge estado-<%= factura.Estado ? factura.Estado.toLowerCase() : 'pendiente' %>">
-                            <%= factura.Estado || 'PENDIENTE' %>
-                        </span>
+            <div class="main-content" id="main-content">
+                <!-- Top Nav Header -->
+                <header
+                    class="flex items-center justify-between whitespace-nowrap border-b border-solid border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-6 py-3 lg:px-10 sticky top-0 z-40">
+                    <div class="flex items-center gap-4">
+                        <button id="sidebarToggle"
+                            class="p-2 rounded-lg text-slate-600 hover:bg-slate-100 block md:hidden">
+                            <span class="material-symbols-outlined">menu</span>
+                        </button>
+                        <div class="size-8 text-primary hidden md:block">
+                            <svg fill="currentColor" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+                                <path
+                                    d="M42.4379 44C42.4379 44 36.0744 33.9038 41.1692 24C46.8624 12.9336 42.2078 4 42.2078 4L7.01134 4C7.01134 4 11.6577 12.932 5.96912 23.9969C0.876273 33.9029 7.27094 44 7.27094 44L42.4379 44Z">
+                                </path>
+                            </svg>
+                        </div>
+                        <h2
+                            class="text-slate-900 dark:text-white text-lg font-bold leading-tight tracking-tight hidden md:block">
+                            CARSIL ERP</h2>
                     </div>
-                </div>
-
-                <form action="/facturas/<%= factura.IdFactura %>/actualizar" method="POST" id="editFacturaForm">
-                    <!-- Campo hidden para mantener la referencia a la proforma -->
-                    <% if (factura.IdProforma) { %>
-                        <input type="hidden" name="IdProforma" value="<%= factura.IdProforma %>">
-                    <% } %>
-                    
-                    <div class="card-body">
-                        <!-- Información de Proforma (si existe) -->
-                        <% if (factura.IdProforma && factura.ProformaCodigo) { %>
-                        <div class="row mb-4">
-                            <div class="col-md-12">
-                                <div class="alert alert-info">
-                                    <h6 class="alert-heading">
-                                        <i class="bi bi-file-earmark-text me-2"></i>
-                                        Factura generada desde Proforma
-                                    </h6>
-                                    <p class="mb-1">
-                                        <strong>Código de Proforma:</strong> <%= factura.ProformaCodigo %>
-                                    </p>
-                                    <p class="mb-0">
-                                        <a href="/proformas/<%= factura.IdProforma %>" class="btn btn-sm btn-outline-primary">
-                                            <i class="bi bi-eye me-1"></i>
-                                            Ver Proforma Original
-                                        </a>
-                                    </p>
-                                </div>
-                            </div>
+                    <div class="flex flex-1 justify-end gap-6 items-center">
+                        <nav class="hidden lg:flex items-center gap-8">
+                            <a class="text-slate-600 dark:text-slate-300 text-sm font-medium hover:text-primary transition-colors"
+                                href="/dashboard">Dashboard</a>
+                            <a class="text-primary text-sm font-semibold" href="/facturas">Facturas</a>
+                            <a class="text-slate-600 dark:text-slate-300 text-sm font-medium hover:text-primary transition-colors"
+                                href="/proformas">Proformas</a>
+                            <a class="text-slate-600 dark:text-slate-300 text-sm font-medium hover:text-primary transition-colors"
+                                href="/clientes">Clientes</a>
+                        </nav>
+                        <div class="flex gap-2 border-l border-slate-200 dark:border-slate-800 pl-6">
+                            <button
+                                class="p-2 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-primary/10 hover:text-primary transition-all">
+                                <span class="material-symbols-outlined text-[20px]">notifications</span>
+                            </button>
                         </div>
-                        <% } %>
-                        
-                        <!-- Información básica -->
-                        <div class="row mb-4">
-                            <div class="col-md-12">
-                                <h4 class="section-title">
-                                    <i class="bi bi-info-circle"></i>
-                                    Información Básica
-                                </h4>
-                            </div>
+                        <div
+                            class="bg-primary/10 border border-primary/20 rounded-full size-10 flex items-center justify-center overflow-hidden font-bold text-primary">
+                            <%= user && user.Nombres ? user.Nombres.charAt(0) : 'U' %>
                         </div>
+                    </div>
+                </header>
 
-                        <div class="row">
-                            <div class="col-md-4">
-                                <div class="mb-3">
-                                    <label for="Codigo" class="form-label">
-                                        <i class="bi bi-hash"></i>
-                                        Código de Factura
-                                    </label>
-                                    <input type="text" class="form-control-modern" id="Codigo" name="Codigo" 
-                                           value="<%= factura.Codigo %>" readonly>
-                                    <div class="form-text">El código es único y no se puede modificar</div>
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="mb-3">
-                                    <label for="Estado" class="form-label">
-                                        <i class="bi bi-flag"></i>
-                                        Estado <span class="required">*</span>
-                                    </label>
-                                    <select class="form-control-modern form-select-modern" id="Estado" name="Estado" required>
-                                        <option value="PENDIENTE" <%= factura.Estado === 'PENDIENTE' ? 'selected' : '' %>>Pendiente</option>
-                                        <option value="PAGADA" <%= factura.Estado === 'PAGADA' ? 'selected' : '' %>>Pagada</option>
-                                        <option value="VENCIDA" <%= factura.Estado === 'VENCIDA' ? 'selected' : '' %>>Vencida</option>
-                                        <option value="ANULADA" <%= factura.Estado === 'ANULADA' ? 'selected' : '' %>>Anulada</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="mb-3">
-                                    <label for="IdCliente" class="form-label">
-                                        <i class="bi bi-person"></i>
-                                        Cliente <span class="required">*</span>
-                                    </label>
-                                    <select class="form-control-modern form-select-modern" id="IdCliente" name="IdCliente" required>
-                                        <option value="">Seleccionar cliente</option>
-                                        <% if (clientes) { %>
-                                            <% clientes.forEach(function(cliente) { %>
-                                                <option value="<%= cliente.IdCliente %>" <%= factura.IdCliente == cliente.IdCliente ? 'selected' : '' %>>
-                                                    <%= cliente.RazonSocial %> - <%= cliente.Documento %>
-                                                </option>
-                                            <% }); %>
-                                        <% } %>
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
+                <main class="flex flex-1 justify-center py-8 relative">
+                    <div class="layout-content-container flex flex-col w-full max-w-[1200px] flex-1 px-4 md:px-10">
 
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label for="FechaEmision" class="form-label">
-                                        <i class="bi bi-calendar"></i>
-                                        Fecha de Emisión <span class="required">*</span>
-                                    </label>
-                                    <input type="date" class="form-control-modern" id="FechaEmision" name="FechaEmision" 
-                                           value="<%= factura.FechaEmision ? factura.FechaEmision.toISOString().split('T')[0] : '' %>" required>
-                                </div>
+                        <!-- Alertas Flash -->
+                        <% if (typeof error !=='undefined' && error) { %>
+                            <div
+                                class="bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 p-4 rounded-lg flex items-center gap-3 mb-6 border border-red-200 dark:border-red-800 shadow-sm">
+                                <span class="material-symbols-outlined">error</span>
+                                <p class="text-sm font-medium">
+                                    <%= error %>
+                                </p>
                             </div>
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label for="FechaVencimiento" class="form-label">
-                                        <i class="bi bi-calendar-x"></i>
-                                        Fecha de Vencimiento
-                                    </label>
-                                    <input type="date" class="form-control-modern" id="FechaVencimiento" name="FechaVencimiento" 
-                                           value="<%= factura.FechaVencimiento ? factura.FechaVencimiento.toISOString().split('T')[0] : '' %>">
-                                </div>
-                            </div>
-                        </div>
+                            <% } %>
+                                <% if (typeof success !=='undefined' && success) { %>
+                                    <div
+                                        class="bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400 p-4 rounded-lg flex items-center gap-3 mb-6 border border-green-200 dark:border-green-800 shadow-sm">
+                                        <span class="material-symbols-outlined">check_circle</span>
+                                        <p class="text-sm font-medium">
+                                            <%= success %>
+                                        </p>
+                                    </div>
+                                    <% } %>
 
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label for="FormaPago" class="form-label">
-                                        <i class="bi bi-credit-card"></i>
-                                        Forma de Pago
-                                    </label>
-                                    <select class="form-control-modern form-select-modern" id="FormaPago" name="FormaPago">
-                                        <option value="">Seleccionar forma de pago</option>
-                                        <option value="CONTADO" <%= factura.FormaPago === 'CONTADO' ? 'selected' : '' %>>Contado</option>
-                                        <option value="CREDITO_30" <%= factura.FormaPago === 'CREDITO_30' ? 'selected' : '' %>>Crédito 30 días</option>
-                                        <option value="CREDITO_60" <%= factura.FormaPago === 'CREDITO_60' ? 'selected' : '' %>>Crédito 60 días</option>
-                                        <option value="CREDITO_90" <%= factura.FormaPago === 'CREDITO_90' ? 'selected' : '' %>>Crédito 90 días</option>
-                                        <option value="TRANSFERENCIA" <%= factura.FormaPago === 'TRANSFERENCIA' ? 'selected' : '' %>>Transferencia bancaria</option>
-                                        <option value="CHEQUE" <%= factura.FormaPago === 'CHEQUE' ? 'selected' : '' %>>Cheque</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label for="Observaciones" class="form-label">
-                                        <i class="bi bi-chat-square-text"></i>
-                                        Observaciones
-                                    </label>
-                                    <textarea class="form-control-modern" id="Observaciones" name="Observaciones" 
-                                              rows="3" placeholder="Observaciones adicionales"><%= factura.Observaciones || '' %></textarea>
-                                </div>
-                            </div>
-                        </div>
+                                        <!-- Breadcrumbs -->
+                                        <div class="flex flex-wrap items-center gap-2 mb-6">
+                                            <a class="text-slate-500 text-sm font-medium hover:text-primary transition-colors"
+                                                href="/dashboard">Home</a>
+                                            <span
+                                                class="material-symbols-outlined text-slate-400 text-xs">chevron_right</span>
+                                            <a class="text-slate-500 text-sm font-medium hover:text-primary transition-colors"
+                                                href="/facturas">Facturas</a>
+                                            <span
+                                                class="material-symbols-outlined text-slate-400 text-xs">chevron_right</span>
+                                            <span class="text-slate-900 dark:text-white text-sm font-semibold">Editar
+                                                Factura</span>
+                                        </div>
 
-                        <!-- Productos existentes -->
-                        <div class="row mb-4">
-                            <div class="col-md-12">
-                                <h4 class="section-title">
-                                    <i class="bi bi-box"></i>
-                                    Productos de la Factura
-                                </h4>
-                            </div>
-                        </div>
-
-                        <!-- Productos de la proforma original (si los hay) -->
-                        <div id="productosOriginales">
-                            <% let tieneProductosOriginales = false; %>
-                            <% if (detalles && detalles.length > 0) { %>
-                                <% detalles.forEach(function(detalle, index) { %>
-                                    <% 
-                                    // Determinar si es producto original o adicional
-                                    const esOriginal = detalle.IdDetalleProforma || detalle.TipoDetalle === 'ORIGINAL';
-                                    if (esOriginal) tieneProductosOriginales = true;
-                                    %>
-                                    
-                                    <div class="producto-row <%= esOriginal ? 'producto-original protected-product' : 'producto-adicional' %>" 
-                                         data-detalle-id="<%= detalle.IdDetalleFactura %>" 
-                                         data-tipo="<%= esOriginal ? 'ORIGINAL' : 'ADICIONAL' %>">
-                                        
-                                        <% if (esOriginal) { %>
-                                            <div class="protected-badge">De Proforma</div>
-                                        <% } %>
-                                        
-                                        <div class="row align-items-center">
-                                            <div class="col-md-4">
-                                                <strong><%= detalle.ProductoNombre || 'Producto no encontrado' %></strong>
-                                                <% if (detalle.DescripcionAdicional) { %>
-                                                    <br><small class="text-muted"><%= detalle.DescripcionAdicional %></small>
-                                                <% } %>
+                                        <!-- Header with Invoice Number and Actions -->
+                                        <div class="flex flex-wrap justify-between items-end gap-4 mb-8">
+                                            <div class="flex flex-col gap-2">
+                                                <div class="flex items-center gap-3">
+                                                    <h1
+                                                        class="text-slate-900 dark:text-white text-3xl font-black tracking-tight">
+                                                        Factura <%= factura.Codigo %>
+                                                    </h1>
+                                                    <% let
+                                                        badgeClass="bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400"
+                                                        ; if(factura.Estado==='PAGADA' )
+                                                        badgeClass="bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400"
+                                                        ; if(factura.Estado==='ANULADA' )
+                                                        badgeClass="bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400"
+                                                        ; %>
+                                                        <span
+                                                            class="<%= badgeClass %> px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider badge-estado-display">
+                                                            <%= factura.Estado || 'PENDIENTE' %>
+                                                        </span>
+                                                </div>
+                                                <p class="text-slate-500 dark:text-slate-400 text-base">Módulo de
+                                                    edición y gestión de comprobantes electrónicos</p>
                                             </div>
-                                            <div class="col-md-2">
-                                                <% if (esOriginal) { %>
-                                                    <span class="form-control-modern-plaintext"><%= detalle.Cantidad %></span>
-                                                <% } else { %>
-                                                    <input type="number" class="form-control-modern form-control-modern-sm cantidad-input" 
-                                                           min="0.01" step="0.01" value="<%= detalle.Cantidad %>"
-                                                           data-detalle-id="<%= detalle.IdDetalleFactura %>">
-                                                <% } %>
-                                            </div>
-                                            <div class="col-md-1">
-                                                <span class="form-control-modern-plaintext"><%= detalle.UnidadMedida || 'UNID' %></span>
-                                            </div>
-                                            <div class="col-md-2">
-                                                <% if (esOriginal) { %>
-                                                    <span class="form-control-modern-plaintext">S/ <%= parseFloat(detalle.PrecioUnitario || 0).toFixed(2) %></span>
-                                                <% } else { %>
-                                                    <input type="number" class="form-control-modern form-control-modern-sm precio-input" 
-                                                           min="0" step="0.01" value="<%= detalle.PrecioUnitario %>"
-                                                           data-detalle-id="<%= detalle.IdDetalleFactura %>">
-                                                <% } %>
-                                            </div>
-                                            <div class="col-md-2">
-                                                <strong class="total-producto">S/ <%= parseFloat(detalle.Total || 0).toFixed(2) %></strong>
-                                            </div>
-                                            <div class="col-md-1">
-                                                <% if (!esOriginal) { %>
-                                                    <button type="button" class="btn btn-remove-product" 
-                                                            data-detalle-id="<%= detalle.IdDetalleFactura %>"
-                                                            title="Eliminar producto adicional">
-                                                        <i class="bi bi-trash"></i>
-                                                    </button>
-                                                <% } else { %>
-                                                    <i class="bi bi-shield-lock text-primary" title="Producto protegido de proforma"></i>
-                                                <% } %>
+                                            <div class="flex gap-3">
+                                                <a href="/facturas/<%= factura.IdFactura %>"
+                                                    class="flex items-center gap-2 px-4 py-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-700 dark:text-slate-200 text-sm font-bold hover:bg-slate-50 transition-all">
+                                                    <span class="material-symbols-outlined text-sm">visibility</span>
+                                                    Ver Detalle
+                                                </a>
+                                                <a href="/facturas"
+                                                    class="flex items-center gap-2 px-4 py-2 bg-slate-200 dark:bg-slate-700 rounded-lg text-slate-800 dark:text-slate-200 text-sm font-bold hover:bg-slate-300 transition-all">
+                                                    <span class="material-symbols-outlined text-sm">arrow_back</span>
+                                                    Volver
+                                                </a>
                                             </div>
                                         </div>
-                                    </div>
-                                <% }); %>
-                            <% } %>
-                        </div>
 
-                        <!-- Botón para agregar productos adicionales -->
-                        <div class="row mb-3">
-                            <div class="col-md-12">
-                                <button type="button" class="btn btn-add-product" id="addProductBtn">
-                                    <i class="bi bi-plus-lg me-1"></i>
-                                    Agregar Producto Adicional
-                                </button>
-                            </div>
-                        </div>
+                                        <!-- Alert Linked Proforma -->
+                                        <% if (factura.IdProforma && factura.ProformaCodigo) { %>
+                                            <div class="mb-8 @container">
+                                                <div
+                                                    class="flex flex-1 flex-col items-start justify-between gap-4 rounded-xl border border-primary/20 bg-primary/5 p-5 sm:flex-row sm:items-center">
+                                                    <div class="flex items-center gap-4">
+                                                        <div class="p-3 bg-primary/10 rounded-lg text-primary">
+                                                            <span class="material-symbols-outlined">link</span>
+                                                        </div>
+                                                        <div class="flex flex-col gap-0.5">
+                                                            <p
+                                                                class="text-slate-900 dark:text-white text-base font-bold">
+                                                                Proforma Vinculada: <%= factura.ProformaCodigo %>
+                                                            </p>
+                                                            <p class="text-slate-500 dark:text-slate-400 text-sm">Esta
+                                                                factura hereda datos de una proforma autorizada.</p>
+                                                        </div>
+                                                    </div>
+                                                    <a href="/proformas/<%= factura.IdProforma %>"
+                                                        class="flex items-center justify-center gap-2 rounded-lg h-9 px-5 bg-primary text-white text-sm font-semibold shadow-sm hover:bg-primary/90 transition-all">
+                                                        <span
+                                                            class="material-symbols-outlined text-sm">open_in_new</span>
+                                                        Ver Proforma
+                                                    </a>
+                                                </div>
+                                            </div>
+                                            <% } %>
 
-                        <!-- Contenedor para productos adicionales nuevos -->
-                        <div id="nuevosProductosAdicionales">
-                            <!-- Los nuevos productos se agregarán aquí dinámicamente -->
-                        </div>
+                                                <form action="/facturas/<%= factura.IdFactura %>/actualizar"
+                                                    method="POST" id="editFacturaForm"
+                                                    class="flex flex-col gap-8 w-full">
+                                                    <% if (factura.IdProforma) { %>
+                                                        <input type="hidden" name="IdProforma"
+                                                            value="<%= factura.IdProforma %>">
+                                                        <% } %>
 
-                        <!-- Totales detallados -->
-                        <div class="totals-section-detailed">
-                            <h5 class="mb-3">
-                                <i class="bi bi-calculator"></i>
-                                Resumen de Totales
-                            </h5>
-                            
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="total-row">
-                                        <span>Subtotal Original:</span>
-                                        <strong id="subtotalOriginal">S/ 0.00</strong>
-                                    </div>
-                                    <div class="total-row">
-                                        <span>IGV Original (18%):</span>
-                                        <strong id="igvOriginal">S/ 0.00</strong>
-                                    </div>
-                                    <div class="total-row">
-                                        <span>Total Original:</span>
-                                        <strong id="totalOriginal">S/ 0.00</strong>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="total-row">
-                                        <span>Subtotal Adicionales:</span>
-                                        <strong id="subtotalAdicionales">S/ 0.00</strong>
-                                    </div>
-                                    <div class="total-row">
-                                        <span>IGV Adicionales (18%):</span>
-                                        <strong id="igvAdicionales">S/ 0.00</strong>
-                                    </div>
-                                    <div class="total-row">
-                                        <span>Total Adicionales:</span>
-                                        <strong id="totalAdicionales">S/ 0.00</strong>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <div class="total-row" style="margin-top: 1rem; padding-top: 1rem; border-top: 2px solid #28a745;">
-                                <span style="font-size: 1.2rem; font-weight: bold;">TOTAL FINAL:</span>
-                                <strong style="font-size: 1.3rem; color: #dc3545;" id="totalFinal">S/ <%= factura.Total || '0.00' %></strong>
-                            </div>
-                        </div>
+                                                            <!-- Form Sections -->
+                                                            <div class="grid grid-cols-1 gap-8">
 
-                        <!-- Inputs hidden para productos modificados -->
-                        <div id="productosModificadosHidden">
-                            <!-- Se llenarán dinámicamente -->
-                        </div>
+                                                                <!-- Basic Information Card -->
+                                                                <div
+                                                                    class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden">
+                                                                    <div
+                                                                        class="px-6 py-4 border-b border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/50">
+                                                                        <h2
+                                                                            class="text-slate-900 dark:text-white text-lg font-bold">
+                                                                            Información Básica</h2>
+                                                                    </div>
+                                                                    <div
+                                                                        class="p-6 grid grid-cols-1 md:grid-cols-3 gap-6">
+                                                                        <div class="flex flex-col gap-2">
+                                                                            <label
+                                                                                class="text-sm font-semibold text-slate-700 dark:text-slate-300">Código
+                                                                                de Factura</label>
+                                                                            <input name="Codigo"
+                                                                                value="<%= factura.Codigo %>" readonly
+                                                                                class="w-full rounded-lg bg-slate-50 dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-500 cursor-not-allowed text-sm"
+                                                                                type="text" />
+                                                                        </div>
+                                                                        <div class="flex flex-col gap-2">
+                                                                            <label
+                                                                                class="text-sm font-semibold text-slate-700 dark:text-slate-300">Estado
+                                                                                de Pago</label>
+                                                                            <select id="Estado" name="Estado"
+                                                                                class="w-full rounded-lg border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 text-sm focus:ring-primary focus:border-primary">
+                                                                                <option value="PENDIENTE"
+                                                                                    <%=factura.Estado==='PENDIENTE'
+                                                                                    ? 'selected' : '' %>>PENDIENTE
+                                                                                </option>
+                                                                                <option value="PAGADA"
+                                                                                    <%=factura.Estado==='PAGADA'
+                                                                                    ? 'selected' : '' %>>PAGADA</option>
+                                                                                <option value="VENCIDA"
+                                                                                    <%=factura.Estado==='VENCIDA'
+                                                                                    ? 'selected' : '' %>>VENCIDA
+                                                                                </option>
+                                                                                <option value="ANULADA"
+                                                                                    <%=factura.Estado==='ANULADA'
+                                                                                    ? 'selected' : '' %>>ANULADA
+                                                                                </option>
+                                                                            </select>
+                                                                        </div>
+                                                                        <div class="flex flex-col gap-2">
+                                                                            <label
+                                                                                class="text-sm font-semibold text-slate-700 dark:text-slate-300">Cliente</label>
+                                                                            <select id="IdCliente" name="IdCliente"
+                                                                                class="w-full rounded-lg border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 text-sm focus:ring-primary focus:border-primary"
+                                                                                required>
+                                                                                <option value="">Seleccionar cliente...
+                                                                                </option>
+                                                                                <% if (clientes) { %>
+                                                                                    <% clientes.forEach(function(cliente)
+                                                                                        { %>
+                                                                                        <option
+                                                                                            value="<%= cliente.IdCliente %>"
+                                                                                            <%=factura.IdCliente==cliente.IdCliente
+                                                                                            ? 'selected' : '' %>>
+                                                                                            <%= cliente.RazonSocial %> -
+                                                                                                <%= cliente.Documento %>
+                                                                                        </option>
+                                                                                        <% }); %>
+                                                                                            <% } %>
+                                                                            </select>
+                                                                        </div>
+                                                                        <div class="flex flex-col gap-2">
+                                                                            <label
+                                                                                class="text-sm font-semibold text-slate-700 dark:text-slate-300">Fecha
+                                                                                de Emisión</label>
+                                                                            <input id="FechaEmision" name="FechaEmision"
+                                                                                class="w-full rounded-lg border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 text-sm focus:ring-primary focus:border-primary"
+                                                                                type="date"
+                                                                                value="<%= factura.FechaEmision ? factura.FechaEmision.toISOString().split('T')[0] : '' %>"
+                                                                                required />
+                                                                        </div>
+                                                                        <div class="flex flex-col gap-2">
+                                                                            <label
+                                                                                class="text-sm font-semibold text-slate-700 dark:text-slate-300">Fecha
+                                                                                de Vencimiento</label>
+                                                                            <input id="FechaVencimiento"
+                                                                                name="FechaVencimiento"
+                                                                                class="w-full rounded-lg border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 text-sm focus:ring-primary focus:border-primary"
+                                                                                type="date"
+                                                                                value="<%= factura.FechaVencimiento ? factura.FechaVencimiento.toISOString().split('T')[0] : '' %>" />
+                                                                        </div>
+                                                                        <div class="flex flex-col gap-2">
+                                                                            <label
+                                                                                class="text-sm font-semibold text-slate-700 dark:text-slate-300">Forma
+                                                                                de Pago</label>
+                                                                            <select id="FormaPago" name="FormaPago"
+                                                                                class="w-full rounded-lg border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 text-sm focus:ring-primary focus:border-primary">
+                                                                                <option value="">Seleccionar forma de
+                                                                                    pago</option>
+                                                                                <option value="CONTADO"
+                                                                                    <%=factura.FormaPago==='CONTADO'
+                                                                                    ? 'selected' : '' %>>Contado
+                                                                                </option>
+                                                                                <option value="CREDITO_30"
+                                                                                    <%=factura.FormaPago==='CREDITO_30'
+                                                                                    ? 'selected' : '' %>>Crédito 30 días
+                                                                                </option>
+                                                                                <option value="CREDITO_60"
+                                                                                    <%=factura.FormaPago==='CREDITO_60'
+                                                                                    ? 'selected' : '' %>>Crédito 60 días
+                                                                                </option>
+                                                                                <option value="CREDITO_90"
+                                                                                    <%=factura.FormaPago==='CREDITO_90'
+                                                                                    ? 'selected' : '' %>>Crédito 90 días
+                                                                                </option>
+                                                                                <option value="TRANSFERENCIA"
+                                                                                    <%=factura.FormaPago==='TRANSFERENCIA'
+                                                                                    ? 'selected' : '' %>>Transferencia
+                                                                                </option>
+                                                                                <option value="CHEQUE"
+                                                                                    <%=factura.FormaPago==='CHEQUE'
+                                                                                    ? 'selected' : '' %>>Cheque</option>
+                                                                            </select>
+                                                                        </div>
+                                                                        <div class="flex flex-col gap-2 md:col-span-3">
+                                                                            <label
+                                                                                class="text-sm font-semibold text-slate-700 dark:text-slate-300">Observaciones</label>
+                                                                            <textarea id="Observaciones"
+                                                                                name="Observaciones"
+                                                                                class="w-full rounded-lg border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 text-sm focus:ring-primary focus:border-primary"
+                                                                                placeholder="Añadir notas internas o para el cliente..."
+                                                                                rows="3"><%= factura.Observaciones || '' %></textarea>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+
+                                                                <!-- Products Table Card -->
+                                                                <div
+                                                                    class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden">
+                                                                    <div
+                                                                        class="px-6 py-4 border-b border-slate-100 dark:border-slate-800 flex justify-between items-center bg-slate-50/50 dark:bg-slate-800/50">
+                                                                        <h2
+                                                                            class="text-slate-900 dark:text-white text-lg font-bold">
+                                                                            Detalle de Productos y Servicios</h2>
+                                                                        <button type="button" id="addProductBtn"
+                                                                            class="flex items-center gap-2 px-3 py-1.5 bg-primary/10 text-primary rounded-lg text-sm font-bold hover:bg-primary/20 transition-all">
+                                                                            <span
+                                                                                class="material-symbols-outlined text-sm">add_circle</span>
+                                                                            Agregar Producto
+                                                                        </button>
+                                                                    </div>
+                                                                    <div class="overflow-x-auto">
+                                                                        <table class="w-full text-left border-collapse">
+                                                                            <thead>
+                                                                                <tr
+                                                                                    class="bg-slate-50 dark:bg-slate-800/80 text-slate-500 dark:text-slate-400 text-xs font-bold uppercase tracking-wider border-b border-slate-200 dark:border-slate-800">
+                                                                                    <th
+                                                                                        class="px-6 py-4 w-12 text-center">
+                                                                                        Tipo</th>
+                                                                                    <th class="px-6 py-4">Descripción
+                                                                                        del Producto/Servicio</th>
+                                                                                    <th class="px-6 py-4 w-24">Cant.
+                                                                                    </th>
+                                                                                    <th
+                                                                                        class="px-6 py-4 w-24 text-center">
+                                                                                        Unidad</th>
+                                                                                    <th
+                                                                                        class="px-6 py-4 w-36 text-right">
+                                                                                        Precio Unit.</th>
+                                                                                    <th
+                                                                                        class="px-6 py-4 w-36 text-right">
+                                                                                        Total</th>
+                                                                                    <th
+                                                                                        class="px-6 py-4 w-16 text-center">
+                                                                                        Acciones</th>
+                                                                                </tr>
+                                                                            </thead>
+                                                                            <tbody
+                                                                                class="divide-y divide-slate-100 dark:divide-slate-800"
+                                                                                id="productosContainer">
+                                                                                <% let contItem=1; %>
+                                                                                    <% if (detalles && detalles.length>
+                                                                                        0) { %>
+                                                                                        <% detalles.forEach(function(detalle)
+                                                                                            { %>
+                                                                                            <% const
+                                                                                                esOriginal=detalle.IdDetalleProforma
+                                                                                                ||
+                                                                                                detalle.TipoDetalle==='ORIGINAL'
+                                                                                                ; %>
+                                                                                                <tr class="group hover:bg-slate-50/50 dark:hover:bg-slate-800/30 transition-colors producto-row"
+                                                                                                    data-detalle-id="<%= detalle.IdDetalleFactura %>"
+                                                                                                    data-tipo="<%= esOriginal ? 'ORIGINAL' : 'ADICIONAL' %>">
+                                                                                                    <td
+                                                                                                        class="px-6 py-4 text-center">
+                                                                                                        <% if
+                                                                                                            (esOriginal)
+                                                                                                            { %>
+                                                                                                            <div class="bg-indigo-100 text-indigo-700 dark:bg-indigo-900/30 dark:text-indigo-400 text-[10px] px-2 py-1 rounded font-bold uppercase"
+                                                                                                                title="Heredado de proforma">
+                                                                                                                Orig
+                                                                                                            </div>
+                                                                                                            <% } else {
+                                                                                                                %>
+                                                                                                                <div class="bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400 text-[10px] px-2 py-1 rounded font-bold uppercase"
+                                                                                                                    title="Adicionado manualmente">
+                                                                                                                    Adic
+                                                                                                                </div>
+                                                                                                                <% } %>
+                                                                                                    </td>
+                                                                                                    <td
+                                                                                                        class="px-6 py-4">
+                                                                                                        <div
+                                                                                                            class="text-sm font-bold text-slate-900 dark:text-slate-200">
+                                                                                                            <%= detalle.ProductoNombre
+                                                                                                                || 'Producto'
+                                                                                                                %>
+                                                                                                        </div>
+                                                                                                        <% if
+                                                                                                            (detalle.DescripcionAdicional)
+                                                                                                            { %>
+                                                                                                            <div
+                                                                                                                class="text-xs text-slate-500 mt-1">
+                                                                                                                <%= detalle.DescripcionAdicional
+                                                                                                                    %>
+                                                                                                            </div>
+                                                                                                            <% } %>
+                                                                                                    </td>
+                                                                                                    <td
+                                                                                                        class="px-6 py-4">
+                                                                                                        <% if
+                                                                                                            (esOriginal)
+                                                                                                            { %>
+                                                                                                            <div
+                                                                                                                class="text-center font-semibold text-slate-700 dark:text-slate-300">
+                                                                                                                <%= detalle.Cantidad
+                                                                                                                    %>
+                                                                                                            </div>
+                                                                                                            <% } else {
+                                                                                                                %>
+                                                                                                                <input
+                                                                                                                    type="number"
+                                                                                                                    class="w-full rounded-md border-slate-300 dark:border-slate-600 dark:bg-slate-700 text-sm py-1 px-2 focus:ring-primary text-center cantidad-input"
+                                                                                                                    min="0.01"
+                                                                                                                    step="0.01"
+                                                                                                                    value="<%= detalle.Cantidad %>"
+                                                                                                                    data-detalle-id="<%= detalle.IdDetalleFactura %>">
+                                                                                                                <% } %>
+                                                                                                    </td>
+                                                                                                    <td
+                                                                                                        class="px-6 py-4 text-sm text-slate-600 dark:text-slate-400 text-center font-medium">
+                                                                                                        <%= detalle.UnidadMedida
+                                                                                                            || 'UND' %>
+                                                                                                    </td>
+                                                                                                    <td
+                                                                                                        class="px-6 py-4 text-right">
+                                                                                                        <% if
+                                                                                                            (esOriginal)
+                                                                                                            { %>
+                                                                                                            <div
+                                                                                                                class="text-slate-700 dark:text-slate-300 font-medium">
+                                                                                                                S/ <%=
+                                                                                                                    parseFloat(detalle.PrecioUnitario
+                                                                                                                    ||
+                                                                                                                    0).toFixed(2)
+                                                                                                                    %>
+                                                                                                            </div>
+                                                                                                            <% } else {
+                                                                                                                %>
+                                                                                                                <input
+                                                                                                                    type="number"
+                                                                                                                    class="w-full text-right rounded-md border-slate-300 dark:border-slate-600 dark:bg-slate-700 text-sm py-1 px-2 focus:ring-primary precio-input"
+                                                                                                                    min="0"
+                                                                                                                    step="0.01"
+                                                                                                                    value="<%= detalle.PrecioUnitario %>"
+                                                                                                                    data-detalle-id="<%= detalle.IdDetalleFactura %>">
+                                                                                                                <% } %>
+                                                                                                    </td>
+                                                                                                    <td
+                                                                                                        class="px-6 py-4 text-right text-sm font-bold text-slate-900 dark:text-white total-producto">
+                                                                                                        S/ <%=
+                                                                                                            parseFloat(detalle.Total
+                                                                                                            ||
+                                                                                                            0).toFixed(2)
+                                                                                                            %>
+                                                                                                    </td>
+                                                                                                    <td
+                                                                                                        class="px-6 py-4 text-center">
+                                                                                                        <% if
+                                                                                                            (!esOriginal)
+                                                                                                            { %>
+                                                                                                            <button
+                                                                                                                type="button"
+                                                                                                                class="text-slate-400 hover:text-red-500 transition-colors btn-remove-product"
+                                                                                                                data-detalle-id="<%= detalle.IdDetalleFactura %>"
+                                                                                                                title="Remover adicional">
+                                                                                                                <span
+                                                                                                                    class="material-symbols-outlined text-[20px]">delete</span>
+                                                                                                            </button>
+                                                                                                            <% } else {
+                                                                                                                %>
+                                                                                                                <span
+                                                                                                                    class="material-symbols-outlined text-[18px] text-slate-300 dark:text-slate-600"
+                                                                                                                    title="Bloqueado por proforma">lock</span>
+                                                                                                                <% } %>
+                                                                                                    </td>
+                                                                                                </tr>
+                                                                                                <% }); %>
+                                                                                                    <% } %>
+                                                                            </tbody>
+                                                                            <!-- Contenedor inyectado en la misma tabla por JS -->
+                                                                            <tbody id="nuevosProductosAdicionales"
+                                                                                class="divide-y divide-slate-100 dark:divide-slate-800">
+                                                                                <!-- Dynamic rows will go here -->
+                                                                            </tbody>
+                                                                        </table>
+                                                                    </div>
+                                                                </div>
+
+                                                                <!-- Summary and Totals Section -->
+                                                                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                                                                    <div>
+                                                                        <!-- Espacio libre o notas adicionales -->
+                                                                    </div>
+
+                                                                    <!-- Totals Card -->
+                                                                    <div
+                                                                        class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden h-fit">
+                                                                        <div
+                                                                            class="px-6 py-4 border-b border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/50">
+                                                                            <h2
+                                                                                class="text-slate-900 dark:text-white text-lg font-bold">
+                                                                                Resumen de Importes</h2>
+                                                                        </div>
+                                                                        <div class="p-6 flex flex-col gap-4">
+                                                                            <div
+                                                                                class="flex flex-col gap-2 border-b border-slate-100 dark:border-slate-800 pb-4">
+                                                                                <div
+                                                                                    class="flex justify-between text-sm">
+                                                                                    <span
+                                                                                        class="text-slate-500 font-medium">Subtotal
+                                                                                        Origen</span>
+                                                                                    <span
+                                                                                        class="text-slate-700 dark:text-slate-300 font-bold"
+                                                                                        id="subtotalOriginal">S/
+                                                                                        0.00</span>
+                                                                                </div>
+                                                                                <div
+                                                                                    class="flex justify-between text-sm">
+                                                                                    <span class="text-slate-500">IGV
+                                                                                        (18%) Origen</span>
+                                                                                    <span
+                                                                                        class="text-slate-700 dark:text-slate-300 font-medium"
+                                                                                        id="igvOriginal">S/ 0.00</span>
+                                                                                </div>
+                                                                            </div>
+                                                                            <div
+                                                                                class="flex flex-col gap-2 border-b border-slate-100 dark:border-slate-800 pb-4">
+                                                                                <div
+                                                                                    class="flex justify-between text-sm">
+                                                                                    <span
+                                                                                        class="text-slate-500">Subtotal
+                                                                                        Adicionales</span>
+                                                                                    <span
+                                                                                        class="text-slate-700 dark:text-slate-300 font-medium"
+                                                                                        id="subtotalAdicionales">S/
+                                                                                        0.00</span>
+                                                                                </div>
+                                                                                <div
+                                                                                    class="flex justify-between text-sm">
+                                                                                    <span class="text-slate-500">IGV
+                                                                                        Adicionales</span>
+                                                                                    <span
+                                                                                        class="text-slate-700 dark:text-slate-300 font-medium"
+                                                                                        id="igvAdicionales">S/
+                                                                                        0.00</span>
+                                                                                </div>
+                                                                            </div>
+                                                                            <div
+                                                                                class="flex items-center justify-between pt-2">
+                                                                                <p
+                                                                                    class="text-slate-900 dark:text-white text-xl font-black uppercase">
+                                                                                    Total Final</p>
+                                                                                <div class="flex flex-col items-end">
+                                                                                    <p class="text-primary text-3xl font-black"
+                                                                                        id="totalFinal">S/ <%=
+                                                                                            factura.Total || '0.00' %>
+                                                                                    </p>
+                                                                                    <span
+                                                                                        class="text-[10px] text-slate-400 font-bold uppercase tracking-widest">Soles
+                                                                                        Peruanos (PEN)</span>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+
+                                                                <!-- Main Actions Footer -->
+                                                                <div
+                                                                    class="flex flex-col sm:flex-row items-center justify-end gap-4 py-8 mt-4 border-t border-slate-200 dark:border-slate-800">
+                                                                    <a href="/facturas"
+                                                                        class="w-full sm:w-auto px-6 py-3 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-700 dark:text-slate-200 text-sm font-bold hover:bg-slate-50 transition-all flex items-center justify-center gap-2">
+                                                                        <span
+                                                                            class="material-symbols-outlined text-base">cancel</span>
+                                                                        Descartar Cambios
+                                                                    </a>
+                                                                    <button type="submit"
+                                                                        class="w-full sm:w-auto px-8 py-3 bg-primary text-white rounded-lg text-sm font-bold shadow-lg shadow-primary/30 hover:bg-primary/90 transition-all flex items-center justify-center gap-2">
+                                                                        <span
+                                                                            class="material-symbols-outlined text-base">save</span>
+                                                                        Actualizar Factura
+                                                                    </button>
+                                                                </div>
+                                                            </div>
+
+                                                            <!-- Contenedor oculto para inputs dinámicos de envío al back -->
+                                                            <div id="productosModificadosHidden"></div>
+                                                </form>
                     </div>
-                    
-                    <!-- Hidden inputs para manejar cambios -->
-                    <div id="productosModificadosHidden"></div>
-
-                    <!-- Botones de acción -->
-                    <div class="card-footer">
-                        <div class="text-center">
-                            <button type="submit" class="btn-form btn-form-primary me-3">
-                                <i class="bi bi-check-circle"></i>
-                                Actualizar Factura
-                            </button>
-                            <a href="/facturas/<%= factura.IdFactura %>" class="btn-form btn-form-cancel me-2">
-                                <i class="bi bi-eye"></i>
-                                Ver Detalle
-                            </a>
-                            <a href="/facturas" class="btn-form btn-form-cancel">
-                                <i class="bi bi-arrow-left"></i>
-                                Volver al Listado
-                            </a>
-                        </div>
-                    </div>
-                </form>
+                </main>
             </div>
-        </div>
     </div>
-</div>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    // Toggle sidebar// Variables globales
-    let productosDisponibles = [];
-    let contadorNuevosProductos = 0;
-    let productosModificados = [];
-    let productosEliminados = [];
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
 
-    // Cargar productos disponibles
-    cargarProductosDisponibles();
+            // Configs extra de la vista
+            const formatter = new Intl.NumberFormat('es-PE', { style: 'currency', currency: 'PEN' });
 
-    // Event listeners
-    document.getElementById('addProductBtn').addEventListener('click', agregarNuevoProducto);
-    document.getElementById('editFacturaForm').addEventListener('submit', validarYEnviarFormulario);
+            const liquidGlassConfirm = async (text) => {
+                if (typeof Swal !== 'undefined') {
+                    const res = await Swal.fire({
+                        title: '¿Estás seguro?',
+                        text: text,
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#3b4bc9',
+                        cancelButtonColor: '#ef4444',
+                        confirmButtonText: 'Sí, confirmar',
+                        cancelButtonText: 'Cancelar'
+                    });
+                    return res.isConfirmed;
+                }
+                return confirm(text);
+            };
 
-    // Inicializar cálculo de totales
-    calcularTotales();
+            let productosDisponibles = [];
+            let contadorNuevosProductos = 0;
+            let productosModificados = [];
+            let productosEliminados = [];
 
-    // Event listeners para productos existentes
-    document.querySelectorAll('.cantidad-input, .precio-input').forEach(input => {
-        input.addEventListener('input', function() {
-            const detalleId = this.dataset.detalleId;
-            actualizarProductoExistente(detalleId);
-        });
-    });
+            cargarProductosDisponibles();
 
-    // Event listeners para eliminar productos adicionales
-    document.querySelectorAll('.btn-remove-product').forEach(btn => {
-        btn.addEventListener('click', function() {
-            const detalleId = this.dataset.detalleId;
-            eliminarProductoAdicional(detalleId);
-        });
-    });
+            document.getElementById('addProductBtn').addEventListener('click', agregarNuevoProducto);
+            document.getElementById('editFacturaForm').addEventListener('submit', validarYEnviarFormulario);
 
-    // Función para cargar productos disponibles
-    async function cargarProductosDisponibles() {
-        try {
-            const response = await fetch('/productos/api/listar');
-            if (response.ok) {
-                const data = await response.json();
-                productosDisponibles = data.productos || [];
+            calcularTotales();
+
+            document.querySelectorAll('.cantidad-input, .precio-input').forEach(input => {
+                input.addEventListener('input', function () {
+                    const detalleId = this.dataset.detalleId;
+                    actualizarProductoExistente(detalleId);
+                });
+            });
+
+            document.querySelectorAll('.btn-remove-product').forEach(btn => {
+                btn.addEventListener('click', function () {
+                    const detalleId = this.dataset.detalleId;
+                    eliminarProductoAdicional(detalleId);
+                });
+            });
+
+            async function cargarProductosDisponibles() {
+                try {
+                    const response = await fetch('/productos/api/listar');
+                    if (response.ok) {
+                        const data = await response.json();
+                        productosDisponibles = data.productos || [];
+                    }
+                } catch (error) {
+                    console.error('Error al cargar productos:', error);
+                }
             }
-        } catch (error) {
-            console.error('Error al cargar productos:', error);
-        }
-    }
 
-    // Función para agregar nuevo producto adicional
-    function agregarNuevoProducto() {
-        if (productosDisponibles.length === 0) {
-            alert('No hay productos disponibles. Asegúrese de que existan productos en el sistema.');
-            return;
-        }
+            function agregarNuevoProducto() {
+                if (productosDisponibles.length === 0) {
+                    Swal.fire('Error', 'No hay productos disponibles. Asegúrese de que existan productos en el sistema.', 'error');
+                    return;
+                }
 
-        contadorNuevosProductos++;
-        const nuevoId = `nuevo_${contadorNuevosProductos}`;
+                contadorNuevosProductos++;
+                const nuevoId = `nuevo_${contadorNuevosProductos}`;
 
-        const nuevaFila = document.createElement('div');
-        nuevaFila.className = 'producto-row producto-adicional';
-        nuevaFila.dataset.nuevoId = nuevoId;
-        nuevaFila.innerHTML = `
-            <div class="row align-items-center">
-                <div class="col-md-4">
-                    <select class="form-control-modern form-select-modern form-control-modern form-select-modern-sm producto-select" data-nuevo-id="${nuevoId}" required>
-                        <option value="">Seleccionar producto...</option>
-                        ${productosDisponibles.map(p => 
-                            `<option value="${p.IdProducto}" 
-                                     data-precio="${p.PrecioUnitario}" 
-                                     data-unidad="${p.UnidadMedida}">
-                                ${p.Nombre} - ${p.Marca || ''} ${p.Modelo || ''}
-                            </option>`
-                        ).join('')}
-                    </select>
-                    <input type="text" class="form-control-modern form-control-modern-sm mt-1" 
-                           placeholder="Descripción adicional (opcional)"
-                           data-nuevo-id="${nuevoId}" data-field="descripcion">
-                </div>
-                <div class="col-md-2">
-                    <input type="number" class="form-control-modern form-control-modern-sm cantidad-nueva" 
-                           min="0.01" step="0.01" value="1" data-nuevo-id="${nuevoId}" required>
-                </div>
-                <div class="col-md-1">
-                    <span class="unidad-display">UNID</span>
-                </div>
-                <div class="col-md-2">
-                    <input type="number" class="form-control-modern form-control-modern-sm precio-nuevo" 
-                           min="0" step="0.01" value="0" data-nuevo-id="${nuevoId}" required>
-                </div>
-                <div class="col-md-2">
-                    <strong class="total-producto">S/ 0.00</strong>
-                </div>
-                <div class="col-md-1">
-                    <button type="button" class="btn btn-remove-product" 
-                            data-nuevo-id="${nuevoId}" title="Eliminar producto">
-                        <i class="bi bi-trash"></i>
-                    </button>
-                </div>
-            </div>
+                const nuevaFila = document.createElement('tr');
+                nuevaFila.className = 'group hover:bg-slate-50/50 dark:hover:bg-slate-800/30 transition-colors bg-blue-50/40 dark:bg-primary/5 producto-row';
+                nuevaFila.dataset.nuevoId = nuevoId;
+                nuevaFila.dataset.tipo = 'ADICIONAL';
+
+                nuevaFila.innerHTML = `
+            <td class="px-6 py-4 text-center">
+                <div class="bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400 text-[10px] px-2 py-1 rounded font-bold uppercase inline-flex items-center"><span class="material-symbols-outlined text-[12px] mr-1">new_releases</span> Nuevo</div>
+            </td>
+            <td class="px-6 py-4">
+                <select class="w-full rounded-md border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-sm focus:ring-primary mb-2 producto-select" data-nuevo-id="${nuevoId}" required>
+                    <option value="">Seleccionar producto...</option>
+                    ${productosDisponibles.map(p =>
+                    `<option value="${p.IdProducto}" data-precio="${p.PrecioUnitario}" data-unidad="${p.UnidadMedida}">
+                            ${p.Nombre} - ${p.Marca || ''} ${p.Modelo || ''}
+                        </option>`
+                ).join('')}
+                </select>
+                <input type="text" class="w-full border-transparent bg-transparent dark:text-slate-300 focus:ring-0 focus:border-b focus:border-primary p-1 text-xs italic" placeholder="Agregar descripción extra (opcional)" data-nuevo-id="${nuevoId}" data-field="descripcion">
+            </td>
+            <td class="px-6 py-4">
+                <input type="number" class="w-full rounded-md border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-sm py-1 px-2 text-center cantidad-nueva focus:ring-primary" min="0.01" step="0.01" value="1" data-nuevo-id="${nuevoId}" required>
+            </td>
+            <td class="px-6 py-4 text-sm text-slate-600 dark:text-slate-400 text-center font-medium unidad-display">UNID</td>
+            <td class="px-6 py-4 text-right">
+                <input type="number" class="w-full text-right rounded-md border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-sm py-1 px-2 focus:ring-primary precio-nuevo" min="0" step="0.01" value="0.00" data-nuevo-id="${nuevoId}" required>
+            </td>
+            <td class="px-6 py-4 text-right text-sm font-bold text-slate-900 dark:text-white total-producto">S/ 0.00</td>
+            <td class="px-6 py-4 text-center">
+                <button type="button" class="text-slate-400 hover:text-red-500 transition-colors btn-remove-product" data-nuevo-id="${nuevoId}" title="Eliminar producto nuevo">
+                    <span class="material-symbols-outlined text-[20px]">delete</span>
+                </button>
+            </td>
         `;
 
-        document.getElementById('nuevosProductosAdicionales').appendChild(nuevaFila);
+                document.getElementById('nuevosProductosAdicionales').appendChild(nuevaFila);
 
-        // Agregar event listeners al nuevo producto
-        const select = nuevaFila.querySelector('.producto-select');
-        const cantidadInput = nuevaFila.querySelector('.cantidad-nueva');
-        const precioInput = nuevaFila.querySelector('.precio-nuevo');
-        const descripcionInput = nuevaFila.querySelector('input[data-field="descripcion"]');
-        const removeBtn = nuevaFila.querySelector('.btn-remove-product');
+                // Agregando event listeners locales a la fila insertada
+                const select = nuevaFila.querySelector('.producto-select');
+                const cantidadInput = nuevaFila.querySelector('.cantidad-nueva');
+                const precioInput = nuevaFila.querySelector('.precio-nuevo');
+                const removeBtn = nuevaFila.querySelector('.btn-remove-product');
 
-        select.addEventListener('change', function() {
-            const selectedOption = this.options[this.selectedIndex];
-            if (selectedOption.value) {
-                const precio = parseFloat(selectedOption.dataset.precio) || 0;
-                const unidad = selectedOption.dataset.unidad || 'UNID';
-                
-                precioInput.value = precio;
-                nuevaFila.querySelector('.unidad-display').textContent = unidad;
-                
-                calcularTotalNuevoProducto(nuevoId);
+                select.addEventListener('change', function () {
+                    const opt = this.options[this.selectedIndex];
+                    if (opt.value) {
+                        precioInput.value = parseFloat(opt.dataset.precio || 0).toFixed(2);
+                        nuevaFila.querySelector('.unidad-display').textContent = opt.dataset.unidad || 'UND';
+                        calcularTotalNuevoProducto(nuevoId);
+                    }
+                });
+
+                cantidadInput.addEventListener('input', () => calcularTotalNuevoProducto(nuevoId));
+                precioInput.addEventListener('input', () => calcularTotalNuevoProducto(nuevoId));
+
+                removeBtn.addEventListener('click', async function () {
+                    if (await liquidGlassConfirm('¿Eliminar esta fila nueva?')) {
+                        nuevaFila.remove();
+                        calcularTotales();
+                    }
+                });
             }
-        });
 
-        cantidadInput.addEventListener('input', () => calcularTotalNuevoProducto(nuevoId));
-        precioInput.addEventListener('input', () => calcularTotalNuevoProducto(nuevoId));
-
-        removeBtn.addEventListener('click', async function() {
-            if (await liquidGlassConfirm('¿Está seguro de que desea eliminar este producto?')) {
-                nuevaFila.remove();
+            function calcularTotalNuevoProducto(nuevoId) {
+                const fila = document.querySelector(`[data-nuevo-id="${nuevoId}"]`);
+                if (!fila) return;
+                const cant = parseFloat(fila.querySelector('.cantidad-nueva').value) || 0;
+                const prec = parseFloat(fila.querySelector('.precio-nuevo').value) || 0;
+                const total = cant * prec;
+                fila.querySelector('.total-producto').textContent = formatter.format(total).replace('PEN', 'S/');
                 calcularTotales();
             }
-        });
-    }
 
-    // Función para calcular total de nuevo producto
-    function calcularTotalNuevoProducto(nuevoId) {
-        const fila = document.querySelector(`[data-nuevo-id="${nuevoId}"]`);
-        const cantidad = parseFloat(fila.querySelector('.cantidad-nueva').value) || 0;
-        const precio = parseFloat(fila.querySelector('.precio-nuevo').value) || 0;
-        const total = cantidad * precio;
-        
-        fila.querySelector('.total-producto').textContent = `S/ ${total.toFixed(2)}`;
-        
-        calcularTotales();
-    }
+            function actualizarProductoExistente(detalleId) {
+                const fila = document.querySelector(`[data-detalle-id="${detalleId}"]`);
+                if (!fila) return;
 
-    // Función para actualizar producto existente
-    function actualizarProductoExistente(detalleId) {
-        const fila = document.querySelector(`[data-detalle-id="${detalleId}"]`);
-        const cantidadInput = fila.querySelector('.cantidad-input');
-        const precioInput = fila.querySelector('.precio-input');
-        
-        if (cantidadInput && precioInput) {
-            const cantidad = parseFloat(cantidadInput.value) || 0;
-            const precio = parseFloat(precioInput.value) || 0;
-            const total = cantidad * precio;
-            
-            fila.querySelector('.total-producto').textContent = `S/ ${total.toFixed(2)}`;
-            
-            // Agregar a productos modificados
-            const index = productosModificados.findIndex(p => p.IdDetalleFactura == detalleId);
-            const productoModificado = {
-                IdDetalleFactura: detalleId,
-                Cantidad: cantidad,
-                PrecioUnitario: precio,
-                Total: total
-            };
-            
-            if (index >= 0) {
-                productosModificados[index] = productoModificado;
-            } else {
-                productosModificados.push(productoModificado);
-            }
-            
-            calcularTotales();
-        }
-    }
+                const cant = parseFloat(fila.querySelector('.cantidad-input').value) || 0;
+                const prec = parseFloat(fila.querySelector('.precio-input').value) || 0;
+                const total = cant * prec;
 
-    // Función para eliminar producto adicional
-    async function eliminarProductoAdicional(detalleId) {
-        if (await liquidGlassConfirm('¿Está seguro de que desea eliminar este producto adicional?')) {
-            const fila = document.querySelector(`[data-detalle-id="${detalleId}"]`);
-            if (fila && fila.dataset.tipo === 'ADICIONAL') {
-                fila.remove();
-                productosEliminados.push(detalleId);
+                fila.querySelector('.total-producto').textContent = formatter.format(total).replace('PEN', 'S/');
+
+                const idx = productosModificados.findIndex(p => p.IdDetalleFactura == detalleId);
+                const obj = { IdDetalleFactura: detalleId, Cantidad: cant, PrecioUnitario: prec, Total: total };
+                if (idx >= 0) productosModificados[idx] = obj;
+                else productosModificados.push(obj);
+
                 calcularTotales();
             }
-        }
-    }
 
-    // Función para calcular todos los totales
-    function calcularTotales() {
-        let subtotalOriginal = 0;
-        let subtotalAdicionales = 0;
-
-        // Calcular totales de productos originales (no modificables)
-        document.querySelectorAll('[data-tipo="ORIGINAL"] .total-producto').forEach(totalEl => {
-            const total = parseFloat(totalEl.textContent.replace('S/ ', '')) || 0;
-            subtotalOriginal += total;
-        });
-
-        // Calcular totales de productos adicionales existentes
-        document.querySelectorAll('[data-tipo="ADICIONAL"] .total-producto').forEach(totalEl => {
-            const fila = totalEl.closest('.producto-row');
-            if (fila && !productosEliminados.includes(fila.dataset.detalleId)) {
-                const total = parseFloat(totalEl.textContent.replace('S/ ', '')) || 0;
-                subtotalAdicionales += total;
+            async function eliminarProductoAdicional(detalleId) {
+                if (await liquidGlassConfirm('¿Está seguro de que desea eliminar este ítem de la factura original?')) {
+                    const fila = document.querySelector(`[data-detalle-id="${detalleId}"]`);
+                    if (fila && fila.dataset.tipo === 'ADICIONAL') {
+                        fila.remove();
+                        productosEliminados.push(detalleId);
+                        calcularTotales();
+                    }
+                }
             }
-        });
 
-        // Calcular totales de nuevos productos adicionales
-        document.querySelectorAll('#nuevosProductosAdicionales .total-producto').forEach(totalEl => {
-            const total = parseFloat(totalEl.textContent.replace('S/ ', '')) || 0;
-            subtotalAdicionales += total;
-        });
+            function calcularTotales() {
+                let subOrig = 0, subAdic = 0;
 
-        // Calcular IGV y totales
-        const igvOriginal = subtotalOriginal * 0.18;
-        const totalOriginal = subtotalOriginal + igvOriginal;
-        
-        const igvAdicionales = subtotalAdicionales * 0.18;
-        const totalAdicionales = subtotalAdicionales + igvAdicionales;
-        
-        const totalFinal = totalOriginal + totalAdicionales;
+                document.querySelectorAll('[data-tipo="ORIGINAL"] .total-producto').forEach(el => {
+                    subOrig += parseFloat(el.textContent.replace(/[S/\s,]/g, '')) || 0;
+                });
 
-        // Actualizar displays
-        document.getElementById('subtotalOriginal').textContent = `S/ ${subtotalOriginal.toFixed(2)}`;
-        document.getElementById('igvOriginal').textContent = `S/ ${igvOriginal.toFixed(2)}`;
-        document.getElementById('totalOriginal').textContent = `S/ ${totalOriginal.toFixed(2)}`;
-        
-        document.getElementById('subtotalAdicionales').textContent = `S/ ${subtotalAdicionales.toFixed(2)}`;
-        document.getElementById('igvAdicionales').textContent = `S/ ${igvAdicionales.toFixed(2)}`;
-        document.getElementById('totalAdicionales').textContent = `S/ ${totalAdicionales.toFixed(2)}`;
-        
-        document.getElementById('totalFinal').textContent = `S/ ${totalFinal.toFixed(2)}`;
-    }
+                document.querySelectorAll('[data-tipo="ADICIONAL"] .total-producto').forEach(el => {
+                    const row = el.closest('tr');
+                    if (row && !productosEliminados.includes(row.dataset.detalleId)) {
+                        subAdic += parseFloat(el.textContent.replace(/[S/\s,]/g, '')) || 0;
+                    }
+                });
 
-    // Función para validar y enviar formulario
-    async function validarYEnviarFormulario(e) {
-        e.preventDefault();
-        
-        // Preparar datos de productos modificados
-        actualizarInputsHidden();
-        
-        // Validaciones básicas
-        const estado = document.getElementById('Estado').value;
-        const cliente = document.getElementById('IdCliente').value;
-        const fechaEmision = document.getElementById('FechaEmision').value;
+                const igvOrig = subOrig * 0.18;
+                const igvAdic = subAdic * 0.18;
 
-        if (!estado || !cliente || !fechaEmision) {
-            alert('Por favor complete todos los campos obligatorios.');
-            return false;
-        }
+                document.getElementById('subtotalOriginal').textContent = formatter.format(subOrig).replace('PEN', 'S/');
+                document.getElementById('igvOriginal').textContent = formatter.format(igvOrig).replace('PEN', 'S/');
 
-        // Validar nuevos productos
-        const nuevosProductos = document.querySelectorAll('#nuevosProductosAdicionales .producto-row');
-        for (let fila of nuevosProductos) {
-            const select = fila.querySelector('.producto-select');
-            const cantidad = fila.querySelector('.cantidad-nueva');
-            const precio = fila.querySelector('.precio-nuevo');
-            
-            if (!select.value || !cantidad.value || cantidad.value <= 0 || precio.value < 0) {
-                alert('Por favor complete correctamente todos los productos adicionales.');
-                return false;
+                document.getElementById('subtotalAdicionales').textContent = formatter.format(subAdic).replace('PEN', 'S/');
+                document.getElementById('igvAdicionales').textContent = formatter.format(igvAdic).replace('PEN', 'S/');
+
+                const gTotal = (subOrig + igvOrig) + (subAdic + igvAdic);
+                document.getElementById('totalFinal').textContent = formatter.format(gTotal).replace('PEN', 'S/');
             }
-        }
 
-        const confirmado = await liquidGlassConfirm('¿Está seguro de que desea actualizar esta factura?');
-        if (confirmado) {
-            // Deshabilitar botón para evitar doble envío
-            const submitBtn = document.querySelector('button[type="submit"]');
-            submitBtn.disabled = true;
-            submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Actualizando...';
-            
-            // Enviar formulario
-            e.target.submit();
-        }
-    }
+            async function validarYEnviarFormulario(e) {
+                e.preventDefault();
+                actualizarInputsHidden();
 
-    // Función para actualizar inputs hidden
-    function actualizarInputsHidden() {
-        const container = document.getElementById('productosModificadosHidden');
-        container.innerHTML = '';
+                const req = ['Estado', 'IdCliente', 'FechaEmision'];
+                for (let id of req) {
+                    if (!document.getElementById(id).value) {
+                        Swal.fire('Atención', 'Por favor complete todos los datos básicos requeridos.', 'warning');
+                        return;
+                    }
+                }
 
-        // Productos modificados
-        productosModificados.forEach((producto, index) => {
-            container.innerHTML += `
-                <input type="hidden" name="productosModificados[${index}][IdDetalleFactura]" value="${producto.IdDetalleFactura}">
-                <input type="hidden" name="productosModificados[${index}][Cantidad]" value="${producto.Cantidad}">
-                <input type="hidden" name="productosModificados[${index}][PrecioUnitario]" value="${producto.PrecioUnitario}">
+                const news = document.querySelectorAll('#nuevosProductosAdicionales .producto-row');
+                for (let row of news) {
+                    const select = row.querySelector('.producto-select');
+                    const cant = row.querySelector('.cantidad-nueva');
+                    const prec = row.querySelector('.precio-nuevo');
+                    if (!select.value || !cant.value || cant.value <= 0 || prec.value < 0) {
+                        Swal.fire('Atención', 'Verifique que los productos adicionales que agregó estén correctamente llenados.', 'warning');
+                        return;
+                    }
+                }
+
+                if (await liquidGlassConfirm('¿Actualizar esta factura con los montos e ítems especificados?')) {
+                    const submitBtn = document.querySelector('button[type="submit"]');
+                    submitBtn.disabled = true;
+                    submitBtn.innerHTML = '<span class="material-symbols-outlined animate-spin mr-2">refresh</span> Guardando...';
+                    e.target.submit();
+                }
+            }
+
+            function actualizarInputsHidden() {
+                const c = document.getElementById('productosModificadosHidden');
+                c.innerHTML = '';
+
+                productosModificados.forEach((p, i) => {
+                    c.innerHTML += `
+                <input type="hidden" name="productosModificados[${i}][IdDetalleFactura]" value="${p.IdDetalleFactura}">
+                <input type="hidden" name="productosModificados[${i}][Cantidad]" value="${p.Cantidad}">
+                <input type="hidden" name="productosModificados[${i}][PrecioUnitario]" value="${p.PrecioUnitario}">
             `;
-        });
+                });
 
-        // Productos eliminados
-        productosEliminados.forEach((detalleId, index) => {
-            container.innerHTML += `<input type="hidden" name="productosEliminados[${index}]" value="${detalleId}">`;
-        });
+                productosEliminados.forEach((id, i) => {
+                    c.innerHTML += `<input type="hidden" name="productosEliminados[${i}]" value="${id}">`;
+                });
 
-        // Nuevos productos adicionales
-        const nuevosProductos = document.querySelectorAll('#nuevosProductosAdicionales .producto-row');
-        nuevosProductos.forEach((fila, index) => {
-            const select = fila.querySelector('.producto-select');
-            const cantidad = fila.querySelector('.cantidad-nueva');
-            const precio = fila.querySelector('.precio-nuevo');
-            const descripcion = fila.querySelector('input[data-field="descripcion"]');
-            
-            if (select.value) {
-                container.innerHTML += `
-                    <input type="hidden" name="nuevosProductos[${index}][IdProducto]" value="${select.value}">
-                    <input type="hidden" name="nuevosProductos[${index}][Cantidad]" value="${cantidad.value}">
-                    <input type="hidden" name="nuevosProductos[${index}][PrecioUnitario]" value="${precio.value}">
-                    <input type="hidden" name="nuevosProductos[${index}][DescripcionAdicional]" value="${descripcion.value}">
+                const news = document.querySelectorAll('#nuevosProductosAdicionales .producto-row');
+                news.forEach((row, i) => {
+                    const select = row.querySelector('.producto-select');
+                    const cant = row.querySelector('.cantidad-nueva');
+                    const prec = row.querySelector('.precio-nuevo');
+                    const desc = row.querySelector('input[data-field="descripcion"]');
+
+                    if (select.value) {
+                        c.innerHTML += `
+                    <input type="hidden" name="nuevosProductos[${i}][IdProducto]" value="${select.value}">
+                    <input type="hidden" name="nuevosProductos[${i}][Cantidad]" value="${cant.value}">
+                    <input type="hidden" name="nuevosProductos[${i}][PrecioUnitario]" value="${prec.value}">
+                    <input type="hidden" name="nuevosProductos[${i}][DescripcionAdicional]" value="${desc.value}">
                 `;
+                    }
+                });
+            }
+
+            const fpSel = document.getElementById('FormaPago');
+            const feIn = document.getElementById('FechaEmision');
+            const fvIn = document.getElementById('FechaVencimiento');
+
+            function calcVenc() {
+                const fp = fpSel.value;
+                const fe = feIn.value;
+                if (fe && fp.startsWith('CREDITO_')) {
+                    const days = parseInt(fp.split('_')[1]);
+                    const d = new Date(fe);
+                    d.setDate(d.getDate() + days);
+                    fvIn.value = d.toISOString().split('T')[0];
+                } else if (fp === 'CONTADO' && fe) {
+                    fvIn.value = fe;
+                }
+            }
+
+            fpSel.addEventListener('change', calcVenc);
+            feIn.addEventListener('change', calcVenc);
+
+            const estSelect = document.getElementById('Estado');
+            if (estSelect) {
+                estSelect.addEventListener('change', function () {
+                    const badge = document.querySelector('.badge-estado-display');
+                    if (badge) {
+                        badge.textContent = this.value;
+                        badge.className = 'px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider badge-estado-display ';
+                        if (this.value === 'PAGADA') badge.className += 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400';
+                        else if (this.value === 'ANULADA') badge.className += 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400';
+                        else badge.className += 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400';
+                    }
+                });
             }
         });
-    }
-
-    // Auto-calcular fecha de vencimiento según forma de pago
-    const formaPagoSelect = document.getElementById('FormaPago');
-    const fechaEmisionInput = document.getElementById('FechaEmision');
-    const fechaVencimientoInput = document.getElementById('FechaVencimiento');
-
-    function calcularFechaVencimiento() {
-        const formaPago = formaPagoSelect.value;
-        const fechaEmision = fechaEmisionInput.value;
-        
-        if (fechaEmision && formaPago.startsWith('CREDITO_')) {
-            const dias = parseInt(formaPago.split('_')[1]);
-            const fecha = new Date(fechaEmision);
-            fecha.setDate(fecha.getDate() + dias);
-            fechaVencimientoInput.value = fecha.toISOString().split('T')[0];
-        } else if (formaPago === 'CONTADO' && fechaEmision) {
-            fechaVencimientoInput.value = fechaEmision;
-        }
-    }
-
-    formaPagoSelect.addEventListener('change', calcularFechaVencimiento);
-    fechaEmisionInput.addEventListener('change', calcularFechaVencimiento);
-
-    // Actualizar badge de estado
-    document.getElementById('Estado').addEventListener('change', function() {
-        const badge = document.querySelector('.estado-badge');
-        const nuevoEstado = this.value;
-        badge.textContent = nuevoEstado;
-        badge.className = `estado-badge estado-${nuevoEstado.toLowerCase()}`;
-    });
-});
-</script>
-
+    </script>
     <script src="/publico/js/layout.js?v=1772427290141"></script>
 </body>
+
 </html>
