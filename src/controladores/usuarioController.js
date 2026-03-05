@@ -37,13 +37,7 @@ exports.crearUsuario = async (req, res) => {
         res.redirect('/usuarios');
     } catch (error) {
         req.flash('error', error.message);
-        const roles = await Usuario.obtenerRoles();
-        res.render('usuarios/crear', {
-            title: 'Crear Nuevo Usuario',
-            usuario: req.body,
-            roles,
-            error: error.message
-        });
+        res.redirect('/usuarios');
     }
 };
 
@@ -66,6 +60,7 @@ exports.mostrarFormularioEditar = async (req, res) => {
 exports.actualizarUsuario = async (req, res) => {
     try {
         const datosActualizacion = { ...req.body };
+        if (datosActualizacion._method) delete datosActualizacion._method;
 
         const clave = datosActualizacion.Clave ? datosActualizacion.Clave.trim() : '';
         const confirmarClave = datosActualizacion.ConfirmarClave ? datosActualizacion.ConfirmarClave.trim() : '';
@@ -88,21 +83,8 @@ exports.actualizarUsuario = async (req, res) => {
         res.redirect('/usuarios');
     } catch (error) {
         console.error('Error al actualizar usuario:', error);
-        try {
-            const usuario = await Usuario.obtenerPorId(req.params.id);
-            const roles = await Usuario.obtenerRoles();
-            res.render('usuarios/editar', {
-                title: 'Editar Usuario',
-                usuario: usuario,
-                roles,
-                error: error.message,
-                success: null
-            });
-        } catch (dbError) {
-            console.error('Error al obtener datos para re-render:', dbError);
-            req.flash('error', error.message);
-            res.redirect('/usuarios');
-        }
+        req.flash('error', error.message);
+        res.redirect('/usuarios');
     }
 };
 
