@@ -1,314 +1,612 @@
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lista de Productos - CARSIL Equipos y Servicios SAC</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="/publico/css/layout.css?v=1772427290145">
-    <link rel="stylesheet" href="/publico/css/list-views.css">
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: { "primary": "#3b4bc9", "background-light": "#f6f6f8" },
+                    fontFamily: { "display": ["Inter", "sans-serif"] },
+                    borderRadius: { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" },
+                },
+            },
+        }
+    </script>
+    <link rel="stylesheet" href="/publico/css/layout.css?v=1772427290135">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        .main-content { padding: 0 !important; background: #f6f6f8; }
+    </style>
 </head>
+<body class="bg-[#f6f6f8] text-slate-900 font-display">
+<div class="wrapper">
+    <%- include("../parciales/sidebar") %>
 
-<body>
-    <div class="wrapper">
-        <%- include("../parciales/sidebar") %>
+    <div class="main-content" id="main-content">
 
-            <!-- Botón para ocultar/mostrar barra -->
+        <!-- Top Nav -->
+        <header class="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-8 sticky top-0 z-10 shadow-sm">
+            <div class="flex items-center gap-2">
+                <span class="text-slate-400 text-sm">Panel</span>
+                <span class="material-symbols-outlined text-sm text-slate-300">chevron_right</span>
+                <span class="font-semibold text-sm">Gestión de Productos</span>
+            </div>
+            <div class="flex items-center gap-3">
+                <div class="relative">
+                    <span class="material-symbols-outlined p-2 text-slate-500 hover:bg-slate-100 rounded-full cursor-pointer transition-colors">notifications</span>
+                    <span class="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full border-2 border-white"></span>
+                </div>
+                <div class="h-8 w-px bg-slate-200"></div>
+                <div class="w-8 h-8 rounded-full bg-[#3b4bc9] flex items-center justify-center text-white text-xs font-bold">
+                    <%= user && user.Nombres ? user.Nombres.charAt(0) : 'A' %>
+                </div>
+                <span class="text-sm font-medium hidden sm:inline-block">
+                    <%= user && user.Nombres ? user.Nombres : 'Administrador' %>
+                </span>
+            </div>
+        </header>
 
-            <!-- Main Content -->
-            <div class="main-content" id="main-content">
-                <nav class="navbar navbar-expand-lg navbar-top border-bottom">
-                    <div class="container-fluid">
-                        <h5 class="page-title mb-0">
-                            <i class="bi bi-box"></i>
-                            Gestión de Productos
-                        </h5>
-                        <div class="user-profile ms-auto">
-                            <span>
-                                <%= user && user.Nombres ? user.Nombres : 'Administrador' %>
-                            </span>
-                            <div class="user-avatar">
-                                <%= user && user.Nombres ? user.Nombres.charAt(0) : 'A' %>
-                            </div>
-                        </div>
-                    </div>
-                </nav>
+        <!-- Content -->
+        <div class="p-8">
 
-                <div class="container-fluid py-4">
-                    <!-- Estadísticas -->
-                    <div class="stats-grid">
-                        <div class="stat-card">
-                            <div class="stat-icon" style="background: linear-gradient(135deg, #74b9ff, #0984e3);">
-                                <i class="bi bi-box text-white"></i>
-                            </div>
-                            <h6 class="text-muted">Total Productos</h6>
-                            <h3 class="text-primary">
-                                <%= productos ? productos.length : 0 %>
-                            </h3>
-                        </div>
-                        <div class="stat-card">
-                            <div class="stat-icon" style="background: linear-gradient(135deg, #55efc4, #00b894);">
-                                <i class="bi bi-check-circle text-white"></i>
-                            </div>
-                            <h6 class="text-muted">Disponibles</h6>
-                            <h3 class="text-success">
-                                <%= productos ? productos.length : 0 %>
-                            </h3>
-                        </div>
-                        <div class="stat-card">
-                            <div class="stat-icon" style="background: linear-gradient(135deg, #ffeaa7, #fdcb6e);">
-                                <i class="bi bi-exclamation-triangle text-white"></i>
-                            </div>
-                            <h6 class="text-muted">Stock Bajo</h6>
-                            <h3 class="text-warning">0</h3>
-                        </div>
-                    </div>
+            <!-- Page Title -->
+            <div class="mb-8">
+                <h2 class="text-3xl font-black tracking-tight mb-2">Gestión de Productos</h2>
+                <p class="text-slate-500">Administra el catálogo de productos y equipos de CARSIL.</p>
+            </div>
 
-                    <!-- Mensajes -->
-                    <% if (success) { %>
-                        <div class="alert alert-success alert-dismissible fade show" role="alert">
-                            <i class="bi bi-check-circle me-2"></i>
-                            <%= success %>
-                                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                        </div>
-                        <% } %>
-                            <% if (error) { %>
-                                <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                                    <i class="bi bi-exclamation-triangle me-2"></i>
-                                    <%= error %>
-                                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                                </div>
-                                <% } %>
+            <!-- Flash messages -->
+            <% if (success) { %>
+            <div class="mb-6 flex items-center gap-3 bg-emerald-50 border border-emerald-200 text-emerald-800 px-4 py-3 rounded-xl text-sm">
+                <span class="material-symbols-outlined text-emerald-500">check_circle</span>
+                <span><%= success %></span>
+            </div>
+            <% } %>
+            <% if (error) { %>
+            <div class="mb-6 flex items-center gap-3 bg-rose-50 border border-rose-200 text-rose-800 px-4 py-3 rounded-xl text-sm">
+                <span class="material-symbols-outlined text-rose-500">error</span>
+                <span><%= error %></span>
+            </div>
+            <% } %>
 
-                                    <!-- Búsqueda y acciones -->
-                                    <div class="search-container">
-                                        <div class="d-flex justify-content-between align-items-center">
-                                            <div class="d-flex gap-2 flex-grow-1 me-3">
-                                                <!-- Filtro por tipo de código -->
-                                                <div class="d-flex gap-2 align-items-center">
-
-                                                    <form action="/productos" method="GET" class="d-flex gap-2">
-
-                                                        <% if (typeof codigo !=='undefined' && codigo) { %>
-                                                            <a href="/productos" class="btn btn-outline-secondary">
-                                                                <i class="bi bi-x-circle"></i> Limpiar
-                                                            </a>
-                                                            <% } %>
-                                                    </form>
-                                                </div>
-
-                                                <!-- Búsqueda general -->
-                                                <div class="ms-3 d-flex gap-2 flex-grow-1">
-                                                    <select class="form-select" id="campoFiltro"
-                                                        style="max-width: 180px;">
-                                                        <option value="0">Código</option>
-                                                        <option value="1">Nombre</option>
-                                                        <option value="2">Descripción</option>
-                                                        <option value="3">Marca</option>
-                                                        <option value="4">Modelo</option>
-                                                        <option value="5">Tipo</option>
-                                                        <option value="6">Precio</option>
-                                                    </select>
-                                                    <input type="text" class="form-control" id="valorFiltro"
-                                                        placeholder="Buscar productos...">
-                                                </div>
-                                            </div>
-                                            <a href="/productos/crear" class="btn btn-primary-modern btn-modern">
-                                                <i class="bi bi-plus-circle"></i>
-                                                Nuevo Producto
-                                            </a>
-                                        </div>
-                                    </div>
-
-                                    <!-- Tabla modernizada -->
-                                    <div class="card-modern">
-                                        <div class="table-responsive">
-                                            <table class="table table-modern mb-0">
-                                                <thead>
-                                                    <tr>
-                                                        <th style="width: 40px;"><input
-                                                                class="form-check-input custom-checkbox"
-                                                                type="checkbox"></th>
-                                                        <th>Código <i class="bi bi-arrow-down-up"></i></th>
-                                                        <th>Nombre <i class="bi bi-arrow-down-up"></i></th>
-                                                        <th>Descripción <i class="bi bi-arrow-down-up"></i></th>
-                                                        <th>Marca <i class="bi bi-arrow-down-up"></i></th>
-                                                        <th>Modelo <i class="bi bi-arrow-down-up"></i></th>
-                                                        <th>Tipo <i class="bi bi-arrow-down-up"></i></th>
-                                                        <th>Unidad <i class="bi bi-arrow-down-up"></i></th>
-                                                        <th>Precio Unitario <i class="bi bi-arrow-down-up"></i></th>
-                                                        <th class="text-center">Acciones</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    <% if (productos && productos.length> 0) { %>
-                                                        <% productos.forEach(producto=> { %>
-                                                            <tr>
-                                                                <td><input class="form-check-input custom-checkbox"
-                                                                        type="checkbox"></td>
-                                                                <td>
-                                                                    <span class="fw-bold text-primary">
-                                                                        <%= producto.Codigo %>
-                                                                    </span>
-                                                                </td>
-                                                                <td>
-                                                                    <div class="item-info">
-                                                                        <div class="item-avatar">
-                                                                            <%= producto.Nombre ?
-                                                                                producto.Nombre.charAt(0).toUpperCase()
-                                                                                : 'P' %>
-                                                                        </div>
-                                                                        <div class="item-details">
-                                                                            <strong>
-                                                                                <%= producto.Nombre %>
-                                                                            </strong>
-                                                                        </div>
-                                                                    </div>
-                                                                </td>
-                                                                <td>
-                                                                    <%= producto.Descripcion %>
-                                                                </td>
-                                                                <td>
-                                                                    <%= producto.Marca %>
-                                                                </td>
-                                                                <td>
-                                                                    <%= producto.Modelo %>
-                                                                </td>
-                                                                <td>
-                                                                    <span class="badge bg-light text-dark">
-                                                                        <%= producto.Tipo %>
-                                                                    </span>
-                                                                </td>
-                                                                <td>
-                                                                    <%= producto.UnidadMedida %>
-                                                                </td>
-                                                                <td class="price-cell">S/ <%= producto.PrecioUnitario %>
-                                                                </td>
-                                                                <td class="text-center">
-                                                                    <div class="action-buttons justify-content-center">
-                                                                        <a href="/productos/editar/<%= producto.IdProducto %>"
-                                                                            class="btn-action-icon btn-action-edit"
-                                                                            title="Editar">
-                                                                            <i class="bi bi-pencil"></i>
-                                                                        </a>
-                                                                        <a href="/productos/eliminar/<%= producto.IdProducto %>"
-                                                                            class="btn-action-icon btn-action-delete"
-                                                                            title="Eliminar"
-                                                                            onclick="return confirm('¿Está seguro de eliminar este producto?')">
-                                                                            <i class="bi bi-trash"></i>
-                                                                        </a>
-                                                                    </div>
-                                                                </td>
-                                                            </tr>
-                                                            <% }); %>
-                                                                <% } else { %>
-                                                                    <tr>
-                                                                        <td colspan="9" class="text-center py-5">
-                                                                            <i class="bi bi-box text-muted"
-                                                                                style="font-size: 3rem;"></i>
-                                                                            <p class="text-muted mt-2">
-                                                                                <% if (codigo && codigo.length> 0) { %>
-                                                                                    No se encontraron productos con el
-                                                                                    código "<%= codigo %>"
-                                                                                        <% } else if (terminoBusqueda &&
-                                                                                            terminoBusqueda.length> 0) {
-                                                                                            %>
-                                                                                            No se encontraron productos
-                                                                                            que coincidan con "<%=
-                                                                                                terminoBusqueda %>"
-                                                                                                <% } else { %>
-                                                                                                    No hay productos
-                                                                                                    registrados.
-                                                                                                    <% } %>
-                                                                            </p>
-                                                                            <a href="/productos/crear"
-                                                                                class="btn btn-primary-modern btn-modern">
-                                                                                <i class="bi bi-plus-circle"></i>
-                                                                                Agregar producto
-                                                                            </a>
-                                                                        </td>
-                                                                    </tr>
-                                                                    <% } %>
-                                                </tbody>
-                                            </table>
-
-                                            <!-- Paginación Modernizada -->
-                                            <div class="pagination-modern">
-                                                <div class="pagination-info">
-                                                    Showing 1 - <%= productos ? productos.length : 0 %> of <%= productos
-                                                            ? productos.length : 0 %>
-                                                </div>
-                                                <ul class="pagination-controls">
-                                                    <li><button class="page-item-modern disabled"><i
-                                                                class="bi bi-chevron-left"></i></button></li>
-                                                    <li><button class="page-item-modern active">1</button></li>
-                                                    <li><button class="page-item-modern disabled"><i
-                                                                class="bi bi-chevron-right"></i></button></li>
-                                                </ul>
-                                            </div>
-                                        </div>
-                                    </div>
+            <!-- Stats Cards -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 mb-8">
+                <div class="bg-white p-5 rounded-xl border border-slate-100 shadow-sm border-t-4 border-t-[#3b4bc9]">
+                    <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Total Productos</p>
+                    <p class="text-3xl font-bold text-[#3b4bc9]"><%= productos ? productos.length : 0 %></p>
+                </div>
+                <div class="bg-white p-5 rounded-xl border border-slate-100 shadow-sm border-t-4 border-t-emerald-500">
+                    <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Con Precio</p>
+                    <p class="text-3xl font-bold text-emerald-600"><%= productos ? productos.filter(p => p.PrecioUnitario > 0).length : 0 %></p>
+                </div>
+                <div class="bg-white p-5 rounded-xl border border-slate-100 shadow-sm border-t-4 border-t-amber-500">
+                    <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Con Marca</p>
+                    <p class="text-3xl font-bold text-amber-600"><%= productos ? productos.filter(p => p.Marca && p.Marca.length > 0).length : 0 %></p>
+                </div>
+                <div class="bg-white p-5 rounded-xl border border-slate-100 shadow-sm border-t-4 border-t-violet-500">
+                    <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Con Descripción</p>
+                    <p class="text-3xl font-bold text-violet-600"><%= productos ? productos.filter(p => p.Descripcion && p.Descripcion.length > 0).length : 0 %></p>
                 </div>
             </div>
+
+            <!-- Filter Bar -->
+            <div class="bg-white p-4 rounded-xl border border-slate-100 mb-6 flex flex-wrap gap-4 items-center shadow-sm">
+                <div class="flex-1 min-w-[260px] relative group">
+                    <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-[#3b4bc9] transition-colors">search</span>
+                    <input id="valorFiltro"
+                           class="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-[#3b4bc9]/20 focus:border-[#3b4bc9] transition-all text-sm outline-none"
+                           placeholder="Buscar productos..." type="text" />
+                </div>
+                <select id="campoFiltro"
+                        class="px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:ring-2 focus:ring-[#3b4bc9]/20 focus:border-[#3b4bc9] outline-none">
+                    <option value="0">Código</option>
+                    <option value="1">Nombre</option>
+                    <option value="2">Descripción</option>
+                    <option value="3">Marca</option>
+                    <option value="4">Modelo</option>
+                    <option value="5">Tipo</option>
+                </select>
+                <button onclick="abrirModalCrear()"
+                        class="inline-flex items-center gap-2 px-5 py-2.5 bg-[#3b4bc9] text-white font-semibold rounded-lg hover:bg-[#3b4bc9]/90 hover:shadow-lg transition-all text-sm">
+                    <span class="material-symbols-outlined text-sm">add_circle</span>
+                    Nuevo Producto
+                </button>
+            </div>
+
+            <!-- Data Table -->
+            <div class="bg-white rounded-xl border border-slate-100 shadow-md overflow-hidden">
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse" id="tablaProductos">
+                        <thead>
+                            <tr class="bg-slate-50 border-b border-slate-200">
+                                <th class="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-widest">Código</th>
+                                <th class="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-widest">Nombre</th>
+                                <th class="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-widest">Descripción</th>
+                                <th class="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-widest">Marca / Modelo</th>
+                                <th class="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-widest">Tipo</th>
+                                <th class="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-widest">Unidad</th>
+                                <th class="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-widest">Precio</th>
+                                <th class="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-widest text-right">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-100" id="tbodyProductos">
+                            <% if (productos && productos.length > 0) { %>
+                            <% productos.forEach(producto => { %>
+                            <tr class="hover:bg-slate-50/60 transition-colors">
+                                <!-- Código -->
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <span class="font-mono text-[#3b4bc9] font-bold text-sm bg-[#3b4bc9]/10 px-2 py-0.5 rounded">
+                                        <%= producto.Codigo %>
+                                    </span>
+                                </td>
+                                <!-- Nombre -->
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-9 h-9 rounded-full bg-amber-100 flex items-center justify-center text-amber-700 font-bold text-sm flex-shrink-0">
+                                            <%= producto.Nombre ? producto.Nombre.charAt(0).toUpperCase() : 'P' %>
+                                        </div>
+                                        <p class="text-sm font-semibold leading-tight max-w-[160px] truncate"><%= producto.Nombre %></p>
+                                    </div>
+                                </td>
+                                <!-- Descripción -->
+                                <td class="px-6 py-4 text-sm text-slate-500 max-w-[200px] truncate">
+                                    <%= producto.Descripcion || '—' %>
+                                </td>
+                                <!-- Marca / Modelo -->
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <% if (producto.Marca || producto.Modelo) { %>
+                                    <div class="flex flex-col gap-0.5">
+                                        <% if (producto.Marca) { %>
+                                        <span class="text-xs font-medium text-slate-700"><%= producto.Marca %></span>
+                                        <% } %>
+                                        <% if (producto.Modelo) { %>
+                                        <span class="text-xs text-slate-400 font-mono"><%= producto.Modelo %></span>
+                                        <% } %>
+                                    </div>
+                                    <% } else { %>
+                                    <span class="text-slate-300">—</span>
+                                    <% } %>
+                                </td>
+                                <!-- Tipo -->
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <% if (producto.Tipo) { %>
+                                    <span class="inline-flex items-center px-2.5 py-1 rounded-full text-[11px] font-bold bg-slate-100 text-slate-600 uppercase tracking-wider"><%= producto.Tipo %></span>
+                                    <% } else { %>
+                                    <span class="text-slate-300 text-sm">—</span>
+                                    <% } %>
+                                </td>
+                                <!-- Unidad -->
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-500">
+                                    <%= producto.UnidadMedida || 'UNID' %>
+                                </td>
+                                <!-- Precio -->
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <span class="text-sm font-bold text-emerald-700">
+                                        S/ <%= parseFloat(producto.PrecioUnitario || 0).toFixed(2) %>
+                                    </span>
+                                </td>
+                                <!-- Acciones -->
+                                <td class="px-6 py-4 whitespace-nowrap text-right">
+                                    <div class="flex items-center justify-end gap-1">
+                                        <button
+                                            onclick="abrirModalEditar(this)"
+                                            data-id="<%= producto.IdProducto %>"
+                                            data-codigo="<%= (producto.Codigo || '').replace(/\"/g,'&quot;') %>"
+                                            data-nombre="<%= (producto.Nombre || '').replace(/\"/g,'&quot;') %>"
+                                            data-descripcion="<%= (producto.Descripcion || '').replace(/\"/g,'&quot;') %>"
+                                            data-marca="<%= (producto.Marca || '').replace(/\"/g,'&quot;') %>"
+                                            data-modelo="<%= (producto.Modelo || '').replace(/\"/g,'&quot;') %>"
+                                            data-tipo="<%= (producto.Tipo || '').replace(/\"/g,'&quot;') %>"
+                                            data-unidadmedida="<%= (producto.UnidadMedida || 'UNID') %>"
+                                            data-preciounitario="<%= producto.PrecioUnitario || 0 %>"
+                                            class="p-1.5 hover:bg-slate-100 rounded-lg transition-colors text-slate-500 hover:text-[#3b4bc9]"
+                                            title="Editar">
+                                            <span class="material-symbols-outlined text-lg leading-none">edit</span>
+                                        </button>
+                                        <a href="/productos/eliminar/<%= producto.IdProducto %>"
+                                           onclick="return confirm('¿Está seguro de eliminar este producto?')"
+                                           class="p-1.5 hover:bg-rose-50 rounded-lg transition-colors text-slate-500 hover:text-rose-600"
+                                           title="Eliminar">
+                                            <span class="material-symbols-outlined text-lg leading-none">delete</span>
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                            <% }); %>
+                            <% } else { %>
+                            <tr>
+                                <td colspan="8" class="text-center py-16">
+                                    <span class="material-symbols-outlined text-5xl text-slate-300 block mb-3">inventory_2</span>
+                                    <p class="text-slate-500 font-medium mb-1">
+                                        <% if ((terminoBusqueda && terminoBusqueda.length > 0) || (codigo && codigo.length > 0)) { %>
+                                            No se encontraron productos que coincidan con la búsqueda
+                                        <% } else { %>
+                                            No hay productos registrados
+                                        <% } %>
+                                    </p>
+                                    <p class="text-slate-400 text-sm mb-5">Comience agregando su primer producto</p>
+                                    <button onclick="abrirModalCrear()"
+                                            class="inline-flex items-center gap-2 px-5 py-2.5 bg-[#3b4bc9] text-white font-semibold rounded-lg hover:bg-[#3b4bc9]/90 transition-all text-sm">
+                                        <span class="material-symbols-outlined text-sm">add_circle</span>
+                                        Nuevo Producto
+                                    </button>
+                                </td>
+                            </tr>
+                            <% } %>
+                        </tbody>
+                    </table>
+                </div>
+                <!-- Footer -->
+                <div class="px-6 py-4 border-t border-slate-100 flex items-center justify-between">
+                    <p class="text-sm text-slate-500">
+                        Mostrando <span id="visibleCount"><%= productos ? productos.length : 0 %></span>
+                        de <strong><%= productos ? productos.length : 0 %></strong> productos
+                    </p>
+                </div>
+            </div>
+        </div><!-- /p-8 -->
+    </div><!-- /main-content -->
+</div><!-- /wrapper -->
+
+
+<!-- ==================== MODAL NUEVO PRODUCTO ==================== -->
+<div id="modalCrear"
+     class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center z-50 p-4 hidden"
+     onclick="cerrarCrearSiOverlay(event)">
+    <div class="bg-white w-full max-w-2xl rounded-xl shadow-2xl overflow-hidden border border-slate-200 flex flex-col max-h-[90vh]"
+         onclick="event.stopPropagation()">
+
+        <!-- Header -->
+        <div class="px-8 py-6 border-b border-slate-100 flex justify-between items-center flex-shrink-0">
+            <div>
+                <h2 class="text-xl font-bold text-slate-900 tracking-tight">Registrar Nuevo Producto</h2>
+                <p class="text-slate-500 text-sm mt-1">Complete los campos para añadir un nuevo producto al catálogo.</p>
+            </div>
+            <button onclick="cerrarModal('modalCrear')" class="text-slate-400 hover:text-slate-600 transition-colors">
+                <span class="material-symbols-outlined">close</span>
+            </button>
+        </div>
+
+        <!-- Body -->
+        <form action="/productos/crear" method="POST" autocomplete="off"
+              class="flex flex-col overflow-hidden flex-1">
+            <div class="px-8 py-6 space-y-7 overflow-y-auto flex-1">
+
+                <!-- Identificación -->
+                <div>
+                    <div class="flex items-center gap-2 mb-4">
+                        <span class="material-symbols-outlined text-[#3b4bc9] text-xl">inventory_2</span>
+                        <h3 class="text-xs font-bold text-slate-600 uppercase tracking-wider">Identificación del Producto</h3>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700 mb-1.5">Código del Producto</label>
+                            <div class="relative group">
+                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                    <span class="material-symbols-outlined text-slate-400 text-sm group-focus-within:text-[#3b4bc9] transition-colors">qr_code</span>
+                                </div>
+                                <input name="Codigo" required placeholder="Ej: PROD-001" type="text"
+                                       class="block w-full pl-10 pr-3 py-2.5 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-[#3b4bc9]/20 focus:border-[#3b4bc9] text-sm transition-all outline-none font-mono">
+                            </div>
+                            <p class="text-xs text-slate-400 mt-1">Código único del producto</p>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700 mb-1.5">Nombre del Producto</label>
+                            <div class="relative group">
+                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                    <span class="material-symbols-outlined text-slate-400 text-sm group-focus-within:text-[#3b4bc9] transition-colors">label</span>
+                                </div>
+                                <input name="Nombre" required placeholder="Ej: Bomba Hidráulica Industrial" type="text"
+                                       class="block w-full pl-10 pr-3 py-2.5 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-[#3b4bc9]/20 focus:border-[#3b4bc9] text-sm transition-all outline-none">
+                            </div>
+                        </div>
+                        <div class="md:col-span-2">
+                            <label class="block text-sm font-medium text-slate-700 mb-1.5">Descripción Detallada</label>
+                            <textarea name="Descripcion" rows="2"
+                                      placeholder="Especificaciones técnicas, aplicaciones, detalles relevantes..."
+                                      class="block w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-[#3b4bc9]/20 focus:border-[#3b4bc9] text-sm transition-all outline-none resize-none"></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Detalles Técnicos -->
+                <div>
+                    <div class="flex items-center gap-2 mb-4">
+                        <span class="material-symbols-outlined text-[#3b4bc9] text-xl">settings</span>
+                        <h3 class="text-xs font-bold text-slate-600 uppercase tracking-wider">Detalles Técnicos y Precio</h3>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700 mb-1.5">Marca</label>
+                            <div class="relative group">
+                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                    <span class="material-symbols-outlined text-slate-400 text-sm group-focus-within:text-[#3b4bc9] transition-colors">corporate_fare</span>
+                                </div>
+                                <input name="Marca" placeholder="Ej: Grundfos" type="text"
+                                       class="block w-full pl-10 pr-3 py-2.5 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-[#3b4bc9]/20 focus:border-[#3b4bc9] text-sm transition-all outline-none">
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700 mb-1.5">Modelo</label>
+                            <div class="relative group">
+                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                    <span class="material-symbols-outlined text-slate-400 text-sm group-focus-within:text-[#3b4bc9] transition-colors">package_2</span>
+                                </div>
+                                <input name="Modelo" placeholder="Ej: CR 15-3" type="text"
+                                       class="block w-full pl-10 pr-3 py-2.5 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-[#3b4bc9]/20 focus:border-[#3b4bc9] text-sm transition-all outline-none font-mono">
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700 mb-1.5">Tipo de Producto</label>
+                            <div class="relative group">
+                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                    <span class="material-symbols-outlined text-slate-400 text-sm group-focus-within:text-[#3b4bc9] transition-colors">category</span>
+                                </div>
+                                <input name="Tipo" placeholder="Ej: Bomba Centrífuga" type="text"
+                                       class="block w-full pl-10 pr-3 py-2.5 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-[#3b4bc9]/20 focus:border-[#3b4bc9] text-sm transition-all outline-none">
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700 mb-1.5">Unidad de Medida</label>
+                            <select name="UnidadMedida"
+                                    class="block w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-[#3b4bc9]/20 focus:border-[#3b4bc9] text-sm transition-all outline-none">
+                                <option value="UNID">Unidad (UNID)</option>
+                                <option value="KG">Kilogramo (KG)</option>
+                                <option value="MT">Metro (MT)</option>
+                                <option value="LT">Litro (LT)</option>
+                                <option value="JGO">Juego (JGO)</option>
+                                <option value="PAR">Par (PAR)</option>
+                                <option value="CAJA">Caja (CAJA)</option>
+                            </select>
+                        </div>
+                        <div class="md:col-span-2">
+                            <label class="block text-sm font-medium text-slate-700 mb-1.5">Precio Unitario (S/)</label>
+                            <div class="relative group">
+                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                    <span class="material-symbols-outlined text-slate-400 text-sm group-focus-within:text-[#3b4bc9] transition-colors">payments</span>
+                                </div>
+                                <input name="PrecioUnitario" required placeholder="0.00" type="number" step="0.01" min="0"
+                                       class="block w-full pl-10 pr-3 py-2.5 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-[#3b4bc9]/20 focus:border-[#3b4bc9] text-sm transition-all outline-none">
+                            </div>
+                            <p class="text-xs text-slate-400 mt-1">Precio sin IGV</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Footer -->
+            <div class="px-8 py-5 bg-slate-50 border-t border-slate-100 flex justify-end gap-3 flex-shrink-0">
+                <button type="button" onclick="cerrarModal('modalCrear')"
+                        class="px-5 py-2.5 text-sm font-semibold text-slate-600 hover:bg-slate-100 rounded-lg transition-colors border border-slate-200">
+                    Cancelar
+                </button>
+                <button type="submit"
+                        class="px-6 py-2.5 text-sm font-bold text-white bg-[#3b4bc9] hover:bg-[#3b4bc9]/90 rounded-lg shadow-lg shadow-[#3b4bc9]/20 transition-all flex items-center gap-2">
+                    <span class="material-symbols-outlined text-[18px]">save</span>
+                    Guardar Producto
+                </button>
+            </div>
+        </form>
     </div>
+</div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const toggleBtn = document.getElementById('toggleSidebarBtn');
-            const sidebar = document.getElementById('sidebar');
-            const mainContent = document.getElementById('main-content');
-            const toggleIcon = document.getElementById('toggleIcon');
 
-            // Toggle sidebar
-            toggleBtn.addEventListener('click', function () {
-                sidebar.classList.toggle('hide');
-                mainContent.classList.toggle('full');
-                if (sidebar.classList.contains('hide')) {
-                    toggleIcon.classList.remove('bi-chevron-left');
-                    toggleIcon.classList.add('bi-chevron-right');
-                } else {
-                    toggleIcon.classList.remove('bi-chevron-right');
-                    toggleIcon.classList.add('bi-chevron-left');
-                }
+<!-- ==================== MODAL EDITAR PRODUCTO ==================== -->
+<div id="modalEditar"
+     class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center z-50 p-4 hidden"
+     onclick="cerrarEditarSiOverlay(event)">
+    <div class="bg-white w-full max-w-2xl rounded-xl shadow-2xl overflow-hidden border border-slate-200 flex flex-col max-h-[90vh]"
+         onclick="event.stopPropagation()">
+
+        <!-- Header -->
+        <div class="px-8 py-6 border-b border-slate-100 flex justify-between items-center flex-shrink-0">
+            <div>
+                <h2 class="text-xl font-bold text-slate-900 tracking-tight">Editar Producto</h2>
+                <p class="text-slate-500 text-sm mt-1">Actualice los datos del producto seleccionado.</p>
+            </div>
+            <button onclick="cerrarModal('modalEditar')" class="text-slate-400 hover:text-slate-600 transition-colors">
+                <span class="material-symbols-outlined">close</span>
+            </button>
+        </div>
+
+        <!-- Body -->
+        <form id="formEditar" method="POST" autocomplete="off"
+              class="flex flex-col overflow-hidden flex-1">
+            <div class="px-8 py-6 space-y-7 overflow-y-auto flex-1">
+
+                <!-- Identificación -->
+                <div>
+                    <div class="flex items-center gap-2 mb-4">
+                        <span class="material-symbols-outlined text-[#3b4bc9] text-xl">inventory_2</span>
+                        <h3 class="text-xs font-bold text-slate-600 uppercase tracking-wider">Identificación del Producto</h3>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700 mb-1.5">Código del Producto</label>
+                            <div class="relative group">
+                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                    <span class="material-symbols-outlined text-slate-400 text-sm group-focus-within:text-[#3b4bc9] transition-colors">qr_code</span>
+                                </div>
+                                <input id="e_codigo" name="Codigo" required type="text"
+                                       class="block w-full pl-10 pr-3 py-2.5 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-[#3b4bc9]/20 focus:border-[#3b4bc9] text-sm transition-all outline-none font-mono">
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700 mb-1.5">Nombre del Producto</label>
+                            <div class="relative group">
+                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                    <span class="material-symbols-outlined text-slate-400 text-sm group-focus-within:text-[#3b4bc9] transition-colors">label</span>
+                                </div>
+                                <input id="e_nombre" name="Nombre" required type="text"
+                                       class="block w-full pl-10 pr-3 py-2.5 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-[#3b4bc9]/20 focus:border-[#3b4bc9] text-sm transition-all outline-none">
+                            </div>
+                        </div>
+                        <div class="md:col-span-2">
+                            <label class="block text-sm font-medium text-slate-700 mb-1.5">Descripción Detallada</label>
+                            <textarea id="e_descripcion" name="Descripcion" rows="2"
+                                      class="block w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-[#3b4bc9]/20 focus:border-[#3b4bc9] text-sm transition-all outline-none resize-none"></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Detalles Técnicos -->
+                <div>
+                    <div class="flex items-center gap-2 mb-4">
+                        <span class="material-symbols-outlined text-[#3b4bc9] text-xl">settings</span>
+                        <h3 class="text-xs font-bold text-slate-600 uppercase tracking-wider">Detalles Técnicos y Precio</h3>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700 mb-1.5">Marca</label>
+                            <div class="relative group">
+                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                    <span class="material-symbols-outlined text-slate-400 text-sm group-focus-within:text-[#3b4bc9] transition-colors">corporate_fare</span>
+                                </div>
+                                <input id="e_marca" name="Marca" type="text"
+                                       class="block w-full pl-10 pr-3 py-2.5 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-[#3b4bc9]/20 focus:border-[#3b4bc9] text-sm transition-all outline-none">
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700 mb-1.5">Modelo</label>
+                            <div class="relative group">
+                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                    <span class="material-symbols-outlined text-slate-400 text-sm group-focus-within:text-[#3b4bc9] transition-colors">package_2</span>
+                                </div>
+                                <input id="e_modelo" name="Modelo" type="text"
+                                       class="block w-full pl-10 pr-3 py-2.5 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-[#3b4bc9]/20 focus:border-[#3b4bc9] text-sm transition-all outline-none font-mono">
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700 mb-1.5">Tipo de Producto</label>
+                            <div class="relative group">
+                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                    <span class="material-symbols-outlined text-slate-400 text-sm group-focus-within:text-[#3b4bc9] transition-colors">category</span>
+                                </div>
+                                <input id="e_tipo" name="Tipo" type="text"
+                                       class="block w-full pl-10 pr-3 py-2.5 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-[#3b4bc9]/20 focus:border-[#3b4bc9] text-sm transition-all outline-none">
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700 mb-1.5">Unidad de Medida</label>
+                            <select id="e_unidadmedida" name="UnidadMedida"
+                                    class="block w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-[#3b4bc9]/20 focus:border-[#3b4bc9] text-sm transition-all outline-none">
+                                <option value="UNID">Unidad (UNID)</option>
+                                <option value="KG">Kilogramo (KG)</option>
+                                <option value="MT">Metro (MT)</option>
+                                <option value="LT">Litro (LT)</option>
+                                <option value="JGO">Juego (JGO)</option>
+                                <option value="PAR">Par (PAR)</option>
+                                <option value="CAJA">Caja (CAJA)</option>
+                            </select>
+                        </div>
+                        <div class="md:col-span-2">
+                            <label class="block text-sm font-medium text-slate-700 mb-1.5">Precio Unitario (S/)</label>
+                            <div class="relative group">
+                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                    <span class="material-symbols-outlined text-slate-400 text-sm group-focus-within:text-[#3b4bc9] transition-colors">payments</span>
+                                </div>
+                                <input id="e_preciounitario" name="PrecioUnitario" required type="number" step="0.01" min="0"
+                                       class="block w-full pl-10 pr-3 py-2.5 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-[#3b4bc9]/20 focus:border-[#3b4bc9] text-sm transition-all outline-none">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Footer -->
+            <div class="px-8 py-5 bg-slate-50 border-t border-slate-100 flex justify-end gap-3 flex-shrink-0">
+                <button type="button" onclick="cerrarModal('modalEditar')"
+                        class="px-5 py-2.5 text-sm font-semibold text-slate-600 hover:bg-slate-100 rounded-lg transition-colors border border-slate-200">
+                    Cancelar
+                </button>
+                <button type="submit"
+                        class="px-6 py-2.5 text-sm font-bold text-white bg-[#3b4bc9] hover:bg-[#3b4bc9]/90 rounded-lg shadow-lg shadow-[#3b4bc9]/20 transition-all flex items-center gap-2">
+                    <span class="material-symbols-outlined text-[18px]">save</span>
+                    Guardar Cambios
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+<script>
+    // ——— Filtro tabla ———
+    const campoFiltro = document.getElementById('campoFiltro');
+    const valorFiltro = document.getElementById('valorFiltro');
+    const colMap = { '0': 0, '1': 1, '2': 2, '3': 3, '4': 4, '5': 5 };
+
+    if (campoFiltro && valorFiltro) {
+        [campoFiltro, valorFiltro].forEach(el =>
+            el.addEventListener(el.tagName === 'SELECT' ? 'change' : 'input', filtrarTabla)
+        );
+        function filtrarTabla() {
+            const col = colMap[campoFiltro.value] ?? 1;
+            const term = valorFiltro.value.toLowerCase();
+            let vis = 0;
+            document.querySelectorAll('#tbodyProductos tr').forEach(row => {
+                const cell = row.querySelectorAll('td')[col];
+                const show = cell && cell.textContent.toLowerCase().includes(term);
+                row.style.display = show ? '' : 'none';
+                if (show) vis++;
             });
+            const vc = document.getElementById('visibleCount');
+            if (vc) vc.textContent = vis;
+        }
+    }
 
-            // Filtro de tabla
-            const campoFiltro = document.getElementById('campoFiltro');
-            const valorFiltro = document.getElementById('valorFiltro');
-            if (campoFiltro && valorFiltro) {
-                valorFiltro.addEventListener('input', filtrarTablaProductos);
-                campoFiltro.addEventListener('change', filtrarTablaProductos);
-            }
+    // ——— Modales genérico ———
+    function cerrarModal(id) {
+        document.getElementById(id).classList.add('hidden');
+        document.body.style.overflow = '';
+    }
+    function abrirModal(id) {
+        document.getElementById(id).classList.remove('hidden');
+        document.body.style.overflow = 'hidden';
+    }
 
-            function filtrarTablaProductos() {
-                const col = parseInt(campoFiltro.value);
-                const searchTerm = valorFiltro.value.toLowerCase();
-                const rows = document.querySelectorAll('tbody tr');
+    // Modal Crear
+    function abrirModalCrear() { abrirModal('modalCrear'); }
+    function cerrarCrearSiOverlay(e) { if (e.target === document.getElementById('modalCrear')) cerrarModal('modalCrear'); }
 
-                rows.forEach(row => {
-                    if (row.querySelectorAll('td').length < 9) return;
+    // Modal Editar
+    function abrirModalEditar(btn) {
+        const d = btn.dataset;
+        document.getElementById('formEditar').action = `/productos/editar/${d.id}`;
+        document.getElementById('e_codigo').value         = d.codigo         || '';
+        document.getElementById('e_nombre').value         = d.nombre         || '';
+        document.getElementById('e_descripcion').value    = d.descripcion    || '';
+        document.getElementById('e_marca').value          = d.marca          || '';
+        document.getElementById('e_modelo').value         = d.modelo         || '';
+        document.getElementById('e_tipo').value           = d.tipo           || '';
+        document.getElementById('e_preciounitario').value = d.preciounitario || '0';
 
-                    const cell = row.querySelectorAll('td')[col];
-                    let cellText = cell.textContent.toLowerCase();
+        // Seleccionar unidad
+        const sel = document.getElementById('e_unidadmedida');
+        const val = d.unidadmedida || 'UNID';
+        for (let opt of sel.options) { opt.selected = opt.value === val; }
 
-                    if (col === 7) {
-                        cellText = cellText.replace('s/', '').trim();
-                    }
+        abrirModal('modalEditar');
+    }
+    function cerrarEditarSiOverlay(e) { if (e.target === document.getElementById('modalEditar')) cerrarModal('modalEditar'); }
 
-                    if (cell && cellText.includes(searchTerm)) {
-                        row.style.display = '';
-                    } else {
-                        row.style.display = 'none';
-                    }
-                });
-            }
-        });
-    </script>
-    <script src="/publico/js/layout.js?v=1772427290145"></script>
+    // Cerrar con Escape
+    document.addEventListener('keydown', e => {
+        if (e.key === 'Escape') {
+            cerrarModal('modalCrear');
+            cerrarModal('modalEditar');
+        }
+    });
+</script>
+<script src="/publico/js/layout.js?v=1772427290135"></script>
 </body>
-
 </html>

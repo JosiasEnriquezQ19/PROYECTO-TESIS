@@ -1,358 +1,594 @@
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lista de Clientes - CARSIL Equipos y Servicios SAC</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: { "primary": "#3b4bc9", "background-light": "#f6f6f8" },
+                    fontFamily: { "display": ["Inter", "sans-serif"] },
+                    borderRadius: { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" },
+                },
+            },
+        }
+    </script>
     <link rel="stylesheet" href="/publico/css/layout.css?v=1772427290135">
-    <link rel="stylesheet" href="/publico/css/list-views.css">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        .main-content { padding: 0 !important; background: #f6f6f8; }
+    </style>
 </head>
+<body class="bg-[#f6f6f8] text-slate-900 font-display">
+<div class="wrapper">
+    <%- include("../parciales/sidebar") %>
 
-<body>
-    <div class="wrapper">
-        <%- include("../parciales/sidebar") %>
+    <div class="main-content" id="main-content">
 
-            <!-- Botón para ocultar/mostrar barra -->
+        <!-- Top Nav -->
+        <header class="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-8 sticky top-0 z-10 shadow-sm">
+            <div class="flex items-center gap-2">
+                <span class="text-slate-400 text-sm">Panel</span>
+                <span class="material-symbols-outlined text-sm text-slate-300">chevron_right</span>
+                <span class="font-semibold text-sm">Gestión de Clientes</span>
+            </div>
+            <div class="flex items-center gap-3">
+                <div class="relative">
+                    <span class="material-symbols-outlined p-2 text-slate-500 hover:bg-slate-100 rounded-full cursor-pointer transition-colors">notifications</span>
+                    <span class="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full border-2 border-white"></span>
+                </div>
+                <div class="h-8 w-px bg-slate-200"></div>
+                <div class="w-8 h-8 rounded-full bg-[#3b4bc9] flex items-center justify-center text-white text-xs font-bold">
+                    <%= user && user.Nombres ? user.Nombres.charAt(0) : 'A' %>
+                </div>
+                <span class="text-sm font-medium hidden sm:inline-block">
+                    <%= user && user.Nombres ? user.Nombres : 'Administrador' %>
+                </span>
+            </div>
+        </header>
 
-            <!-- Main Content -->
-            <div class="main-content" id="main-content">
-                <nav class="navbar navbar-expand-lg navbar-top border-bottom">
-                    <div class="container-fluid">
-                        <h5 class="page-title mb-0">
-                            <i class="bi bi-people"></i>
-                            Gestión de Clientes
-                        </h5>
-                        <div class="user-profile ms-auto">
-                            <span>
-                                <%= user && user.Nombres ? user.Nombres : 'Administrador' %>
-                            </span>
-                            <div class="user-avatar">
-                                <%= user && user.Nombres ? user.Nombres.charAt(0) : 'A' %>
+        <!-- Content -->
+        <div class="p-8">
+
+            <!-- Page Title -->
+            <div class="mb-8">
+                <h2 class="text-3xl font-black tracking-tight mb-2">Gestión de Clientes</h2>
+                <p class="text-slate-500">Administra la base de datos de tus clientes registrados en CARSIL.</p>
+            </div>
+
+            <!-- Flash messages -->
+            <% if (success) { %>
+            <div class="mb-6 flex items-center gap-3 bg-emerald-50 border border-emerald-200 text-emerald-800 px-4 py-3 rounded-xl text-sm">
+                <span class="material-symbols-outlined text-emerald-500">check_circle</span>
+                <span><%= success %></span>
+            </div>
+            <% } %>
+            <% if (error) { %>
+            <div class="mb-6 flex items-center gap-3 bg-rose-50 border border-rose-200 text-rose-800 px-4 py-3 rounded-xl text-sm">
+                <span class="material-symbols-outlined text-rose-500">error</span>
+                <span><%= error %></span>
+            </div>
+            <% } %>
+
+            <!-- Stats Cards -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 mb-8">
+                <div class="bg-white p-5 rounded-xl border border-slate-100 shadow-sm border-t-4 border-t-[#3b4bc9]">
+                    <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Total Clientes</p>
+                    <p class="text-3xl font-bold text-[#3b4bc9]"><%= clientes ? clientes.length : 0 %></p>
+                </div>
+                <div class="bg-white p-5 rounded-xl border border-slate-100 shadow-sm border-t-4 border-t-emerald-500">
+                    <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Activos</p>
+                    <p class="text-3xl font-bold text-emerald-600"><%= clientes ? clientes.filter(c => c.Estado == 1).length : 0 %></p>
+                </div>
+                <div class="bg-white p-5 rounded-xl border border-slate-100 shadow-sm border-t-4 border-t-slate-400">
+                    <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Inactivos</p>
+                    <p class="text-3xl font-bold text-slate-500"><%= clientes ? clientes.filter(c => c.Estado == 0).length : 0 %></p>
+                </div>
+                <div class="bg-white p-5 rounded-xl border border-slate-100 shadow-sm border-t-4 border-t-violet-500">
+                    <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Con Email</p>
+                    <p class="text-3xl font-bold text-violet-600"><%= clientes ? clientes.filter(c => c.Email && c.Email.length > 0).length : 0 %></p>
+                </div>
+            </div>
+
+            <!-- Filter Bar -->
+            <div class="bg-white p-4 rounded-xl border border-slate-100 mb-6 flex flex-wrap gap-4 items-center shadow-sm">
+                <div class="flex-1 min-w-[260px] relative group">
+                    <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-[#3b4bc9] transition-colors">search</span>
+                    <input id="valorFiltro"
+                           class="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-[#3b4bc9]/20 focus:border-[#3b4bc9] transition-all text-sm outline-none"
+                           placeholder="Buscar clientes..." type="text" />
+                </div>
+                <select id="campoFiltro"
+                        class="px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:ring-2 focus:ring-[#3b4bc9]/20 focus:border-[#3b4bc9] outline-none">
+                    <option value="0">Razón Social</option>
+                    <option value="1">Documento</option>
+                    <option value="2">Dirección</option>
+                    <option value="3">Contacto</option>
+                    <option value="4">Email</option>
+                </select>
+                <button onclick="abrirModalCrear()"
+                        class="inline-flex items-center gap-2 px-5 py-2.5 bg-[#3b4bc9] text-white font-semibold rounded-lg hover:bg-[#3b4bc9]/90 hover:shadow-lg transition-all text-sm">
+                    <span class="material-symbols-outlined text-sm">add_circle</span>
+                    Nuevo Cliente
+                </button>
+            </div>
+
+            <!-- Data Table -->
+            <div class="bg-white rounded-xl border border-slate-100 shadow-md overflow-hidden">
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse" id="tablaClientes">
+                        <thead>
+                            <tr class="bg-slate-50 border-b border-slate-200">
+                                <th class="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-widest">Cliente</th>
+                                <th class="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-widest">Documento</th>
+                                <th class="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-widest">Dirección</th>
+                                <th class="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-widest">Contacto</th>
+                                <th class="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-widest">Email</th>
+                                <th class="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-widest">Estado</th>
+                                <th class="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-widest text-right">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-100" id="tbodyClientes">
+                            <% if (clientes && clientes.length > 0) { %>
+                            <% clientes.forEach(cliente => { %>
+                            <tr class="hover:bg-slate-50/60 transition-colors">
+                                <!-- Cliente -->
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-9 h-9 rounded-full bg-[#3b4bc9]/10 flex items-center justify-center text-[#3b4bc9] font-bold text-sm flex-shrink-0">
+                                            <%= cliente.RazonSocial.charAt(0).toUpperCase() %>
+                                        </div>
+                                        <div>
+                                            <p class="text-sm font-semibold leading-tight"><%= cliente.RazonSocial %></p>
+                                            <p class="text-xs text-slate-400 mt-0.5">ID: <%= cliente.IdCliente %></p>
+                                        </div>
+                                    </div>
+                                </td>
+                                <!-- Documento -->
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-500 font-mono">
+                                    <%= cliente.Documento %>
+                                </td>
+                                <!-- Dirección -->
+                                <td class="px-6 py-4 text-sm text-slate-500 max-w-[180px] truncate">
+                                    <%= cliente.Direccion || '—' %>
+                                </td>
+                                <!-- Contacto -->
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <% if (cliente.Telefono || cliente.Celular) { %>
+                                    <div class="flex flex-col gap-0.5">
+                                        <% if (cliente.Telefono) { %>
+                                        <span class="text-xs text-slate-600 flex items-center gap-1">
+                                            <span class="material-symbols-outlined text-sm text-slate-400">phone</span>
+                                            <%= cliente.Telefono %>
+                                        </span>
+                                        <% } %>
+                                        <% if (cliente.Celular) { %>
+                                        <span class="text-xs text-slate-600 flex items-center gap-1">
+                                            <span class="material-symbols-outlined text-sm text-slate-400">smartphone</span>
+                                            <%= cliente.Celular %>
+                                        </span>
+                                        <% } %>
+                                    </div>
+                                    <% } else { %>
+                                    <span class="text-slate-300 text-sm">—</span>
+                                    <% } %>
+                                </td>
+                                <!-- Email -->
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-500">
+                                    <% if (cliente.Email) { %>
+                                    <span class="flex items-center gap-1">
+                                        <span class="material-symbols-outlined text-sm text-slate-400">mail</span>
+                                        <%= cliente.Email %>
+                                    </span>
+                                    <% } else { %>
+                                    <span class="text-slate-300">—</span>
+                                    <% } %>
+                                </td>
+                                <!-- Estado -->
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <% if (cliente.Estado == 1) { %>
+                                    <span class="inline-flex items-center px-2.5 py-1 rounded-full text-[11px] font-bold bg-emerald-50 text-emerald-700 uppercase tracking-wider">Activo</span>
+                                    <% } else { %>
+                                    <span class="inline-flex items-center px-2.5 py-1 rounded-full text-[11px] font-bold bg-slate-100 text-slate-500 uppercase tracking-wider">Inactivo</span>
+                                    <% } %>
+                                </td>
+                                <!-- Acciones -->
+                                <td class="px-6 py-4 whitespace-nowrap text-right">
+                                    <div class="flex items-center justify-end gap-1">
+                                        <button
+                                            onclick="abrirModalEditar(this)"
+                                            data-id="<%= cliente.IdCliente %>"
+                                            data-razonsocial="<%= (cliente.RazonSocial || '').replace(/"/g,'&quot;') %>"
+                                            data-documento="<%= (cliente.Documento || '').replace(/"/g,'&quot;') %>"
+                                            data-direccion="<%= (cliente.Direccion || '').replace(/"/g,'&quot;') %>"
+                                            data-telefono="<%= (cliente.Telefono || '').replace(/"/g,'&quot;') %>"
+                                            data-celular="<%= (cliente.Celular || '').replace(/"/g,'&quot;') %>"
+                                            data-email="<%= (cliente.Email || '').replace(/"/g,'&quot;') %>"
+                                            data-contacto="<%= (cliente.Contacto || '').replace(/"/g,'&quot;') %>"
+                                            class="p-1.5 hover:bg-slate-100 rounded-lg transition-colors text-slate-500 hover:text-[#3b4bc9]"
+                                            title="Editar">
+                                            <span class="material-symbols-outlined text-lg leading-none">edit</span>
+                                        </button>
+                                        <a href="/clientes/eliminar/<%= cliente.IdCliente %>"
+                                           onclick="return confirm('¿Está seguro de eliminar este cliente?')"
+                                           class="p-1.5 hover:bg-rose-50 rounded-lg transition-colors text-slate-500 hover:text-rose-600"
+                                           title="Eliminar">
+                                            <span class="material-symbols-outlined text-lg leading-none">delete</span>
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                            <% }); %>
+                            <% } else { %>
+                            <tr>
+                                <td colspan="7" class="text-center py-16">
+                                    <span class="material-symbols-outlined text-5xl text-slate-300 block mb-3">group</span>
+                                    <p class="text-slate-500 font-medium mb-1">
+                                        <% if (terminoBusqueda && terminoBusqueda.length > 0) { %>
+                                            No se encontraron clientes que coincidan con "<%= terminoBusqueda %>"
+                                        <% } else { %>
+                                            No hay clientes registrados
+                                        <% } %>
+                                    </p>
+                                    <p class="text-slate-400 text-sm mb-5">Comience agregando su primer cliente</p>
+                                    <button onclick="abrirModalCrear()"
+                                            class="inline-flex items-center gap-2 px-5 py-2.5 bg-[#3b4bc9] text-white font-semibold rounded-lg hover:bg-[#3b4bc9]/90 transition-all text-sm">
+                                        <span class="material-symbols-outlined text-sm">add_circle</span>
+                                        Nuevo Cliente
+                                    </button>
+                                </td>
+                            </tr>
+                            <% } %>
+                        </tbody>
+                    </table>
+                </div>
+                <!-- Pagination footer -->
+                <div class="px-6 py-4 border-t border-slate-100 flex items-center justify-between">
+                    <p class="text-sm text-slate-500">
+                        Mostrando <span id="visibleCount"><%= clientes ? clientes.length : 0 %></span>
+                        de <strong><%= clientes ? clientes.length : 0 %></strong> clientes
+                    </p>
+                </div>
+            </div>
+
+        </div><!-- /p-8 -->
+    </div><!-- /main-content -->
+</div><!-- /wrapper -->
+
+
+<!-- ==================== MODAL NUEVO CLIENTE ==================== -->
+<div id="modalCrear"
+     class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center z-50 p-4 hidden"
+     onclick="cerrarModalCrear(event)">
+    <div class="bg-white w-full max-w-2xl rounded-xl shadow-2xl overflow-hidden border border-slate-200 flex flex-col max-h-[90vh]"
+         onclick="event.stopPropagation()">
+
+        <!-- Header -->
+        <div class="px-8 py-6 border-b border-slate-100 flex justify-between items-center flex-shrink-0">
+            <div>
+                <h2 class="text-xl font-bold text-slate-900 tracking-tight">Registrar Nuevo Cliente</h2>
+                <p class="text-slate-500 text-sm mt-1">Complete los campos para añadir un nuevo cliente al sistema.</p>
+            </div>
+            <button onclick="cerrarModal('modalCrear')" class="text-slate-400 hover:text-slate-600 transition-colors">
+                <span class="material-symbols-outlined">close</span>
+            </button>
+        </div>
+
+        <!-- Body -->
+        <form action="/clientes/crear" method="POST" autocomplete="off"
+              class="flex flex-col overflow-hidden flex-1">
+            <div class="px-8 py-6 space-y-7 overflow-y-auto flex-1">
+
+                <!-- Sección Información Básica -->
+                <div>
+                    <div class="flex items-center gap-2 mb-4">
+                        <span class="material-symbols-outlined text-[#3b4bc9] text-xl">person</span>
+                        <h3 class="text-xs font-bold text-slate-600 uppercase tracking-wider">Información Básica</h3>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700 mb-1.5">Documento (DNI/RUC)</label>
+                            <div class="relative group">
+                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                    <span class="material-symbols-outlined text-slate-400 text-sm group-focus-within:text-[#3b4bc9] transition-colors">badge</span>
+                                </div>
+                                <input name="Documento" required placeholder="Ej: 20123456789" type="text"
+                                       class="block w-full pl-10 pr-3 py-2.5 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-[#3b4bc9]/20 focus:border-[#3b4bc9] text-sm transition-all outline-none">
+                            </div>
+                        </div>
+                        <div class="md:col-span-1">
+                            <label class="block text-sm font-medium text-slate-700 mb-1.5">Razón Social / Nombre</label>
+                            <div class="relative group">
+                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                    <span class="material-symbols-outlined text-slate-400 text-sm group-focus-within:text-[#3b4bc9] transition-colors">corporate_fare</span>
+                                </div>
+                                <input name="RazonSocial" required placeholder="Nombre de la empresa o persona" type="text"
+                                       class="block w-full pl-10 pr-3 py-2.5 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-[#3b4bc9]/20 focus:border-[#3b4bc9] text-sm transition-all outline-none">
+                            </div>
+                        </div>
+                        <div class="md:col-span-2">
+                            <label class="block text-sm font-medium text-slate-700 mb-1.5">Dirección Fiscal</label>
+                            <div class="relative group">
+                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                    <span class="material-symbols-outlined text-slate-400 text-sm group-focus-within:text-[#3b4bc9] transition-colors">location_on</span>
+                                </div>
+                                <input name="Direccion" placeholder="Av. Ejemplo 123, Distrito, Provincia" type="text"
+                                       class="block w-full pl-10 pr-3 py-2.5 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-[#3b4bc9]/20 focus:border-[#3b4bc9] text-sm transition-all outline-none">
                             </div>
                         </div>
                     </div>
-                </nav>
+                </div>
 
-                <div class="container-fluid py-4">
-                    <!-- Mensajes flash -->
-                    <% if (success) { %>
-                        <div class="alert alert-success alert-dismissible fade show" role="alert">
-                            <i class="bi bi-check-circle me-2"></i>
-                            <%= success %>
-                                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                        </div>
-                        <% } %>
-                            <% if (error) { %>
-                                <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                                    <i class="bi bi-exclamation-triangle me-2"></i>
-                                    <%= error %>
-                                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                <!-- Sección Contacto -->
+                <div>
+                    <div class="flex items-center gap-2 mb-4">
+                        <span class="material-symbols-outlined text-[#3b4bc9] text-xl">contact_mail</span>
+                        <h3 class="text-xs font-bold text-slate-600 uppercase tracking-wider">Información de Contacto</h3>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700 mb-1.5">Teléfono Principal</label>
+                            <div class="relative group">
+                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                    <span class="material-symbols-outlined text-slate-400 text-sm group-focus-within:text-[#3b4bc9] transition-colors">phone</span>
                                 </div>
-                                <% } %>
-
-                                    <!-- Stats Cards -->
-                                    <div class="stats-grid">
-                                        <div class="stat-card">
-                                            <div class="stat-icon"
-                                                style="background: linear-gradient(135deg, #0056b3, #003366);">
-                                                <i class="bi bi-people text-white"></i>
-                                            </div>
-                                            <h6 class="text-muted">Total Clientes</h6>
-                                            <h3 class="text-primary">
-                                                <%= clientes ? clientes.length : 0 %>
-                                            </h3>
-                                        </div>
-                                        <div class="stat-card">
-                                            <div class="stat-icon"
-                                                style="background: linear-gradient(135deg, #28a745, #20c997);">
-                                                <i class="bi bi-check-circle text-white"></i>
-                                            </div>
-                                            <h6 class="text-muted">Activos</h6>
-                                            <h3 class="text-success">
-                                                <%= clientes ? clientes.filter(c=> c.Estado == 1).length : 0 %>
-                                            </h3>
-                                        </div>
-                                        <div class="stat-card">
-                                            <div class="stat-icon"
-                                                style="background: linear-gradient(135deg, #6c757d, #495057);">
-                                                <i class="bi bi-pause-circle text-white"></i>
-                                            </div>
-                                            <h6 class="text-muted">Inactivos</h6>
-                                            <h3 class="text-muted">
-                                                <%= clientes ? clientes.filter(c=> c.Estado == 0).length : 0 %>
-                                            </h3>
-                                        </div>
-                                        <div class="stat-card">
-                                            <div class="stat-icon"
-                                                style="background: linear-gradient(135deg, #6f42c1, #6610f2);">
-                                                <i class="bi bi-envelope text-white"></i>
-                                            </div>
-                                            <h6 class="text-muted">Con Email</h6>
-                                            <h3 class="text-info">
-                                                <%= clientes ? clientes.filter(c=> c.Email && c.Email.length > 0).length
-                                                    : 0 %>
-                                            </h3>
-                                        </div>
-                                    </div>
-
-                                    <!-- Search and Actions -->
-                                    <div class="search-container">
-                                        <div class="d-flex justify-content-between align-items-center">
-                                            <div class="search-box flex-grow-1 me-3">
-                                                <div class="d-flex gap-2">
-                                                    <select class="form-select" id="campoFiltro"
-                                                        style="max-width: 180px;">
-                                                        <option value="0">Documento</option>
-                                                        <option value="1">Razón Social</option>
-                                                        <option value="2">Dirección</option>
-                                                        <option value="3">Teléfono</option>
-                                                        <option value="4">Celular</option>
-                                                        <option value="5">Email</option>
-                                                        <option value="6">Contacto</option>
-                                                    </select>
-                                                    <input type="text" class="form-control" id="valorFiltro"
-                                                        placeholder="Buscar clientes...">
-                                                </div>
-                                            </div>
-                                            <a href="/clientes/crear" class="btn btn-primary-modern btn-modern">
-                                                <i class="bi bi-plus-circle"></i>
-                                                Nuevo Cliente
-                                            </a>
-                                        </div>
-                                    </div>
-
-                                    <!-- Tabla de clientes modernizada -->
-                                    <div class="card-modern">
-                                        <div class="table-responsive">
-                                            <table class="table table-modern mb-0">
-                                                <thead>
-                                                    <tr>
-                                                        <th style="width: 40px;"><input
-                                                                class="form-check-input custom-checkbox"
-                                                                type="checkbox"></th>
-                                                        <th>Cliente <i class="bi bi-arrow-down-up"></i></th>
-                                                        <th>Documento <i class="bi bi-arrow-down-up"></i></th>
-                                                        <th>Dirección <i class="bi bi-arrow-down-up"></i></th>
-                                                        <th>Contacto <i class="bi bi-arrow-down-up"></i></th>
-                                                        <th>Email <i class="bi bi-arrow-down-up"></i></th>
-                                                        <th>Responsable <i class="bi bi-arrow-down-up"></i></th>
-                                                        <th>Estado <i class="bi bi-arrow-down-up"></i></th>
-                                                        <th class="text-center">Acciones</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    <% if (clientes && clientes.length> 0) { %>
-                                                        <% clientes.forEach(cliente=> { %>
-                                                            <tr>
-                                                                <td><input class="form-check-input custom-checkbox"
-                                                                        type="checkbox"></td>
-                                                                <td>
-                                                                    <div class="item-info">
-                                                                        <div class="item-avatar">
-                                                                            <%= cliente.RazonSocial.charAt(0).toUpperCase()
-                                                                                %>
-                                                                        </div>
-                                                                        <div class="item-details">
-                                                                            <strong>
-                                                                                <%= cliente.RazonSocial %>
-                                                                            </strong>
-                                                                            <span class="text-muted">ID: <%=
-                                                                                    cliente.IdCliente %></span>
-                                                                        </div>
-                                                                    </div>
-                                                                </td>
-                                                                <td>
-                                                                    <span class="text-muted">
-                                                                        <%= cliente.Documento %>
-                                                                    </span>
-                                                                </td>
-                                                                <td>
-                                                                    <i class="bi bi-geo-alt text-muted me-1"></i>
-                                                                    <%= cliente.Direccion || 'No especificado' %>
-                                                                </td>
-                                                                <td>
-                                                                    <div>
-                                                                        <% if (cliente.Telefono) { %>
-                                                                            <div class="contact-info">
-                                                                                <i class="bi bi-telephone"></i>
-                                                                                <span>
-                                                                                    <%= cliente.Telefono %>
-                                                                                </span>
-                                                                            </div>
-                                                                            <% } %>
-                                                                                <% if (cliente.Celular) { %>
-                                                                                    <div class="contact-info">
-                                                                                        <i class="bi bi-phone"></i>
-                                                                                        <span>
-                                                                                            <%= cliente.Celular %>
-                                                                                        </span>
-                                                                                    </div>
-                                                                                    <% } %>
-                                                                    </div>
-                                                                </td>
-                                                                <td>
-                                                                    <% if (cliente.Email) { %>
-                                                                        <div class="contact-info">
-                                                                            <i class="bi bi-envelope"></i>
-                                                                            <span>
-                                                                                <%= cliente.Email %>
-                                                                            </span>
-                                                                        </div>
-                                                                        <% } else { %>
-                                                                            <span class="text-muted">Sin email</span>
-                                                                            <% } %>
-                                                                </td>
-                                                                <td>
-                                                                    <% if (cliente.Contacto) { %>
-                                                                        <div class="contact-info">
-                                                                            <i class="bi bi-person-circle"></i>
-                                                                            <span>
-                                                                                <%= cliente.Contacto %>
-                                                                            </span>
-                                                                        </div>
-                                                                        <% } else { %>
-                                                                            <span class="text-muted">Sin contacto</span>
-                                                                            <% } %>
-                                                                </td>
-                                                                <td>
-                                                                    <span
-                                                                        class="badge-modern <%= cliente.Estado == 1 ? 'badge-activo' : 'badge-inactivo' %>">
-                                                                        <i
-                                                                            class="bi <%= cliente.Estado == 1 ? 'bi-check-circle' : 'bi-pause-circle' %>"></i>
-                                                                        <%= cliente.Estado==1 ? 'Activo' : 'Inactivo' %>
-                                                                    </span>
-                                                                </td>
-                                                                <td class="text-center">
-                                                                    <div class="action-buttons justify-content-center">
-                                                                        <a href="/clientes/editar/<%= cliente.IdCliente %>"
-                                                                            class="btn-action-icon btn-action-edit"
-                                                                            title="Editar">
-                                                                            <i class="bi bi-pencil"></i>
-                                                                        </a>
-                                                                        <a href="/clientes/eliminar/<%= cliente.IdCliente %>"
-                                                                            class="btn-action-icon btn-action-delete"
-                                                                            title="Eliminar"
-                                                                            onclick="return confirm('¿Está seguro de eliminar este cliente?')">
-                                                                            <i class="bi bi-trash"></i>
-                                                                        </a>
-                                                                    </div>
-                                                                </td>
-                                                            </tr>
-                                                            <% }); %>
-                                                                <% } else { %>
-                                                                    <tr>
-                                                                        <td colspan="8" class="text-center py-5">
-                                                                            <i class="bi bi-people text-muted"
-                                                                                style="font-size: 3rem;"></i>
-                                                                            <p class="text-muted mt-2">
-                                                                                <% if (terminoBusqueda &&
-                                                                                    terminoBusqueda.length> 0) { %>
-                                                                                    No se encontraron clientes que
-                                                                                    coincidan con "<%= terminoBusqueda
-                                                                                        %>"
-                                                                                        <% } else { %>
-                                                                                            No hay clientes registrados.
-                                                                                            <% } %>
-                                                                            </p>
-                                                                            <a href="/clientes/crear"
-                                                                                class="btn btn-primary-modern btn-modern">
-                                                                                <i class="bi bi-plus-circle"></i>
-                                                                                Crear primer cliente
-                                                                            </a>
-                                                                        </td>
-                                                                    </tr>
-                                                                    <% } %>
-                                                </tbody>
-                                            </table>
-
-                                            <!-- Paginación Modernizada -->
-                                            <div class="pagination-modern">
-                                                <div class="pagination-info">
-                                                    Showing 1 - <%= clientes ? clientes.length : 0 %> of <%= clientes ?
-                                                            clientes.length : 0 %>
-                                                </div>
-                                                <ul class="pagination-controls">
-                                                    <li><button class="page-item-modern disabled"><i
-                                                                class="bi bi-chevron-left"></i></button></li>
-                                                    <li><button class="page-item-modern active">1</button></li>
-                                                    <li><button class="page-item-modern disabled"><i
-                                                                class="bi bi-chevron-right"></i></button></li>
-                                                </ul>
-                                            </div>
-                                        </div>
-                                    </div>
+                                <input name="Telefono" required placeholder="(01) 234 5678" type="tel"
+                                       class="block w-full pl-10 pr-3 py-2.5 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-[#3b4bc9]/20 focus:border-[#3b4bc9] text-sm transition-all outline-none">
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700 mb-1.5">Celular <span class="text-slate-400 font-normal text-xs">Opcional</span></label>
+                            <div class="relative group">
+                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                    <span class="material-symbols-outlined text-slate-400 text-sm group-focus-within:text-[#3b4bc9] transition-colors">smartphone</span>
+                                </div>
+                                <input name="Celular" placeholder="987 654 321" type="tel"
+                                       class="block w-full pl-10 pr-3 py-2.5 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-[#3b4bc9]/20 focus:border-[#3b4bc9] text-sm transition-all outline-none">
+                            </div>
+                        </div>
+                        <div class="md:col-span-2">
+                            <label class="block text-sm font-medium text-slate-700 mb-1.5">Correo Electrónico</label>
+                            <div class="relative group">
+                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                    <span class="material-symbols-outlined text-slate-400 text-sm group-focus-within:text-[#3b4bc9] transition-colors">mail</span>
+                                </div>
+                                <input name="Email" placeholder="ejemplo@carsil.com" type="email"
+                                       class="block w-full pl-10 pr-3 py-2.5 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-[#3b4bc9]/20 focus:border-[#3b4bc9] text-sm transition-all outline-none">
+                            </div>
+                        </div>
+                        <div class="md:col-span-2">
+                            <label class="block text-sm font-medium text-slate-700 mb-1.5">Persona de Contacto</label>
+                            <div class="relative group">
+                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                    <span class="material-symbols-outlined text-slate-400 text-sm group-focus-within:text-[#3b4bc9] transition-colors">account_circle</span>
+                                </div>
+                                <input name="Contacto" placeholder="Nombre de contacto directo" type="text"
+                                       class="block w-full pl-10 pr-3 py-2.5 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-[#3b4bc9]/20 focus:border-[#3b4bc9] text-sm transition-all outline-none">
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
+
+            <!-- Footer -->
+            <div class="px-8 py-5 bg-slate-50 border-t border-slate-100 flex justify-end gap-3 flex-shrink-0">
+                <button type="button" onclick="cerrarModal('modalCrear')"
+                        class="px-5 py-2.5 text-sm font-semibold text-slate-600 hover:bg-slate-100 rounded-lg transition-colors border border-slate-200">
+                    Cancelar
+                </button>
+                <button type="submit"
+                        class="px-6 py-2.5 text-sm font-bold text-white bg-[#3b4bc9] hover:bg-[#3b4bc9]/90 rounded-lg shadow-lg shadow-[#3b4bc9]/20 transition-all flex items-center gap-2">
+                    <span class="material-symbols-outlined text-[18px]">save</span>
+                    Guardar Cliente
+                </button>
+            </div>
+        </form>
     </div>
+</div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {// Cerrar sesión
-            document.querySelector('.logout-item').addEventListener('click', async function (e) {
-                e.preventDefault();
-                if (await liquidGlassConfirm('¿Desea cerrar sesión?')) {
-                    window.location.href = this.closest('a') ? this.closest('a').href : '/logout';
-                }
+
+<!-- ==================== MODAL EDITAR CLIENTE ==================== -->
+<div id="modalEditar"
+     class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center z-50 p-4 hidden"
+     onclick="cerrarModalEditar(event)">
+    <div class="bg-white w-full max-w-2xl rounded-xl shadow-2xl overflow-hidden border border-slate-200 flex flex-col max-h-[90vh]"
+         onclick="event.stopPropagation()">
+
+        <!-- Header -->
+        <div class="px-8 py-6 border-b border-slate-100 flex justify-between items-center flex-shrink-0">
+            <div>
+                <h2 class="text-xl font-bold text-slate-900 tracking-tight">Editar Información del Cliente</h2>
+                <p class="text-slate-500 text-sm mt-1">Actualice los datos del cliente seleccionado.</p>
+            </div>
+            <button onclick="cerrarModal('modalEditar')" class="text-slate-400 hover:text-slate-600 transition-colors">
+                <span class="material-symbols-outlined">close</span>
+            </button>
+        </div>
+
+        <!-- Body -->
+        <form id="formEditar" method="POST" autocomplete="off"
+              class="flex flex-col overflow-hidden flex-1">
+            <div class="px-8 py-6 space-y-7 overflow-y-auto flex-1">
+
+                <!-- Sección Información Básica -->
+                <div>
+                    <div class="flex items-center gap-2 mb-4">
+                        <span class="material-symbols-outlined text-[#3b4bc9] text-xl">person</span>
+                        <h3 class="text-xs font-bold text-slate-600 uppercase tracking-wider">Información Básica</h3>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700 mb-1.5">Documento (DNI/RUC)</label>
+                            <div class="relative group">
+                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                    <span class="material-symbols-outlined text-slate-400 text-sm group-focus-within:text-[#3b4bc9] transition-colors">badge</span>
+                                </div>
+                                <input id="e_documento" name="Documento" required type="text"
+                                       class="block w-full pl-10 pr-3 py-2.5 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-[#3b4bc9]/20 focus:border-[#3b4bc9] text-sm transition-all outline-none">
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700 mb-1.5">Razón Social / Nombre</label>
+                            <div class="relative group">
+                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                    <span class="material-symbols-outlined text-slate-400 text-sm group-focus-within:text-[#3b4bc9] transition-colors">corporate_fare</span>
+                                </div>
+                                <input id="e_razonsocial" name="RazonSocial" required type="text"
+                                       class="block w-full pl-10 pr-3 py-2.5 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-[#3b4bc9]/20 focus:border-[#3b4bc9] text-sm transition-all outline-none">
+                            </div>
+                        </div>
+                        <div class="md:col-span-2">
+                            <label class="block text-sm font-medium text-slate-700 mb-1.5">Dirección Fiscal</label>
+                            <div class="relative group">
+                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                    <span class="material-symbols-outlined text-slate-400 text-sm group-focus-within:text-[#3b4bc9] transition-colors">location_on</span>
+                                </div>
+                                <input id="e_direccion" name="Direccion" type="text"
+                                       class="block w-full pl-10 pr-3 py-2.5 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-[#3b4bc9]/20 focus:border-[#3b4bc9] text-sm transition-all outline-none">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sección Contacto -->
+                <div>
+                    <div class="flex items-center gap-2 mb-4">
+                        <span class="material-symbols-outlined text-[#3b4bc9] text-xl">contact_mail</span>
+                        <h3 class="text-xs font-bold text-slate-600 uppercase tracking-wider">Información de Contacto</h3>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700 mb-1.5">Teléfono Principal</label>
+                            <div class="relative group">
+                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                    <span class="material-symbols-outlined text-slate-400 text-sm group-focus-within:text-[#3b4bc9] transition-colors">phone</span>
+                                </div>
+                                <input id="e_telefono" name="Telefono" type="tel"
+                                       class="block w-full pl-10 pr-3 py-2.5 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-[#3b4bc9]/20 focus:border-[#3b4bc9] text-sm transition-all outline-none">
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700 mb-1.5">Celular <span class="text-slate-400 font-normal text-xs">Opcional</span></label>
+                            <div class="relative group">
+                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                    <span class="material-symbols-outlined text-slate-400 text-sm group-focus-within:text-[#3b4bc9] transition-colors">smartphone</span>
+                                </div>
+                                <input id="e_celular" name="Celular" type="tel"
+                                       class="block w-full pl-10 pr-3 py-2.5 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-[#3b4bc9]/20 focus:border-[#3b4bc9] text-sm transition-all outline-none">
+                            </div>
+                        </div>
+                        <div class="md:col-span-2">
+                            <label class="block text-sm font-medium text-slate-700 mb-1.5">Correo Electrónico</label>
+                            <div class="relative group">
+                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                    <span class="material-symbols-outlined text-slate-400 text-sm group-focus-within:text-[#3b4bc9] transition-colors">mail</span>
+                                </div>
+                                <input id="e_email" name="Email" type="email"
+                                       class="block w-full pl-10 pr-3 py-2.5 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-[#3b4bc9]/20 focus:border-[#3b4bc9] text-sm transition-all outline-none">
+                            </div>
+                        </div>
+                        <div class="md:col-span-2">
+                            <label class="block text-sm font-medium text-slate-700 mb-1.5">Persona de Contacto</label>
+                            <div class="relative group">
+                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                    <span class="material-symbols-outlined text-slate-400 text-sm group-focus-within:text-[#3b4bc9] transition-colors">account_circle</span>
+                                </div>
+                                <input id="e_contacto" name="Contacto" type="text"
+                                       class="block w-full pl-10 pr-3 py-2.5 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-[#3b4bc9]/20 focus:border-[#3b4bc9] text-sm transition-all outline-none">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Footer -->
+            <div class="px-8 py-5 bg-slate-50 border-t border-slate-100 flex justify-end gap-3 flex-shrink-0">
+                <button type="button" onclick="cerrarModal('modalEditar')"
+                        class="px-5 py-2.5 text-sm font-semibold text-slate-600 hover:bg-slate-100 rounded-lg transition-colors border border-slate-200">
+                    Cancelar
+                </button>
+                <button type="submit"
+                        class="px-6 py-2.5 text-sm font-bold text-white bg-[#3b4bc9] hover:bg-[#3b4bc9]/90 rounded-lg shadow-lg shadow-[#3b4bc9]/20 transition-all flex items-center gap-2">
+                    <span class="material-symbols-outlined text-[18px]">save</span>
+                    Guardar Cambios
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+<script>
+    // ——— Filtro tabla ———
+    const campoFiltro = document.getElementById('campoFiltro');
+    const valorFiltro = document.getElementById('valorFiltro');
+    const colMap = { '0': 0, '1': 1, '2': 2, '3': 3, '4': 4 };
+
+    if (campoFiltro && valorFiltro) {
+        [campoFiltro, valorFiltro].forEach(el =>
+            el.addEventListener(el.tagName === 'SELECT' ? 'change' : 'input', filtrarTabla)
+        );
+        function filtrarTabla() {
+            const col = colMap[campoFiltro.value] ?? 0;
+            const term = valorFiltro.value.toLowerCase();
+            let vis = 0;
+            document.querySelectorAll('#tbodyClientes tr').forEach(row => {
+                const cell = row.querySelectorAll('td')[col];
+                const show = cell && cell.textContent.toLowerCase().includes(term);
+                row.style.display = show ? '' : 'none';
+                if (show) vis++;
             });
-        });
-
-        // Filtro único con combo box y campo de texto para clientes
-        const campoFiltro = document.getElementById('campoFiltro');
-        const valorFiltro = document.getElementById('valorFiltro');
-        if (campoFiltro && valorFiltro) {
-            valorFiltro.addEventListener('input', filtrarTablaClientes);
-            campoFiltro.addEventListener('change', filtrarTablaClientes);
+            const vc = document.getElementById('visibleCount');
+            if (vc) vc.textContent = vis;
         }
+    }
 
-        function filtrarTablaClientes() {
-            const col = parseInt(campoFiltro.value);
-            const searchTerm = valorFiltro.value.toLowerCase();
-            const rows = document.querySelectorAll('tbody tr');
+    // ——— Modales ———
+    function cerrarModal(id) {
+        document.getElementById(id).classList.add('hidden');
+        document.body.style.overflow = '';
+    }
 
-            rows.forEach(row => {
-                if (row.querySelectorAll('td').length < 8) return;
+    function abrirModal(id) {
+        document.getElementById(id).classList.remove('hidden');
+        document.body.style.overflow = 'hidden';
+    }
 
-                let cellText = '';
-                const cells = row.querySelectorAll('td');
+    // Modal Crear
+    function abrirModalCrear() { abrirModal('modalCrear'); }
+    function cerrarModalCrear(e) { if (e.target === document.getElementById('modalCrear')) cerrarModal('modalCrear'); }
 
-                // Ajustar según la columna seleccionada
-                switch (col) {
-                    case 0: // Documento
-                        cellText = cells[1].textContent.toLowerCase();
-                        break;
-                    case 1: // Razón Social
-                        cellText = cells[0].textContent.toLowerCase();
-                        break;
-                    case 2: // Dirección
-                        cellText = cells[2].textContent.toLowerCase();
-                        break;
-                    case 3: // Teléfono
-                        cellText = cells[3].textContent.toLowerCase();
-                        break;
-                    case 4: // Celular
-                        cellText = cells[3].textContent.toLowerCase();
-                        break;
-                    case 5: // Email
-                        cellText = cells[4].textContent.toLowerCase();
-                        break;
-                    case 6: // Contacto
-                        cellText = cells[5].textContent.toLowerCase();
-                        break;
-                }
+    // Modal Editar
+    function abrirModalEditar(btn) {
+        const d = btn.dataset;
+        document.getElementById('formEditar').action = `/clientes/editar/${d.id}`;
+        document.getElementById('e_documento').value    = d.documento    || '';
+        document.getElementById('e_razonsocial').value  = d.razonsocial  || '';
+        document.getElementById('e_direccion').value    = d.direccion    || '';
+        document.getElementById('e_telefono').value     = d.telefono     || '';
+        document.getElementById('e_celular').value      = d.celular      || '';
+        document.getElementById('e_email').value        = d.email        || '';
+        document.getElementById('e_contacto').value     = d.contacto     || '';
+        abrirModal('modalEditar');
+    }
+    function cerrarModalEditar(e) { if (e.target === document.getElementById('modalEditar')) cerrarModal('modalEditar'); }
 
-                if (cellText.includes(searchTerm)) {
-                    row.style.display = '';
-                } else {
-                    row.style.display = 'none';
-                }
-            });
+    // Cerrar con Escape
+    document.addEventListener('keydown', e => {
+        if (e.key === 'Escape') {
+            cerrarModal('modalCrear');
+            cerrarModal('modalEditar');
         }
-    </script>
-    <script src="/publico/js/layout.js?v=1772427290135"></script>
+    });
+</script>
+<script src="/publico/js/layout.js?v=1772427290135"></script>
 </body>
-
 </html>

@@ -9,8 +9,26 @@
     <!-- Tailwind CSS desde CDN para esta vista específica -->
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1&display=swap"
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
         rel="stylesheet" />
+    <style>
+        .material-symbols-outlined {
+            font-family: 'Material Symbols Outlined';
+            font-weight: normal;
+            font-style: normal;
+            font-size: 24px;
+            line-height: 1;
+            letter-spacing: normal;
+            text-transform: none;
+            display: inline-block;
+            white-space: nowrap;
+            word-wrap: normal;
+            direction: ltr;
+            -webkit-font-feature-settings: 'liga';
+            -webkit-font-smoothing: antialiased;
+        }
+    </style>
     <!-- Script de html2canvas y jsPDF para mantener la funcionalidad de PDF -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -81,501 +99,517 @@
 
 <body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100 min-h-screen">
     <%# Helper local declarations para parseo seguro %>
-    <% var fSubtotal=!isNaN(parseFloat(factura.SubTotal)) ?
-        parseFloat(factura.SubTotal).toFixed(2) : '0.00' ; var fIgv=!isNaN(parseFloat(factura.TotalIGV)) ?
-        parseFloat(factura.TotalIGV).toFixed(2) : '0.00' ; var fTotal=!isNaN(parseFloat(factura.Total)) ?
-        parseFloat(factura.Total).toFixed(2) : '0.00' ; var fFechaEmision=factura.FechaEmision ?
-        (factura.FechaEmision.toISOString ? factura.FechaEmision.toISOString().split('T')[0] : factura.FechaEmision) :
-        new Date().toISOString().split('T')[0]; var fFechaVenc=factura.FechaVencimiento ?
-        (factura.FechaVencimiento.toISOString ? factura.FechaVencimiento.toISOString().split('T')[0] :
-        factura.FechaVencimiento) : '-' ; var clInfo=cliente || {}; var empInfo=empresa || {}; var usInfo=usuario || {};
-        var estadoLower=(factura.Estado || 'pendiente' ).toLowerCase(); var isAprobada=estadoLower==='aprobada' ||
-        estadoLower==='facturada' ; var isFacturada=estadoLower==='facturada' ; %>
+        <% var fSubtotal=!isNaN(parseFloat(factura.SubTotal)) ? parseFloat(factura.SubTotal).toFixed(2) : '0.00' ; var
+            fIgv=!isNaN(parseFloat(factura.TotalIGV)) ? parseFloat(factura.TotalIGV).toFixed(2) : '0.00' ; var
+            fTotal=!isNaN(parseFloat(factura.Total)) ? parseFloat(factura.Total).toFixed(2) : '0.00' ; var
+            fFechaEmision=factura.FechaEmision ? (factura.FechaEmision.toISOString ?
+            factura.FechaEmision.toISOString().split('T')[0] : factura.FechaEmision) : new
+            Date().toISOString().split('T')[0]; var fFechaVenc=factura.FechaVencimiento ?
+            (factura.FechaVencimiento.toISOString ? factura.FechaVencimiento.toISOString().split('T')[0] :
+            factura.FechaVencimiento) : '-' ; var clInfo=cliente || {}; var empInfo=empresa || {}; var usInfo=usuario ||
+            {}; var estadoLower=(factura.Estado || 'pendiente' ).toLowerCase(); var isAprobada=estadoLower==='aprobada'
+            || estadoLower==='facturada' ; var isFacturada=estadoLower==='facturada' ; %>
 
-        <div class="relative flex h-auto min-h-screen w-full flex-col group/design-root overflow-x-hidden">
-            <div class="layout-container flex h-full grow flex-col">
+            <div class="relative flex h-auto min-h-screen w-full flex-col group/design-root overflow-x-hidden">
+                <div class="layout-container flex h-full grow flex-col">
 
-                <!-- Top Navigation Bar (Manteniendo el estilo Tailwind) -->
-                <header
-                    class="flex items-center justify-between whitespace-nowrap border-b border-solid border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-10 py-3 sticky top-0 z-50 hide-on-print shadow-sm">
-                    <div class="flex items-center gap-8">
-                        <div class="flex items-center gap-3">
-                            <img src="/img/Carsil.png" alt="CARSIL Logo" class="h-8 object-contain"
-                                onerror="this.style.display='none'">
-                            <h2
-                                class="text-slate-900 dark:text-slate-100 text-lg font-bold leading-tight tracking-[-0.015em]">
-                                ERP</h2>
-                        </div>
-                    </div>
-                    <div class="flex flex-1 justify-end gap-3">
-                        <a href="/proformas"
-                            class="flex items-center justify-center rounded-lg h-10 px-4 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 font-medium text-sm transition-colors">
-                            <span class="material-symbols-outlined text-[18px] mr-2">arrow_back</span>
-                            Volver a Lista
-                        </a>
-                    </div>
-                </header>
-
-                <main class="flex-1 overflow-y-auto">
-                    <div class="max-w-[1024px] mx-auto px-4 sm:px-10 py-8" id="document-content">
-
-                        <!-- Breadcrumbs & Actions -->
-                        <div
-                            class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4 hide-on-print">
-                            <div class="flex items-center gap-2 text-sm">
-                                <a class="text-slate-500 hover:text-primary transition-colors"
-                                    href="/dashboard">Dashboard</a>
-                                <span class="material-symbols-outlined text-[16px] text-slate-400">chevron_right</span>
-                                <a class="text-slate-500 hover:text-primary transition-colors"
-                                    href="/proformas">Proformas</a>
-                                <span class="material-symbols-outlined text-[16px] text-slate-400">chevron_right</span>
-                                <span class="text-slate-900 dark:text-slate-100 font-semibold">
-                                    <%= factura.Codigo %>
-                                </span>
-                            </div>
-                            <div class="flex gap-3 w-full sm:w-auto" id="action-buttons-group">
-                                <button onclick="generatePDF()" id="btnDownloadPdf"
-                                    class="flex-1 sm:flex-none flex items-center justify-center gap-2 px-4 py-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-sm font-bold text-slate-700 dark:text-slate-300 hover:bg-slate-50 transition-colors shadow-sm">
-                                    <span class="material-symbols-outlined text-[18px]">download</span> PDF
-                                </button>
-                                <button onclick="window.print()"
-                                    class="flex-1 sm:flex-none flex items-center justify-center gap-2 px-4 py-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-sm font-bold text-slate-700 dark:text-slate-300 hover:bg-slate-50 transition-colors shadow-sm">
-                                    <span class="material-symbols-outlined text-[18px]">print</span> Imprimir
-                                </button>
+                    <!-- Top Navigation Bar (Manteniendo el estilo Tailwind) -->
+                    <header
+                        class="flex items-center justify-between whitespace-nowrap border-b border-solid border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-10 py-3 sticky top-0 z-50 hide-on-print shadow-sm">
+                        <div class="flex items-center gap-8">
+                            <div class="flex items-center gap-3">
+                                <img src="/img/Carsil.png" alt="CARSIL Logo" class="h-8 object-contain"
+                                    onerror="this.style.display='none'">
+                                <h2
+                                    class="text-slate-900 dark:text-slate-100 text-lg font-bold leading-tight tracking-[-0.015em]">
+                                    ERP</h2>
                             </div>
                         </div>
+                        <div class="flex flex-1 justify-end gap-3">
+                            <a href="/proformas"
+                                class="flex items-center justify-center rounded-lg h-10 px-4 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 font-medium text-sm transition-colors">
+                                <span class="material-symbols-outlined text-[18px] mr-2">arrow_back</span>
+                                Volver a Lista
+                            </a>
+                        </div>
+                    </header>
 
-                        <!-- Main Document Container (Print Ready Style) -->
-                        <div class="bg-white dark:bg-slate-900 shadow-xl border border-slate-200 dark:border-slate-800 rounded-xl overflow-hidden p-8 sm:p-12 mb-10"
-                            id="factura-print-area">
+                    <main class="flex-1 overflow-y-auto">
+                        <div class="max-w-[1024px] mx-auto px-4 sm:px-10 py-8" id="document-content">
 
-                            <!-- Header: Company Info & Proforma ID -->
+                            <!-- Breadcrumbs & Actions -->
                             <div
-                                class="flex flex-col md:flex-row justify-between gap-8 pb-8 border-b border-slate-100 dark:border-slate-800">
-                                <div class="flex gap-6 items-start">
-                                    <div class="rounded-lg max-w-[120px]">
-                                        <img src="/img/Carsil.png" alt="Logo Empresa" class="w-full object-contain"
-                                            onerror="this.style.display='none'">
-                                    </div>
-                                    <div>
-                                        <h1 class="text-xl sm:text-2xl font-black text-slate-900 dark:text-white mb-1">
-                                            <%= empInfo.RazonSocial || 'CARSIL S.A.C.' %>
-                                        </h1>
-                                        <p class="text-sm text-slate-500 dark:text-slate-400 font-medium">RUC: <%=
-                                                empInfo.RUC || '20601234567' %>
-                                        </p>
-                                        <p class="text-sm text-slate-500 dark:text-slate-400">
-                                            <%= empInfo.Direccion || '-' %>
-                                        </p>
-                                        <p class="text-sm text-slate-500 dark:text-slate-400">
-                                            <%= empInfo.Telefono ? 'Telf: ' +empInfo.Telefono : '' %>
-                                                <%= empInfo.CorreoContacto ? ' | ' +empInfo.CorreoContacto : '' %>
-                                        </p>
-                                    </div>
+                                class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4 hide-on-print">
+                                <div class="flex items-center gap-2 text-sm">
+                                    <a class="text-slate-500 hover:text-primary transition-colors"
+                                        href="/dashboard">Dashboard</a>
+                                    <span
+                                        class="material-symbols-outlined text-[16px] text-slate-400">chevron_right</span>
+                                    <a class="text-slate-500 hover:text-primary transition-colors"
+                                        href="/proformas">Proformas</a>
+                                    <span
+                                        class="material-symbols-outlined text-[16px] text-slate-400">chevron_right</span>
+                                    <span class="text-slate-900 dark:text-slate-100 font-semibold">
+                                        <%= factura.Codigo %>
+                                    </span>
                                 </div>
-                                <div class="flex flex-col items-end gap-2">
-                                    <div class="border-4 border-primary p-4 text-center rounded-lg min-w-[240px]">
-                                        <h2 class="text-primary font-bold text-lg leading-tight tracking-wider">PROFORMA
-                                        </h2>
-                                        <p class="text-slate-900 dark:text-white text-xl font-black mt-1">N° <%=
-                                                factura.Codigo %>
-                                        </p>
+                                <div class="flex gap-3 w-full sm:w-auto" id="action-buttons-group">
+                                    <button onclick="generatePDF()" id="btnDownloadPdf"
+                                        class="flex-1 sm:flex-none flex items-center justify-center gap-2 px-4 py-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-sm font-bold text-slate-700 dark:text-slate-300 hover:bg-slate-50 transition-colors shadow-sm">
+                                        <span class="material-symbols-outlined text-[18px]">download</span> PDF
+                                    </button>
+                                    <button onclick="window.print()"
+                                        class="flex-1 sm:flex-none flex items-center justify-center gap-2 px-4 py-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-sm font-bold text-slate-700 dark:text-slate-300 hover:bg-slate-50 transition-colors shadow-sm">
+                                        <span class="material-symbols-outlined text-[18px]">print</span> Imprimir
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Main Document Container (Print Ready Style) -->
+                            <div class="bg-white dark:bg-slate-900 shadow-xl border border-slate-200 dark:border-slate-800 rounded-xl overflow-hidden p-8 sm:p-12 mb-10"
+                                id="factura-print-area">
+
+                                <!-- Header: Company Info & Proforma ID -->
+                                <div
+                                    class="flex flex-col md:flex-row justify-between gap-8 pb-8 border-b border-slate-100 dark:border-slate-800">
+                                    <div class="flex gap-6 items-start">
+                                        <div class="rounded-lg max-w-[120px]">
+                                            <img src="/img/Carsil.png" alt="Logo Empresa" class="w-full object-contain"
+                                                onerror="this.style.display='none'">
+                                        </div>
+                                        <div>
+                                            <h1
+                                                class="text-xl sm:text-2xl font-black text-slate-900 dark:text-white mb-1">
+                                                <%= empInfo.RazonSocial || 'CARSIL S.A.C.' %>
+                                            </h1>
+                                            <p class="text-sm text-slate-500 dark:text-slate-400 font-medium">RUC: <%=
+                                                    empInfo.RUC || '20601234567' %>
+                                            </p>
+                                            <p class="text-sm text-slate-500 dark:text-slate-400">
+                                                <%= empInfo.Direccion || '-' %>
+                                            </p>
+                                            <p class="text-sm text-slate-500 dark:text-slate-400">
+                                                <%= empInfo.Telefono ? 'Telf: ' +empInfo.Telefono : '' %>
+                                                    <%= empInfo.CorreoContacto ? ' | ' +empInfo.CorreoContacto : '' %>
+                                            </p>
+                                        </div>
                                     </div>
-                                    <div class="flex gap-2 mt-2">
-                                        <% if (isAprobada) { %>
-                                            <span
-                                                class="px-3 py-1 bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400 text-xs font-bold rounded-full uppercase tracking-wider">
-                                                <%= factura.Estado %>
-                                            </span>
-                                            <% } else if (estadoLower==='rechazada' || estadoLower==='anulada' ) { %>
+                                    <div class="flex flex-col items-end gap-2">
+                                        <div class="border-4 border-primary p-4 text-center rounded-lg min-w-[240px]">
+                                            <h2 class="text-primary font-bold text-lg leading-tight tracking-wider">
+                                                PROFORMA
+                                            </h2>
+                                            <p class="text-slate-900 dark:text-white text-xl font-black mt-1">N° <%=
+                                                    factura.Codigo %>
+                                            </p>
+                                        </div>
+                                        <div class="flex gap-2 mt-2">
+                                            <% if (isAprobada) { %>
                                                 <span
-                                                    class="px-3 py-1 bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400 text-xs font-bold rounded-full uppercase tracking-wider">
+                                                    class="px-3 py-1 bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400 text-xs font-bold rounded-full uppercase tracking-wider">
                                                     <%= factura.Estado %>
                                                 </span>
-                                                <% } else { %>
-                                                    <span
-                                                        class="px-3 py-1 bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400 text-xs font-bold rounded-full uppercase tracking-wider">
-                                                        <%= factura.Estado || 'PENDIENTE' %>
-                                                    </span>
-                                                    <% } %>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Meta Metadata -->
-                            <div
-                                class="grid grid-cols-2 lg:grid-cols-4 gap-4 py-6 border-b border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/30 -mx-8 sm:-mx-12 px-8 sm:px-12">
-                                <div>
-                                    <p class="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Fecha
-                                        Emisión</p>
-                                    <p class="text-sm font-semibold text-slate-700 dark:text-slate-300">
-                                        <%= fFechaEmision %>
-                                    </p>
-                                </div>
-                                <div>
-                                    <p class="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Vencimiento
-                                    </p>
-                                    <p class="text-sm font-semibold text-slate-700 dark:text-slate-300">
-                                        <%= fFechaVenc %>
-                                    </p>
-                                </div>
-                                <div>
-                                    <p class="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Moneda</p>
-                                    <p class="text-sm font-semibold text-slate-700 dark:text-slate-300">PEN - Soles</p>
-                                </div>
-                                <div>
-                                    <p class="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Validez
-                                        Oferta</p>
-                                    <p class="text-sm font-semibold text-slate-700 dark:text-slate-300">
-                                        <%= factura.ValidezOferta || 15 %> días
-                                    </p>
-                                </div>
-                            </div>
-
-                            <!-- Customer Details -->
-                            <div class="py-8 grid grid-cols-1 md:grid-cols-2 gap-12">
-                                <div>
-                                    <h3
-                                        class="text-xs font-black text-primary uppercase mb-4 tracking-widest border-l-4 border-primary pl-3">
-                                        Datos del Cliente</h3>
-                                    <div class="space-y-2">
-                                        <div class="flex flex-col sm:flex-row sm:justify-between mb-1">
-                                            <span class="text-xs text-slate-400 font-medium whitespace-nowrap">Razón
-                                                Social:</span>
-                                            <span
-                                                class="text-sm font-bold text-slate-800 dark:text-slate-200 sm:text-right ml-0 sm:ml-2">
-                                                <%= clInfo.RazonSocial || 'Cliente no encontrado' %>
-                                            </span>
-                                        </div>
-                                        <div class="flex justify-between">
-                                            <span class="text-xs text-slate-400 font-medium">RUC/DNI:</span>
-                                            <span class="text-sm font-semibold text-slate-700 dark:text-slate-300">
-                                                <%= clInfo.Documento || '-' %>
-                                            </span>
-                                        </div>
-                                        <div class="flex flex-col sm:flex-row sm:justify-between mb-1">
-                                            <span
-                                                class="text-xs text-slate-400 font-medium whitespace-nowrap">Dirección:</span>
-                                            <span
-                                                class="text-sm font-medium text-slate-600 dark:text-slate-400 sm:text-right ml-0 sm:ml-2">
-                                                <%= clInfo.Direccion || '-' %>
-                                            </span>
-                                        </div>
-                                        <div class="flex justify-between">
-                                            <span class="text-xs text-slate-400 font-medium">Contacto:</span>
-                                            <span class="text-sm font-medium text-slate-600 dark:text-slate-400">
-                                                <%= clInfo.Contacto || '-' %>
-                                            </span>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div>
-                                    <h3
-                                        class="text-xs font-black text-primary uppercase mb-4 tracking-widest border-l-4 border-primary pl-3">
-                                        Condiciones de Venta</h3>
-                                    <div class="space-y-2">
-                                        <div class="flex justify-between">
-                                            <span class="text-xs text-slate-400 font-medium">Forma de Pago:</span>
-                                            <span
-                                                class="text-sm font-semibold text-slate-700 dark:text-slate-300 uppercase">
-                                                <%= factura.FormaPago || 'ACORDADA' %>
-                                            </span>
-                                        </div>
-                                        <div class="flex justify-between">
-                                            <span class="text-xs text-slate-400 font-medium">Ejecutivo Ventas:</span>
-                                            <span
-                                                class="text-sm font-semibold text-slate-700 dark:text-slate-300 uppercase">
-                                                <%= usInfo.Nombres ? usInfo.Nombres + ' ' + (usInfo.Apellidos||'') : '-'
+                                                <% } else if (estadoLower==='rechazada' || estadoLower==='anulada' ) {
                                                     %>
-                                            </span>
-                                        </div>
-                                        <div class="flex justify-between">
-                                            <span class="text-xs text-slate-400 font-medium">Tiempo Entrega:</span>
-                                            <span class="text-sm font-semibold text-slate-700 dark:text-slate-300">
-                                                <%= factura.TiempoEntrega || 'Inmediato' %> días
-                                            </span>
-                                        </div>
-                                        <div class="flex justify-between">
-                                            <span class="text-xs text-slate-400 font-medium">Garantía:</span>
-                                            <span class="text-sm font-semibold text-slate-700 dark:text-slate-300">
-                                                <%= factura.Garantia || 'No especificada' %>
-                                            </span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Product Table -->
-                            <div class="mt-4 overflow-x-auto">
-                                <table class="w-full text-left border-collapse min-w-[600px]">
-                                    <thead>
-                                        <tr class="bg-primary text-white">
-                                            <th
-                                                class="py-3 px-4 text-[11px] font-bold uppercase tracking-wider rounded-tl-lg text-center w-12">
-                                                #</th>
-                                            <th
-                                                class="py-3 px-4 text-[11px] font-bold uppercase tracking-wider text-center w-20">
-                                                Cant.</th>
-                                            <th
-                                                class="py-3 px-4 text-[11px] font-bold uppercase tracking-wider text-center w-20">
-                                                Unid.</th>
-                                            <th class="py-3 px-4 text-[11px] font-bold uppercase tracking-wider">
-                                                Descripción</th>
-                                            <th
-                                                class="py-3 px-4 text-[11px] font-bold uppercase tracking-wider text-right w-24">
-                                                P. Unit</th>
-                                            <th
-                                                class="py-3 px-4 text-[11px] font-bold uppercase tracking-wider text-right rounded-tr-lg w-32">
-                                                Total</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody class="text-sm divide-y divide-slate-100 dark:divide-slate-800">
-                                        <% if (productos && productos.length> 0) { %>
-                                            <% productos.forEach(function(item, index) { var
-                                                pUnit=!isNaN(parseFloat(item.PrecioUnitario)) ?
-                                                parseFloat(item.PrecioUnitario).toFixed(2) : '0.00' ; var
-                                                pTot=!isNaN(parseFloat(item.Total)) ? parseFloat(item.Total).toFixed(2)
-                                                : '0.00' ; var bgClass=index % 2===1
-                                                ? 'bg-slate-50/30 dark:bg-slate-800/20' : '' ; %>
-                                                <tr class="<%= bgClass %>">
-                                                    <td class="py-4 px-4 font-bold text-slate-400 text-center">
-                                                        <%= String(index + 1).padStart(2, '0' ) %>
-                                                    </td>
-                                                    <td class="py-4 px-4 font-bold text-center">
-                                                        <%= item.Cantidad || 1 %>
-                                                    </td>
-                                                    <td
-                                                        class="py-4 px-4 text-center text-xs font-semibold text-slate-500">
-                                                        <%= item.UnidadMedida || 'UND' %>
-                                                    </td>
-                                                    <td class="py-4 px-4">
-                                                        <p class="font-bold text-slate-800 dark:text-white">
-                                                            <%= item.ProductoNombre || 'Producto' %>
-                                                        </p>
-                                                        <% if (item.ProductoDescripcion) { %>
-                                                            <p class="text-[11px] text-slate-500 mt-1 leading-relaxed">
-                                                                <%= item.ProductoDescripcion %>
-                                                            </p>
-                                                            <% } %>
-                                                    </td>
-                                                    <td
-                                                        class="py-4 px-4 text-right font-medium text-slate-700 dark:text-slate-300">
-                                                        <%= pUnit %>
-                                                    </td>
-                                                    <td
-                                                        class="py-4 px-4 text-right font-bold text-slate-900 dark:text-white">
-                                                        <%= pTot %>
-                                                    </td>
-                                                </tr>
-                                                <% }); %>
+                                                    <span
+                                                        class="px-3 py-1 bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400 text-xs font-bold rounded-full uppercase tracking-wider">
+                                                        <%= factura.Estado %>
+                                                    </span>
                                                     <% } else { %>
-                                                        <tr>
-                                                            <td colspan="6"
-                                                                class="py-8 text-center text-slate-500 italic">No se
-                                                                encontraron productos registrados en esta proforma.</td>
-                                                        </tr>
-                                                        <% } %>
-                                    </tbody>
-                                </table>
-                            </div>
-
-                            <!-- Totals & Bank Accounts -->
-                            <div class="mt-8 flex flex-col lg:flex-row justify-between gap-8 h-full">
-                                <div class="flex-1 max-w-lg">
-                                    <div
-                                        class="bg-slate-50 dark:bg-slate-800/50 p-6 rounded-xl border border-slate-100 dark:border-slate-800 h-full">
-                                        <h4
-                                            class="text-[10px] font-black uppercase text-slate-400 mb-4 tracking-widest">
-                                            Información Bancaria</h4>
-                                        <div class="grid grid-cols-1 gap-4">
-                                            <% if (empInfo.CuentaBancaria) { %>
-                                                <div class="flex items-center gap-3">
-                                                    <div
-                                                        class="size-10 bg-white dark:bg-slate-700 rounded-lg flex items-center justify-center shadow-sm border border-slate-100">
                                                         <span
-                                                            class="material-symbols-outlined text-primary">account_balance</span>
-                                                    </div>
-                                                    <div>
-                                                        <p
-                                                            class="text-[11px] font-bold text-slate-800 dark:text-white uppercase">
-                                                            <%= empInfo.NombreCuentaBancaria || empInfo.RazonSocial
-                                                                || 'Cuenta Principal' %>
-                                                        </p>
-                                                        <p
-                                                            class="text-[11px] text-slate-600 dark:text-slate-400 font-mono mt-0.5">
-                                                            <%= empInfo.CuentaBancaria %>
-                                                        </p>
-                                                    </div>
-                                                </div>
-                                                <% } else { %>
-                                                    <p class="text-xs text-slate-500 italic">Para pagos, solicite los
-                                                        números de cuenta actualizados a su ejecutivo comercial.</p>
-                                                    <% } %>
-
-                                                        <% if (factura.Observaciones) { %>
-                                                            <div
-                                                                class="mt-4 pt-4 border-t border-slate-200 dark:border-slate-700">
-                                                                <h4
-                                                                    class="text-[10px] font-black uppercase text-slate-400 mb-2 tracking-widest">
-                                                                    Observaciones Generales</h4>
-                                                                <p
-                                                                    class="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
-                                                                    <%= factura.Observaciones %>
-                                                                </p>
-                                                            </div>
-                                                            <% } %>
+                                                            class="px-3 py-1 bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400 text-xs font-bold rounded-full uppercase tracking-wider">
+                                                            <%= factura.Estado || 'PENDIENTE' %>
+                                                        </span>
+                                                        <% } %>
                                         </div>
                                     </div>
                                 </div>
 
-                                <div class="w-full lg:w-72 space-y-2 lg:mt-0 lg:ml-auto">
-                                    <div class="flex justify-between px-3 py-1">
-                                        <span class="text-sm text-slate-500 font-medium">Sub-total:</span>
-                                        <span class="text-sm font-bold text-slate-700 dark:text-slate-300">S/ <%=
-                                                fSubtotal %></span>
-                                    </div>
-                                    <div class="flex justify-between px-3 py-1">
-                                        <span class="text-sm text-slate-500 font-medium">I.G.V (18%):</span>
-                                        <span class="text-sm font-bold text-slate-700 dark:text-slate-300">S/ <%= fIgv
-                                                %></span>
-                                    </div>
-                                    <div
-                                        class="flex justify-between items-center bg-primary p-4 rounded-xl text-white mt-4 shadow-lg shadow-primary/20">
-                                        <span class="text-sm font-bold uppercase tracking-wider">Total Final:</span>
-                                        <span class="text-xl font-black">S/ <%= fTotal %></span>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Bottom Info: Terms, Signature -->
-                            <div
-                                class="mt-12 pt-8 border-t border-slate-100 dark:border-slate-800 flex flex-col md:flex-row justify-between items-end gap-8">
-                                <div class="flex-1 space-y-4">
+                                <!-- Meta Metadata -->
+                                <div
+                                    class="grid grid-cols-2 lg:grid-cols-4 gap-4 py-6 border-b border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/30 -mx-8 sm:-mx-12 px-8 sm:px-12">
                                     <div>
-                                        <h5
-                                            class="text-[10px] font-black uppercase text-slate-400 mb-2 tracking-widest">
-                                            Términos y Condiciones Generales</h5>
-                                        <ul
-                                            class="text-[10px] text-slate-500 uppercase leading-relaxed list-disc pl-4 space-y-1">
-                                            <li>Precios incluyen impuestos de ley vigentes a la fecha.</li>
-                                            <li>Esta proforma tiene una validez de <%= factura.ValidezOferta || 15 %>
-                                                    días calendario.</li>
-                                            <li>La entrega está sujeta a disponibilidad de stock al momento de la Orden
-                                                de Compra.</li>
-                                            <li>Los tiempos de entrega inician desde la recepción de la O.C. o el
-                                                anticipo (si aplica).</li>
-                                        </ul>
-                                    </div>
-                                </div>
-
-                                <!-- Signature Area -->
-                                <div class="text-center min-w-[200px] mt-8 md:mt-0">
-                                    <div class="h-16 flex items-center justify-center">
-                                        <p class="font-serif italic text-slate-400 font-semibold text-xl select-none">
-                                            <%= usInfo.Nombres ? usInfo.Nombres.charAt(0)+'.' : '' %>
-                                                <%= usInfo.Apellidos || 'CARSIL' %>
+                                        <p class="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Fecha
+                                            Emisión</p>
+                                        <p class="text-sm font-semibold text-slate-700 dark:text-slate-300">
+                                            <%= fFechaEmision %>
                                         </p>
                                     </div>
-                                    <div class="border-t border-slate-300 dark:border-slate-700 pt-2">
-                                        <p
-                                            class="text-[10px] font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wide">
-                                            Firma Autorizada</p>
-                                        <p class="text-[9px] text-slate-400 font-medium uppercase mt-0.5">Departamento
-                                            de Asesoría Comercial</p>
+                                    <div>
+                                        <p class="text-[10px] uppercase font-bold text-slate-400 tracking-wider">
+                                            Vencimiento
+                                        </p>
+                                        <p class="text-sm font-semibold text-slate-700 dark:text-slate-300">
+                                            <%= fFechaVenc %>
+                                        </p>
+                                    </div>
+                                    <div>
+                                        <p class="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Moneda
+                                        </p>
+                                        <p class="text-sm font-semibold text-slate-700 dark:text-slate-300">PEN - Soles
+                                        </p>
+                                    </div>
+                                    <div>
+                                        <p class="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Validez
+                                            Oferta</p>
+                                        <p class="text-sm font-semibold text-slate-700 dark:text-slate-300">
+                                            <%= factura.ValidezOferta || 15 %> días
+                                        </p>
                                     </div>
                                 </div>
+
+                                <!-- Customer Details -->
+                                <div class="py-8 grid grid-cols-1 md:grid-cols-2 gap-12">
+                                    <div>
+                                        <h3
+                                            class="text-xs font-black text-primary uppercase mb-4 tracking-widest border-l-4 border-primary pl-3">
+                                            Datos del Cliente</h3>
+                                        <div class="space-y-2">
+                                            <div class="flex flex-col sm:flex-row sm:justify-between mb-1">
+                                                <span class="text-xs text-slate-400 font-medium whitespace-nowrap">Razón
+                                                    Social:</span>
+                                                <span
+                                                    class="text-sm font-bold text-slate-800 dark:text-slate-200 sm:text-right ml-0 sm:ml-2">
+                                                    <%= clInfo.RazonSocial || 'Cliente no encontrado' %>
+                                                </span>
+                                            </div>
+                                            <div class="flex justify-between">
+                                                <span class="text-xs text-slate-400 font-medium">RUC/DNI:</span>
+                                                <span class="text-sm font-semibold text-slate-700 dark:text-slate-300">
+                                                    <%= clInfo.Documento || '-' %>
+                                                </span>
+                                            </div>
+                                            <div class="flex flex-col sm:flex-row sm:justify-between mb-1">
+                                                <span
+                                                    class="text-xs text-slate-400 font-medium whitespace-nowrap">Dirección:</span>
+                                                <span
+                                                    class="text-sm font-medium text-slate-600 dark:text-slate-400 sm:text-right ml-0 sm:ml-2">
+                                                    <%= clInfo.Direccion || '-' %>
+                                                </span>
+                                            </div>
+                                            <div class="flex justify-between">
+                                                <span class="text-xs text-slate-400 font-medium">Contacto:</span>
+                                                <span class="text-sm font-medium text-slate-600 dark:text-slate-400">
+                                                    <%= clInfo.Contacto || '-' %>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <h3
+                                            class="text-xs font-black text-primary uppercase mb-4 tracking-widest border-l-4 border-primary pl-3">
+                                            Condiciones de Venta</h3>
+                                        <div class="space-y-2">
+                                            <div class="flex justify-between">
+                                                <span class="text-xs text-slate-400 font-medium">Forma de Pago:</span>
+                                                <span
+                                                    class="text-sm font-semibold text-slate-700 dark:text-slate-300 uppercase">
+                                                    <%= factura.FormaPago || 'ACORDADA' %>
+                                                </span>
+                                            </div>
+                                            <div class="flex justify-between">
+                                                <span class="text-xs text-slate-400 font-medium">Ejecutivo
+                                                    Ventas:</span>
+                                                <span
+                                                    class="text-sm font-semibold text-slate-700 dark:text-slate-300 uppercase">
+                                                    <%= usInfo.Nombres ? usInfo.Nombres + ' ' + (usInfo.Apellidos||'')
+                                                        : '-' %>
+                                                </span>
+                                            </div>
+                                            <div class="flex justify-between">
+                                                <span class="text-xs text-slate-400 font-medium">Tiempo Entrega:</span>
+                                                <span class="text-sm font-semibold text-slate-700 dark:text-slate-300">
+                                                    <%= factura.TiempoEntrega || 'Inmediato' %> días
+                                                </span>
+                                            </div>
+                                            <div class="flex justify-between">
+                                                <span class="text-xs text-slate-400 font-medium">Garantía:</span>
+                                                <span class="text-sm font-semibold text-slate-700 dark:text-slate-300">
+                                                    <%= factura.Garantia || 'No especificada' %>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Product Table -->
+                                <div class="mt-4 overflow-x-auto">
+                                    <table class="w-full text-left border-collapse min-w-[600px]">
+                                        <thead>
+                                            <tr class="bg-primary text-white">
+                                                <th
+                                                    class="py-3 px-4 text-[11px] font-bold uppercase tracking-wider rounded-tl-lg text-center w-12">
+                                                    #</th>
+                                                <th
+                                                    class="py-3 px-4 text-[11px] font-bold uppercase tracking-wider text-center w-20">
+                                                    Cant.</th>
+                                                <th
+                                                    class="py-3 px-4 text-[11px] font-bold uppercase tracking-wider text-center w-20">
+                                                    Unid.</th>
+                                                <th class="py-3 px-4 text-[11px] font-bold uppercase tracking-wider">
+                                                    Descripción</th>
+                                                <th
+                                                    class="py-3 px-4 text-[11px] font-bold uppercase tracking-wider text-right w-24">
+                                                    P. Unit</th>
+                                                <th
+                                                    class="py-3 px-4 text-[11px] font-bold uppercase tracking-wider text-right rounded-tr-lg w-32">
+                                                    Total</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody class="text-sm divide-y divide-slate-100 dark:divide-slate-800">
+                                            <% if (productos && productos.length> 0) { %>
+                                                <% productos.forEach(function(item, index) { var
+                                                    pUnit=!isNaN(parseFloat(item.PrecioUnitario)) ?
+                                                    parseFloat(item.PrecioUnitario).toFixed(2) : '0.00' ; var
+                                                    pTot=!isNaN(parseFloat(item.Total)) ?
+                                                    parseFloat(item.Total).toFixed(2) : '0.00' ; var bgClass=index %
+                                                    2===1 ? 'bg-slate-50/30 dark:bg-slate-800/20' : '' ; %>
+                                                    <tr class="<%= bgClass %>">
+                                                        <td class="py-4 px-4 font-bold text-slate-400 text-center">
+                                                            <%= String(index + 1).padStart(2, '0' ) %>
+                                                        </td>
+                                                        <td class="py-4 px-4 font-bold text-center">
+                                                            <%= item.Cantidad || 1 %>
+                                                        </td>
+                                                        <td
+                                                            class="py-4 px-4 text-center text-xs font-semibold text-slate-500">
+                                                            <%= item.UnidadMedida || 'UND' %>
+                                                        </td>
+                                                        <td class="py-4 px-4">
+                                                            <p class="font-bold text-slate-800 dark:text-white">
+                                                                <%= item.ProductoNombre || 'Producto' %>
+                                                            </p>
+                                                            <% if (item.ProductoDescripcion) { %>
+                                                                <p
+                                                                    class="text-[11px] text-slate-500 mt-1 leading-relaxed">
+                                                                    <%= item.ProductoDescripcion %>
+                                                                </p>
+                                                                <% } %>
+                                                        </td>
+                                                        <td
+                                                            class="py-4 px-4 text-right font-medium text-slate-700 dark:text-slate-300">
+                                                            <%= pUnit %>
+                                                        </td>
+                                                        <td
+                                                            class="py-4 px-4 text-right font-bold text-slate-900 dark:text-white">
+                                                            <%= pTot %>
+                                                        </td>
+                                                    </tr>
+                                                    <% }); %>
+                                                        <% } else { %>
+                                                            <tr>
+                                                                <td colspan="6"
+                                                                    class="py-8 text-center text-slate-500 italic">No se
+                                                                    encontraron productos registrados en esta proforma.
+                                                                </td>
+                                                            </tr>
+                                                            <% } %>
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                                <!-- Totals & Bank Accounts -->
+                                <div class="mt-8 flex flex-col lg:flex-row justify-between gap-8 h-full">
+                                    <div class="flex-1 max-w-lg">
+                                        <div
+                                            class="bg-slate-50 dark:bg-slate-800/50 p-6 rounded-xl border border-slate-100 dark:border-slate-800 h-full">
+                                            <h4
+                                                class="text-[10px] font-black uppercase text-slate-400 mb-4 tracking-widest">
+                                                Información Bancaria</h4>
+                                            <div class="grid grid-cols-1 gap-4">
+                                                <% if (empInfo.CuentaBancaria) { %>
+                                                    <div class="flex items-center gap-3">
+                                                        <div
+                                                            class="size-10 bg-white dark:bg-slate-700 rounded-lg flex items-center justify-center shadow-sm border border-slate-100">
+                                                            <span
+                                                                class="material-symbols-outlined text-primary">account_balance</span>
+                                                        </div>
+                                                        <div>
+                                                            <p
+                                                                class="text-[11px] font-bold text-slate-800 dark:text-white uppercase">
+                                                                <%= empInfo.NombreCuentaBancaria || empInfo.RazonSocial
+                                                                    || 'Cuenta Principal' %>
+                                                            </p>
+                                                            <p
+                                                                class="text-[11px] text-slate-600 dark:text-slate-400 font-mono mt-0.5">
+                                                                <%= empInfo.CuentaBancaria %>
+                                                            </p>
+                                                        </div>
+                                                    </div>
+                                                    <% } else { %>
+                                                        <p class="text-xs text-slate-500 italic">Para pagos, solicite
+                                                            los
+                                                            números de cuenta actualizados a su ejecutivo comercial.</p>
+                                                        <% } %>
+
+                                                            <% if (factura.Observaciones) { %>
+                                                                <div
+                                                                    class="mt-4 pt-4 border-t border-slate-200 dark:border-slate-700">
+                                                                    <h4
+                                                                        class="text-[10px] font-black uppercase text-slate-400 mb-2 tracking-widest">
+                                                                        Observaciones Generales</h4>
+                                                                    <p
+                                                                        class="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
+                                                                        <%= factura.Observaciones %>
+                                                                    </p>
+                                                                </div>
+                                                                <% } %>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="w-full lg:w-72 space-y-2 lg:mt-0 lg:ml-auto">
+                                        <div class="flex justify-between px-3 py-1">
+                                            <span class="text-sm text-slate-500 font-medium">Sub-total:</span>
+                                            <span class="text-sm font-bold text-slate-700 dark:text-slate-300">S/ <%=
+                                                    fSubtotal %></span>
+                                        </div>
+                                        <div class="flex justify-between px-3 py-1">
+                                            <span class="text-sm text-slate-500 font-medium">I.G.V (18%):</span>
+                                            <span class="text-sm font-bold text-slate-700 dark:text-slate-300">S/ <%=
+                                                    fIgv %></span>
+                                        </div>
+                                        <div
+                                            class="flex justify-between items-center bg-primary p-4 rounded-xl text-white mt-4 shadow-lg shadow-primary/20">
+                                            <span class="text-sm font-bold uppercase tracking-wider">Total Final:</span>
+                                            <span class="text-xl font-black">S/ <%= fTotal %></span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Bottom Info: Terms, Signature -->
+                                <div
+                                    class="mt-12 pt-8 border-t border-slate-100 dark:border-slate-800 flex flex-col md:flex-row justify-between items-end gap-8">
+                                    <div class="flex-1 space-y-4">
+                                        <div>
+                                            <h5
+                                                class="text-[10px] font-black uppercase text-slate-400 mb-2 tracking-widest">
+                                                Términos y Condiciones Generales</h5>
+                                            <ul
+                                                class="text-[10px] text-slate-500 uppercase leading-relaxed list-disc pl-4 space-y-1">
+                                                <li>Precios incluyen impuestos de ley vigentes a la fecha.</li>
+                                                <li>Esta proforma tiene una validez de <%= factura.ValidezOferta || 15
+                                                        %>
+                                                        días calendario.</li>
+                                                <li>La entrega está sujeta a disponibilidad de stock al momento de la
+                                                    Orden
+                                                    de Compra.</li>
+                                                <li>Los tiempos de entrega inician desde la recepción de la O.C. o el
+                                                    anticipo (si aplica).</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+
+                                    <!-- Signature Area -->
+                                    <div class="text-center min-w-[200px] mt-8 md:mt-0">
+                                        <div class="h-16 flex items-center justify-center">
+                                            <p
+                                                class="font-serif italic text-slate-400 font-semibold text-xl select-none">
+                                                <%= usInfo.Nombres ? usInfo.Nombres.charAt(0)+'.' : '' %>
+                                                    <%= usInfo.Apellidos || 'CARSIL' %>
+                                            </p>
+                                        </div>
+                                        <div class="border-t border-slate-300 dark:border-slate-700 pt-2">
+                                            <p
+                                                class="text-[10px] font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wide">
+                                                Firma Autorizada</p>
+                                            <p class="text-[9px] text-slate-400 font-medium uppercase mt-0.5">
+                                                Departamento
+                                                de Asesoría Comercial</p>
+                                        </div>
+                                    </div>
+                                </div>
+
                             </div>
-
                         </div>
-                    </div>
-                </main>
+                    </main>
+                </div>
             </div>
-        </div>
 
-        <script>
-            // Configuración para el PDF
-            window.facturaInfo = {
-                codigo: '<%= factura.Codigo %>',
-                fecha: '<%= fFechaEmision %>'
-            };
+            <script>
+                // Configuración para el PDF
+                window.facturaInfo = {
+                    codigo: '<%= factura.Codigo %>',
+                    fecha: '<%= fFechaEmision %>'
+                };
 
-            async function generatePDF() {
-                const btn = document.getElementById('btnDownloadPdf');
-                const originalText = btn.innerHTML;
-                const pageContainer = document.querySelector('.group\\/design-root');
+                async function generatePDF() {
+                    const btn = document.getElementById('btnDownloadPdf');
+                    const originalText = btn.innerHTML;
+                    const pageContainer = document.querySelector('.group\\/design-root');
 
-                try {
-                    btn.innerHTML = '<span class="material-symbols-outlined text-[18px] animate-spin">refresh</span> Generando...';
-                    btn.disabled = true;
+                    try {
+                        btn.innerHTML = '<span class="material-symbols-outlined text-[18px] animate-spin">refresh</span> Generando...';
+                        btn.disabled = true;
 
-                    // Entrar a PDF mode (oculta botones, fuerza fondos blancos)
-                    pageContainer.classList.add('pdf-mode');
+                        // Entrar a PDF mode (oculta botones, fuerza fondos blancos)
+                        pageContainer.classList.add('pdf-mode');
 
-                    // Pausa breve para aplicar estilos
-                    await new Promise(r => setTimeout(r, 100));
+                        // Pausa breve para aplicar estilos
+                        await new Promise(r => setTimeout(r, 100));
 
-                    const element = document.getElementById('factura-print-area');
+                        const element = document.getElementById('factura-print-area');
 
-                    const canvas = await html2canvas(element, {
-                        scale: 2, // Alta resolución
-                        useCORS: true,
-                        backgroundColor: '#ffffff',
-                        logging: false,
-                        windowWidth: 1024,
-                        width: element.offsetWidth
-                    });
+                        const canvas = await html2canvas(element, {
+                            scale: 2, // Alta resolución
+                            useCORS: true,
+                            backgroundColor: '#ffffff',
+                            logging: false,
+                            windowWidth: 1024,
+                            width: element.offsetWidth
+                        });
 
-                    // Restaurar vista
-                    pageContainer.classList.remove('pdf-mode');
+                        // Restaurar vista
+                        pageContainer.classList.remove('pdf-mode');
 
-                    const imgData = canvas.toDataURL('image/jpeg', 0.95);
+                        const imgData = canvas.toDataURL('image/jpeg', 0.95);
 
-                    const { jsPDF } = window.jspdf;
-                    const pdf = new jsPDF({
-                        orientation: 'portrait',
-                        unit: 'mm',
-                        format: 'a4'
-                    });
+                        const { jsPDF } = window.jspdf;
+                        const pdf = new jsPDF({
+                            orientation: 'portrait',
+                            unit: 'mm',
+                            format: 'a4'
+                        });
 
-                    const pdfWidth = pdf.internal.pageSize.getWidth();
-                    const pdfHeight = pdf.internal.pageSize.getHeight();
+                        const pdfWidth = pdf.internal.pageSize.getWidth();
+                        const pdfHeight = pdf.internal.pageSize.getHeight();
 
-                    // Márgenes PDF
-                    const margin = 10;
-                    const usableWidth = pdfWidth - (margin * 2);
+                        // Márgenes PDF
+                        const margin = 10;
+                        const usableWidth = pdfWidth - (margin * 2);
 
-                    const imgWidthPixels = canvas.width;
-                    const imgHeightPixels = canvas.height;
+                        const imgWidthPixels = canvas.width;
+                        const imgHeightPixels = canvas.height;
 
-                    // Relación de aspecto
-                    const ratio = imgHeightPixels / imgWidthPixels;
+                        // Relación de aspecto
+                        const ratio = imgHeightPixels / imgWidthPixels;
 
-                    // Tamaño final en mm
-                    const printWidth = usableWidth;
-                    const printHeight = printWidth * ratio;
+                        // Tamaño final en mm
+                        const printWidth = usableWidth;
+                        const printHeight = printWidth * ratio;
 
-                    pdf.addImage(imgData, 'JPEG', margin, margin, printWidth, printHeight);
+                        pdf.addImage(imgData, 'JPEG', margin, margin, printWidth, printHeight);
 
-                    pdf.save(`Proforma_${window.facturaInfo.codigo}.pdf`);
+                        pdf.save(`Proforma_${window.facturaInfo.codigo}.pdf`);
 
-                    btn.innerHTML = '<span class="material-symbols-outlined text-[18px]">check</span> ¡Listo!';
-                    setTimeout(() => {
-                        btn.innerHTML = originalText;
-                        btn.disabled = false;
-                    }, 2000);
+                        btn.innerHTML = '<span class="material-symbols-outlined text-[18px]">check</span> ¡Listo!';
+                        setTimeout(() => {
+                            btn.innerHTML = originalText;
+                            btn.disabled = false;
+                        }, 2000);
 
-                } catch (error) {
-                    console.error('Error:', error);
-                    pageContainer.classList.remove('pdf-mode');
-                    btn.innerHTML = '<span class="material-symbols-outlined text-[18px]">error</span> Falló';
-                    setTimeout(() => {
-                        btn.innerHTML = originalText;
-                        btn.disabled = false;
-                    }, 3000);
-                    alert('Hubo un error al generar el PDF. Usa la impresión nativa (CTRL+P).');
+                    } catch (error) {
+                        console.error('Error:', error);
+                        pageContainer.classList.remove('pdf-mode');
+                        btn.innerHTML = '<span class="material-symbols-outlined text-[18px]">error</span> Falló';
+                        setTimeout(() => {
+                            btn.innerHTML = originalText;
+                            btn.disabled = false;
+                        }, 3000);
+                        alert('Hubo un error al generar el PDF. Usa la impresión nativa (CTRL+P).');
+                    }
                 }
-            }
-        </script>
+            </script>
 </body>
 
 </html>

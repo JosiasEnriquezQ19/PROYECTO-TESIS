@@ -3,11 +3,15 @@ const Usuario = require('../modelos/Usuario');
 
 exports.list = async (req, res) => {
     try {
-        const empleados = await Empleado.getAll();
+        const [empleados, usuarios] = await Promise.all([
+            Empleado.getAll(),
+            Usuario.getAll()
+        ]);
         const user = req.session && req.session.usuario ? req.session.usuario : null;
         
         res.render('empleados/lista', { 
             empleados,
+            usuarios,
             user: user,
             success: req.flash('success'),
             error: req.flash('error')

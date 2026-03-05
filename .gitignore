@@ -32,3 +32,6 @@ build/
 # Database connection (credentials)
 src/bd/conexion.js
 *.cache
+
+# Sessions (auto-generadas)
+sessions/

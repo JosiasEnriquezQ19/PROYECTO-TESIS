@@ -4,354 +4,620 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lista de Asistencias - CARSIL Equipos y Servicios SAC</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="/publico/css/layout.css?v=1772427290134">
-    <link rel="stylesheet" href="/publico/css/list-views.css">
-    <link rel="stylesheet" href="/publico/css/asistencia.css">
-</head>
-<body>
-    <div class="wrapper">
-        <%- include("../parciales/sidebar") %>
-        
-        <!-- Botón para ocultar/mostrar barra -->
-        
-        <!-- Main Content -->
-        <div class="main-content" id="main-content">
-            <nav class="navbar navbar-expand-lg navbar-top border-bottom">
-                <div class="container-fluid">
-                    <h5 class="page-title mb-0">
-                        <i class="bi bi-calendar-check"></i>
-                        Gestión de Asistencias
-                    </h5>
-                    <div class="user-profile ms-auto">
-                        <span><%= user && user.Nombres ? user.Nombres : 'Administrador' %></span>
-                        <div class="user-avatar"><%= user && user.Nombres ? user.Nombres.charAt(0) : 'A' %></div>
-                    </div>
-                </div>
-            </nav>
-            
-            <div class="container-fluid py-4">
-                <!-- Mensajes flash eliminados (success/error) según solicitud del usuario -->
-
-                <!-- Debug section (temporary) -->
-                <% if (asistencias.length > 0 && !asistencias[0].Nombres) { %>
-                    <div class="alert alert-warning alert-dismissible fade show" role="alert">
-                        <i class="bi bi-exclamation-triangle me-2"></i>
-                        <strong>Advertencia:</strong> Los datos de empleados no se están cargando correctamente. 
-                        Verificar que las tablas EMPLEADO y USUARIO tengan datos y estén relacionadas correctamente.
-                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                    </div>
-                <% } %>
-
-                <!-- Stats Cards -->
-                <div class="stats-grid">
-                    <div class="stat-card">
-                        <div class="stat-icon" style="background: linear-gradient(135deg, #6f42c1, #6610f2);">
-                            <i class="bi bi-calendar-check text-white"></i>
-                        </div>
-                        <h6 class="text-muted">Total Registros</h6>
-                        <h3 class="text-primary"><%= asistencias ? asistencias.length : 0 %></h3>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-icon" style="background: linear-gradient(135deg, #28a745, #20c997);">
-                            <i class="bi bi-check-circle text-white"></i>
-                        </div>
-                        <h6 class="text-muted">Presentes</h6>
-                        <h3 class="text-success"><%= asistencias ? asistencias.filter(a => a.Estado === 'PRESENTE').length : 0 %></h3>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-icon" style="background: linear-gradient(135deg, #ffc107, #fd7e14);">
-                            <i class="bi bi-clock text-white"></i>
-                        </div>
-                        <h6 class="text-muted">Tardanzas</h6>
-                        <h3 class="text-warning"><%= asistencias ? asistencias.filter(a => a.Estado === 'TARDANZA').length : 0 %></h3>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-icon" style="background: linear-gradient(135deg, #dc3545, #c82333);">
-                            <i class="bi bi-x-circle text-white"></i>
-                        </div>
-                        <h6 class="text-muted">Ausentes</h6>
-                        <h3 class="text-danger"><%= asistencias ? asistencias.filter(a => a.Estado === 'AUSENTE').length : 0 %></h3>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-icon" style="background: linear-gradient(135deg, #17a2b8, #138496);">
-                            <i class="bi bi-stopwatch text-white"></i>
-                        </div>
-                        <h6 class="text-muted">Total Horas</h6>
-                        <h3 class="text-info">
-                            <%= asistencias ? 
-                                asistencias.reduce((total, a) => total + (parseFloat(a.HorasTrabajadas) || 0), 0).toFixed(1) : 0 %>h
-                        </h3>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-icon" style="background: linear-gradient(135deg, #6f42c1, #6610f2);">
-                            <i class="bi bi-calendar-plus text-white"></i>
-                        </div>
-                        <h6 class="text-muted">Días Extra</h6>
-                        <h3 class="text-purple"><%= asistencias ? asistencias.filter(a => a.TipoAsistencia === 'EXTRA').length : 0 %></h3>
-                    </div>
-                </div>
-
-                <% if (asistencias.length === 0) { %>
-                    <!-- Estado vacío -->
-                    <div class="card-modern">
-                        <div class="empty-state">
-                            <i class="bi bi-calendar-x empty-state-icon"></i>
-                            <h5 class="mt-3">No hay registros de asistencia</h5>
-                            <p class="text-muted">Comience registrando una nueva asistencia</p>
-                            <a href="/asistencia/create" class="btn btn-primary-modern btn-modern">
-                                <i class="bi bi-plus-circle"></i>
-                                Registrar Asistencia
-                            </a>
-                        </div>
-                    </div>
-                <% } else { %>
-                    <!-- Search and Actions -->
-                    <div class="search-container">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <div class="search-box flex-grow-1 me-3">
-                                <div class="d-flex gap-2">
-                                    <select class="form-select" id="campoFiltro" style="max-width: 180px;">
-                                        <option value="0">Empleado</option>
-                                        <option value="1">Fecha</option>
-                                        <option value="2">Entrada</option>
-                                        <option value="3">Salida</option>
-                                        <option value="4">Horas</option>
-                                        <option value="5">Estado</option>
-                                        <option value="6">Tipo</option>
-                                    </select>
-                                    <input type="text" class="form-control" id="valorFiltro" placeholder="Buscar asistencias...">
-                                </div>
-                            </div>
-                            <a href="/asistencia/create" class="btn btn-primary-modern btn-modern">
-                                <i class="bi bi-plus-circle"></i>
-                                Nueva Asistencia
-                            </a>
-                        </div>
-                    </div>
-
-                    <!-- Tabla de asistencias modernizada -->
-                    <div class="card-modern">
-                        <div class="table-responsive">
-                            <table class="table table-modern mb-0">
-                                <thead>
-                                    <tr>
-                                    <th style="width: 40px;"><input class="form-check-input custom-checkbox" type="checkbox" onchange="toggleAll(this)"></th>
-                                    <th><i class="bi bi-person me-1"></i>Empleado</th>
-                                        <th><i class="bi bi-calendar-event me-1"></i>Fecha</th>
-                                        <th><i class="bi bi-clock-fill me-1"></i>Jornada</th>
-                                        <th><i class="bi bi-clock me-1"></i>Entrada</th>
-                                        <th><i class="bi bi-clock-history me-1"></i>Salida</th>
-                                        <th><i class="bi bi-stopwatch me-1"></i>Horas</th>
-                                        <th><i class="bi bi-toggle-on me-1"></i>Estado</th>
-                                        <th><i class="bi bi-tag me-1"></i>Tipo</th>
-                                        <th class="text-center">Acciones</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <% asistencias.forEach(asistencia => { %>
-                                        <tr>
-                                            <td><input class="form-check-input custom-checkbox row-checkbox" type="checkbox"></td>
-                                            <td>
-                                                <div class="employee-info">
-                                                    <div class="item-avatar">
-                                                        <%= (asistencia.Nombres && asistencia.Apellidos) ? 
-                                                            asistencia.Nombres.charAt(0) + asistencia.Apellidos.charAt(0) : 
-                                                            'NN' %>
-                                                    </div>
-                                                    <div>
-                                                        <strong>
-                                                            <% if (asistencia.Nombres && asistencia.Apellidos) { %>
-                                                                <%= asistencia.Apellidos %>, <%= asistencia.Nombres %>
-                                                            <% } else if (asistencia.NombreCompleto) { %>
-                                                                <%= asistencia.NombreCompleto %>
-                                                            <% } else { %>
-                                                                Empleado ID: <%= asistencia.IdEmpleado %>
-                                                            <% } %>
-                                                        </strong>
-                                                        <div class="text-muted small">
-                                                            <%= asistencia.Cargo || (asistencia.Area ? asistencia.Area : 'Sin cargo asignado') %>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div>
-                                                    <strong><%= new Date(asistencia.Fecha).toLocaleDateString('es-PE', { weekday: 'short', day: '2-digit', month: 'short' }) %></strong>
-                                                    <div class="text-muted small"><%= new Date(asistencia.Fecha).getFullYear() %></div>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <% if (asistencia.JornadaLaboral) { %>
-                                                    <span class="badge badge-modern <%= 
-                                                        asistencia.JornadaLaboral === 'COMPLETA' ? 'badge-jornada-completa' : 
-                                                        asistencia.JornadaLaboral === 'MEDIO_MANANA' ? 'badge-jornada-manana' : 
-                                                        asistencia.JornadaLaboral === 'MEDIO_TARDE' ? 'badge-jornada-tarde' : 
-                                                        asistencia.JornadaLaboral === 'NOCTURNO' ? 'badge-jornada-nocturno' : 
-                                                        'badge-jornada-personalizado'
-                                                    %>">
-                                                        <i class="bi <%= 
-                                                            asistencia.JornadaLaboral === 'COMPLETA' ? 'bi-sun' : 
-                                                            asistencia.JornadaLaboral === 'MEDIO_MANANA' ? 'bi-sunrise' : 
-                                                            asistencia.JornadaLaboral === 'MEDIO_TARDE' ? 'bi-sunset' : 
-                                                            asistencia.JornadaLaboral === 'NOCTURNO' ? 'bi-moon' : 
-                                                            'bi-gear'
-                                                        %>"></i>
-                                                        <%= 
-                                                            asistencia.JornadaLaboral === 'COMPLETA' ? 'Completa' : 
-                                                            asistencia.JornadaLaboral === 'MEDIO_MANANA' ? 'Mañana' : 
-                                                            asistencia.JornadaLaboral === 'MEDIO_TARDE' ? 'Tarde' : 
-                                                            asistencia.JornadaLaboral === 'NOCTURNO' ? 'Nocturno' : 
-                                                            'Personalizado'
-                                                        %>
-                                                    </span>
-                                                <% } else { %>
-                                                    <span class="text-muted small">Sin definir</span>
-                                                <% } %>
-                                            </td>
-                                            <td>
-                                                <% if (asistencia.HoraEntrada) { %>
-                                                    <span class="badge badge-modern badge-time">
-                                                        <i class="bi bi-clock"></i>
-                                                        <%= asistencia.HoraEntrada.slice(0,5) %>
-                                                    </span>
-                                                <% } else { %>
-                                                    <span class="text-muted small">Sin registrar</span>
-                                                <% } %>
-                                            </td>
-                                            <td>
-                                                <% if (asistencia.HoraSalida) { %>
-                                                    <span class="badge badge-modern badge-time">
-                                                        <i class="bi bi-clock-history"></i>
-                                                        <%= asistencia.HoraSalida.slice(0,5) %>
-                                                    </span>
-                                                <% } else { %>
-                                                    <span class="text-muted small">Sin registrar</span>
-                                                <% } %>
-                                            </td>
-                                            <td>
-                                                <% if (asistencia.HorasTrabajadas && asistencia.HorasTrabajadas > 0) { %>
-                                                    <span class="hours-badge">
-                                                        <i class="bi bi-stopwatch"></i>
-                                                        <%= parseFloat(asistencia.HorasTrabajadas).toFixed(2) %>h
-                                                    </span>
-                                                <% } else { %>
-                                                    <span class="text-muted small">0.00h</span>
-                                                <% } %>
-                                            </td>
-                                            <td>
-                                                <span class="badge badge-modern <%= 
-                                                    asistencia.Estado === 'PRESENTE' ? 'badge-presente' : 
-                                                    asistencia.Estado === 'AUSENTE' ? 'badge-ausente' : 
-                                                    'badge-tardanza'
-                                                %>">
-                                                    <i class="bi <%= 
-                                                        asistencia.Estado === 'PRESENTE' ? 'bi-check-circle' : 
-                                                        asistencia.Estado === 'AUSENTE' ? 'bi-x-circle' : 
-                                                        'bi-clock'
-                                                    %>"></i>
-                                                    <%= asistencia.Estado %>
-                                                </span>
-                                            </td>
-                                            <td>
-                                                <span class="badge badge-modern <%= 
-                                                    asistencia.TipoAsistencia === 'REGULAR' ? 'badge-regular' : 
-                                                    asistencia.TipoAsistencia === 'FERIADO' ? 'badge-feriado' : 
-                                                    'badge-extra'
-                                                %>">
-                                                    <i class="bi <%= 
-                                                        asistencia.TipoAsistencia === 'REGULAR' ? 'bi-calendar-day' : 
-                                                        asistencia.TipoAsistencia === 'FERIADO' ? 'bi-calendar-heart' : 
-                                                        'bi-calendar-plus'
-                                                    %>"></i>
-                                                    <%= asistencia.TipoAsistencia || 'REGULAR' %>
-                                                </span>
-                                            </td>
-                                            <td class="text-center">
-                                                <div class="action-buttons justify-content-center">
-
-                                                    <a href="/asistencia/<%= asistencia.IdAsistencia %>/edit" 
-                                                       class="btn-action-icon btn-action-edit" 
-                                                       title="Editar"
-                                                       data-bs-toggle="tooltip">
-                                                        <i class="bi bi-pencil"></i>
-                                                    </a>
-                                                    <form action="/asistencia/<%= asistencia.IdAsistencia %>/delete" 
-                                                          method="POST" 
-                                                          class="d-inline"
-                                                          onsubmit="return confirm('¿Está seguro de eliminar este registro?');">
-                                                        <button type="submit" 
-                                                                class="btn-action-icon btn-action-delete" 
-                                                                title="Eliminar"
-                                                                data-bs-toggle="tooltip">
-                                                            <i class="bi bi-trash"></i>
-                                                        </button>
-                                                    </form>
-                                                    <% if (asistencia.Observaciones) { %>
-                                                        <button class="btn-action-icon btn-action-view" 
-                                                                title="Ver observaciones"
-                                                                data-bs-toggle="tooltip"
-                                                                data-observaciones="<%= asistencia.Observaciones %>"
-                                                                onclick="mostrarObservaciones(this)">
-                                                            <i class="bi bi-chat-left-text"></i>
-                                                        </button>
-                                                    <% } %>
-                                                </div>
-                                            
-</div></td>
-                                        </tr>
-                                    <% }); %>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                <% } %>
-            </div>
-        </div>
-    </div>
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {// Inicializar tooltips
-            const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
-            tooltipTriggerList.map(function (tooltipTriggerEl) {
-                return new bootstrap.Tooltip(tooltipTriggerEl);
-            });
-        });
-
-        // Filtro único con combo box y campo de texto para asistencias
-        const campoFiltro = document.getElementById('campoFiltro');
-        const valorFiltro = document.getElementById('valorFiltro');
-        if (campoFiltro && valorFiltro) {
-            valorFiltro.addEventListener('input', filtrarTabla);
-            campoFiltro.addEventListener('change', filtrarTabla);
-            
-            function filtrarTabla() {
-                const col = parseInt(campoFiltro.value);
-                const searchTerm = valorFiltro.value.toLowerCase();
-                const rows = document.querySelectorAll('tbody tr');
-                
-                rows.forEach(row => {
-                    const cell = row.querySelectorAll('td')[col];
-                    if (cell) {
-                        if (cell.textContent.toLowerCase().includes(searchTerm)) {
-                            row.style.display = '';
-                        } else {
-                            row.style.display = 'none';
-                        }
-                    }
-                });
-            }
-        }
-
-        // Función para mostrar observaciones
-        function mostrarObservaciones(button) {
-            const observaciones = button.getAttribute('data-observaciones');
-            alert('Observaciones:\n\n' + observaciones);
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: { "primary": "#3b4bc9", "background-light": "#f6f6f8" },
+                    fontFamily: { "display": ["Inter", "sans-serif"] },
+                    borderRadius: { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" },
+                },
+            },
         }
     </script>
-    <script src="/publico/js/layout.js?v=1772427290134"></script>
+    <link rel="stylesheet" href="/publico/css/layout.css?v=1772427290134">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        .main-content { padding: 0 !important; background: #f6f6f8; }
+    </style>
+</head>
+<body class="bg-[#f6f6f8] text-slate-900 font-display">
+<div class="wrapper">
+    <%- include("../parciales/sidebar") %>
+
+    <div class="main-content" id="main-content">
+
+        <!-- Top Nav -->
+        <header class="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-8 sticky top-0 z-10 shadow-sm">
+            <div class="flex items-center gap-2">
+                <span class="text-slate-400 text-sm">Panel</span>
+                <span class="material-symbols-outlined text-sm text-slate-300">chevron_right</span>
+                <span class="font-semibold text-sm">Gestión de Asistencias</span>
+            </div>
+            <div class="flex items-center gap-3">
+                <div class="relative">
+                    <span class="material-symbols-outlined p-2 text-slate-500 hover:bg-slate-100 rounded-full cursor-pointer transition-colors">notifications</span>
+                    <span class="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full border-2 border-white"></span>
+                </div>
+                <div class="h-8 w-px bg-slate-200"></div>
+                <div class="w-8 h-8 rounded-full bg-[#3b4bc9] flex items-center justify-center text-white text-xs font-bold">
+                    <%= user && user.Nombres ? user.Nombres.charAt(0) : 'A' %>
+                </div>
+                <span class="text-sm font-medium hidden sm:inline-block">
+                    <%= user && user.Nombres ? user.Nombres : 'Administrador' %>
+                </span>
+            </div>
+        </header>
+
+        <!-- Content Area -->
+        <div class="p-8">
+
+            <!-- Page Title -->
+            <div class="mb-8">
+                <h2 class="text-3xl font-black tracking-tight mb-2">Gestión de Asistencias</h2>
+                <p class="text-slate-500">Supervise y gestione el registro de asistencia diaria de su personal.</p>
+            </div>
+
+            <% if (asistencias.length > 0 && !asistencias[0].Nombres) { %>
+            <div class="mb-6 flex items-start gap-3 bg-amber-50 border border-amber-200 text-amber-800 px-4 py-3 rounded-xl text-sm">
+                <span class="material-symbols-outlined text-amber-500 mt-0.5">warning</span>
+                <span><strong>Advertencia:</strong> Los datos de empleados no se están cargando correctamente.</span>
+            </div>
+            <% } %>
+
+            <!-- Stats Cards -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-5 mb-8">
+                <div class="bg-white p-5 rounded-xl border border-slate-100 shadow-sm">
+                    <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Total Registros</p>
+                    <p class="text-3xl font-bold text-[#3b4bc9]"><%= asistencias ? asistencias.length : 0 %></p>
+                </div>
+                <div class="bg-white p-5 rounded-xl border border-slate-100 shadow-sm border-t-4 border-t-emerald-500">
+                    <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Presentes</p>
+                    <p class="text-3xl font-bold text-emerald-600"><%= asistencias ? asistencias.filter(a => a.Estado === 'PRESENTE').length : 0 %></p>
+                </div>
+                <div class="bg-white p-5 rounded-xl border border-slate-100 shadow-sm border-t-4 border-t-amber-500">
+                    <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Tardanzas</p>
+                    <p class="text-3xl font-bold text-amber-600"><%= asistencias ? asistencias.filter(a => a.Estado === 'TARDANZA').length : 0 %></p>
+                </div>
+                <div class="bg-white p-5 rounded-xl border border-slate-100 shadow-sm border-t-4 border-t-rose-500">
+                    <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Ausentes</p>
+                    <p class="text-3xl font-bold text-rose-600"><%= asistencias ? asistencias.filter(a => a.Estado === 'AUSENTE').length : 0 %></p>
+                </div>
+                <div class="bg-white p-5 rounded-xl border border-slate-100 shadow-sm border-t-4 border-t-[#3b4bc9]">
+                    <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Horas Totales</p>
+                    <p class="text-3xl font-bold text-[#3b4bc9]">
+                        <%= asistencias ? asistencias.reduce((total, a) => total + (parseFloat(a.HorasTrabajadas) || 0), 0).toFixed(1) : 0 %>h
+                    </p>
+                </div>
+                <div class="bg-white p-5 rounded-xl border border-slate-100 shadow-sm border-t-4 border-t-violet-500">
+                    <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Días Extra</p>
+                    <p class="text-3xl font-bold text-violet-600"><%= asistencias ? asistencias.filter(a => a.TipoAsistencia === 'EXTRA').length : 0 %></p>
+                </div>
+            </div>
+
+            <% if (asistencias.length === 0) { %>
+            <div class="bg-white rounded-xl border border-slate-100 shadow-sm p-16 flex flex-col items-center justify-center text-center">
+                <span class="material-symbols-outlined text-6xl text-slate-300 mb-4">event_busy</span>
+                <h5 class="text-lg font-semibold text-slate-700 mb-1">No hay registros de asistencia</h5>
+                <p class="text-slate-400 text-sm mb-6">Comience registrando una nueva asistencia</p>
+                <a href="/asistencia/create"
+                   class="inline-flex items-center gap-2 px-5 py-2.5 bg-[#3b4bc9] text-white font-semibold rounded-lg hover:bg-[#3b4bc9]/90 transition-all text-sm">
+                    <span class="material-symbols-outlined text-sm">add_circle</span>
+                    Registrar Asistencia
+                </a>
+            </div>
+            <% } else { %>
+
+            <!-- Filter Bar -->
+            <div class="bg-white p-4 rounded-xl border border-slate-100 mb-6 flex flex-wrap gap-4 items-center shadow-sm">
+                <div class="flex-1 min-w-[260px] relative group">
+                    <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-[#3b4bc9] transition-colors">search</span>
+                    <input id="valorFiltro"
+                           class="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-[#3b4bc9]/20 focus:border-[#3b4bc9] transition-all text-sm outline-none"
+                           placeholder="Buscar por nombre de empleado..." type="text" />
+                </div>
+                <select id="campoFiltro"
+                        class="px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:ring-2 focus:ring-[#3b4bc9]/20 focus:border-[#3b4bc9] outline-none">
+                    <option value="0">Empleado</option>
+                    <option value="1">Fecha</option>
+                    <option value="2">Jornada</option>
+                    <option value="3">Entrada</option>
+                    <option value="4">Salida</option>
+                    <option value="5">Horas</option>
+                    <option value="6">Estado</option>
+                    <option value="7">Tipo</option>
+                </select>
+                <div class="flex items-center gap-2">
+                    <a href="/asistencia/create"
+                       class="inline-flex items-center gap-2 px-5 py-2.5 bg-[#3b4bc9] text-white font-semibold rounded-lg hover:bg-[#3b4bc9]/90 hover:shadow-lg transition-all text-sm">
+                        <span class="material-symbols-outlined text-sm">add_circle</span>
+                        Nueva Asistencia
+                    </a>
+                </div>
+            </div>
+
+            <!-- Data Table -->
+            <div class="bg-white rounded-xl border border-slate-100 shadow-md overflow-hidden">
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse" id="tablaAsistencias">
+                        <thead>
+                            <tr class="bg-slate-50 border-b border-slate-200">
+                                <th class="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-widest">Empleado</th>
+                                <th class="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-widest">Fecha</th>
+                                <th class="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-widest">Jornada</th>
+                                <th class="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-widest text-center">Entrada</th>
+                                <th class="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-widest text-center">Salida</th>
+                                <th class="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-widest">Horas</th>
+                                <th class="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-widest">Estado</th>
+                                <th class="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-widest">Tipo</th>
+                                <th class="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-widest text-right">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-100" id="tbodyAsistencias">
+                            <% asistencias.forEach(asistencia => { %>
+                            <tr class="hover:bg-slate-50/60 transition-colors">
+                                <!-- Empleado -->
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-9 h-9 rounded-full bg-[#3b4bc9]/10 flex items-center justify-center text-[#3b4bc9] font-bold text-xs flex-shrink-0">
+                                            <%= (asistencia.Nombres && asistencia.Apellidos) ?
+                                                asistencia.Nombres.charAt(0) + asistencia.Apellidos.charAt(0) : 'NN' %>
+                                        </div>
+                                        <div>
+                                            <p class="text-sm font-semibold leading-tight">
+                                                <% if (asistencia.Nombres && asistencia.Apellidos) { %>
+                                                    <%= asistencia.Apellidos %>, <%= asistencia.Nombres %>
+                                                <% } else if (asistencia.NombreCompleto) { %>
+                                                    <%= asistencia.NombreCompleto %>
+                                                <% } else { %>
+                                                    Empleado #<%= asistencia.IdEmpleado %>
+                                                <% } %>
+                                            </p>
+                                            <p class="text-xs text-slate-400 leading-tight mt-0.5">
+                                                <%= asistencia.Cargo || (asistencia.Area ? asistencia.Area : 'Sin cargo') %>
+                                            </p>
+                                        </div>
+                                    </div>
+                                </td>
+                                <!-- Fecha -->
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <p class="text-sm font-medium">
+                                        <%= new Date(asistencia.Fecha).toLocaleDateString('es-PE', { weekday: 'short', day: '2-digit', month: 'short' }) %>
+                                    </p>
+                                    <p class="text-xs text-slate-400"><%= new Date(asistencia.Fecha).getFullYear() %></p>
+                                </td>
+                                <!-- Jornada -->
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-500">
+                                    <% if (asistencia.JornadaLaboral) { %>
+                                        <% const jl = asistencia.JornadaLaboral;
+                                           const jlLabel = jl==='COMPLETA'?'Completa':jl==='MEDIO_MANANA'?'Mañana':jl==='MEDIO_TARDE'?'Tarde':jl==='NOCTURNO'?'Nocturno':'Personalizado'; %>
+                                        <%= jlLabel %>
+                                    <% } else { %>
+                                        <span class="text-slate-300">—</span>
+                                    <% } %>
+                                </td>
+                                <!-- Entrada -->
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-center">
+                                    <% if (asistencia.HoraEntrada) { %><%= asistencia.HoraEntrada.slice(0,5) %>
+                                    <% } else { %><span class="text-slate-300">--:--</span><% } %>
+                                </td>
+                                <!-- Salida -->
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-center">
+                                    <% if (asistencia.HoraSalida) { %><%= asistencia.HoraSalida.slice(0,5) %>
+                                    <% } else { %><span class="text-slate-300">--:--</span><% } %>
+                                </td>
+                                <!-- Horas -->
+                                <td class="px-6 py-4 whitespace-nowrap text-sm">
+                                    <% if (asistencia.HorasTrabajadas && asistencia.HorasTrabajadas > 0) { %>
+                                        <%= parseFloat(asistencia.HorasTrabajadas).toFixed(2) %>h
+                                    <% } else { %><span class="text-slate-300">0h 00m</span><% } %>
+                                </td>
+                                <!-- Estado -->
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <% if (asistencia.Estado === 'PRESENTE') { %>
+                                        <span class="inline-flex items-center px-2.5 py-1 rounded-full text-[11px] font-bold bg-emerald-50 text-emerald-700 uppercase tracking-wider">Presente</span>
+                                    <% } else if (asistencia.Estado === 'AUSENTE') { %>
+                                        <span class="inline-flex items-center px-2.5 py-1 rounded-full text-[11px] font-bold bg-rose-50 text-rose-700 uppercase tracking-wider">Ausente</span>
+                                    <% } else { %>
+                                        <span class="inline-flex items-center px-2.5 py-1 rounded-full text-[11px] font-bold bg-amber-50 text-amber-700 uppercase tracking-wider">Tardanza</span>
+                                    <% } %>
+                                </td>
+                                <!-- Tipo -->
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-500">
+                                    <%= asistencia.TipoAsistencia || 'REGULAR' %>
+                                </td>
+                                <!-- Acciones -->
+                                <td class="px-6 py-4 whitespace-nowrap text-right">
+                                    <div class="flex items-center justify-end gap-1">
+                                        <!-- Botón editar → abre modal -->
+                                        <button
+                                            onclick="abrirModal(this)"
+                                            data-id="<%= asistencia.IdAsistencia %>"
+                                            data-nombres="<%= asistencia.Nombres || '' %>"
+                                            data-apellidos="<%= asistencia.Apellidos || '' %>"
+                                            data-idempleado="<%= asistencia.IdEmpleado %>"
+                                            data-cargo="<%= asistencia.Cargo || asistencia.Area || '' %>"
+                                            data-fecha="<%= new Date(asistencia.Fecha).toISOString().split('T')[0] %>"
+                                            data-jornada="<%= asistencia.JornadaLaboral || '' %>"
+                                            data-entrada="<%= asistencia.HoraEntrada ? asistencia.HoraEntrada.slice(0,5) : '' %>"
+                                            data-salida="<%= asistencia.HoraSalida ? asistencia.HoraSalida.slice(0,5) : '' %>"
+                                            data-tipo="<%= asistencia.TipoAsistencia || 'REGULAR' %>"
+                                            data-estado="<%= asistencia.Estado || 'PRESENTE' %>"
+                                            data-observaciones="<%= (asistencia.Observaciones || '').replace(/"/g, '&quot;') %>"
+                                            class="p-1.5 hover:bg-slate-100 rounded-lg transition-colors text-slate-500 hover:text-[#3b4bc9]"
+                                            title="Editar">
+                                            <span class="material-symbols-outlined text-lg leading-none">edit</span>
+                                        </button>
+                                        <form action="/asistencia/<%= asistencia.IdAsistencia %>/delete"
+                                              method="POST" class="inline"
+                                              onsubmit="return confirm('¿Está seguro de eliminar este registro?');">
+                                            <button type="submit"
+                                                    class="p-1.5 hover:bg-rose-50 rounded-lg transition-colors text-slate-500 hover:text-rose-600"
+                                                    title="Eliminar">
+                                                <span class="material-symbols-outlined text-lg leading-none">delete</span>
+                                            </button>
+                                        </form>
+                                        <% if (asistencia.Observaciones) { %>
+                                        <button class="p-1.5 hover:bg-slate-100 rounded-lg transition-colors text-slate-500 hover:text-[#3b4bc9]"
+                                                title="Ver observaciones"
+                                                data-observaciones="<%= asistencia.Observaciones %>"
+                                                onclick="mostrarObservaciones(this)">
+                                            <span class="material-symbols-outlined text-lg leading-none">chat</span>
+                                        </button>
+                                        <% } %>
+                                    </div>
+                                </td>
+                            </tr>
+                            <% }); %>
+                        </tbody>
+                    </table>
+                </div>
+                <!-- Pagination footer -->
+                <div class="px-6 py-4 border-t border-slate-100 flex items-center justify-between">
+                    <p class="text-sm text-slate-500">
+                        Mostrando <span id="visibleCount"><%= asistencias.length %></span> de <strong><%= asistencias.length %></strong> registros
+                    </p>
+                </div>
+            </div>
+
+            <% } %>
+        </div><!-- /p-8 -->
+    </div><!-- /main-content -->
+</div><!-- /wrapper -->
+
+<!-- ===================== MODAL EDITAR ASISTENCIA ===================== -->
+<div id="modalOverlay"
+     class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center z-50 p-4 hidden"
+     onclick="cerrarModalOverlay(event)">
+
+    <div class="bg-white w-full max-w-2xl rounded-xl shadow-2xl overflow-hidden border border-slate-200 flex flex-col max-h-[90vh]"
+         onclick="event.stopPropagation()">
+
+        <!-- Modal Header -->
+        <div class="px-8 py-6 border-b border-slate-100 flex justify-between items-center flex-shrink-0">
+            <div>
+                <h2 class="text-xl font-bold text-slate-900 tracking-tight">Editar Registro de Asistencia</h2>
+                <p class="text-slate-500 text-sm mt-1">Actualice los detalles de la jornada laboral del colaborador.</p>
+            </div>
+            <button onclick="cerrarModal()" class="text-slate-400 hover:text-slate-600 transition-colors">
+                <span class="material-symbols-outlined">close</span>
+            </button>
+        </div>
+
+        <!-- Modal Body -->
+        <form id="modalForm" method="POST" class="flex flex-col overflow-hidden flex-1">
+            <input type="hidden" name="_method" value="PUT">
+
+            <div class="px-8 py-6 space-y-7 overflow-y-auto flex-1">
+
+                <!-- Empleado Info -->
+                <div class="flex items-center gap-4 p-4 bg-slate-50 rounded-lg border border-slate-100">
+                    <div id="m_avatar"
+                         class="h-14 w-14 rounded-full bg-[#3b4bc9]/10 flex items-center justify-center text-[#3b4bc9] border-2 border-[#3b4bc9]/20 text-lg font-bold flex-shrink-0">
+                        NN
+                    </div>
+                    <div>
+                        <span id="m_nombre" class="text-base font-bold text-slate-900 block leading-tight"></span>
+                        <div class="flex items-center gap-2 mt-1">
+                            <span id="m_id_badge"
+                                  class="text-xs font-semibold px-2 py-0.5 bg-slate-200 text-slate-600 rounded uppercase tracking-wider"></span>
+                            <span id="m_cargo" class="text-xs font-medium text-slate-500"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Grid campos -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+
+                    <!-- Fecha -->
+                    <div class="flex flex-col gap-1.5">
+                        <label class="text-sm font-semibold text-slate-700 flex items-center gap-2">
+                            <span class="material-symbols-outlined text-[#3b4bc9] text-lg">calendar_today</span>
+                            Fecha de Registro
+                        </label>
+                        <input type="date" id="m_fecha" name="Fecha" readonly
+                               class="w-full rounded-lg border border-slate-200 bg-slate-50 text-slate-500 px-4 py-2.5 text-sm cursor-not-allowed outline-none">
+                    </div>
+
+                    <!-- Jornada -->
+                    <div class="flex flex-col gap-1.5">
+                        <label class="text-sm font-semibold text-slate-700 flex items-center gap-2">
+                            <span class="material-symbols-outlined text-[#3b4bc9] text-lg">schedule</span>
+                            Asignar Turno
+                        </label>
+                        <select id="m_jornada" name="JornadaLaboral" required
+                                class="w-full rounded-lg border border-slate-200 bg-white px-4 py-2.5 text-sm focus:ring-2 focus:ring-[#3b4bc9]/30 focus:border-[#3b4bc9] outline-none">
+                            <option value="">Seleccione la jornada</option>
+                            <option value="COMPLETA"      data-entrada="08:00" data-salida="17:00" data-tolerancia="08:30">Tiempo Completo (8:00 AM - 5:00 PM)</option>
+                            <option value="MEDIO_MANANA"  data-entrada="08:00" data-salida="12:00" data-tolerancia="08:30">Medio Tiempo Mañana (8:00 AM - 12:00 PM)</option>
+                            <option value="MEDIO_TARDE"   data-entrada="13:00" data-salida="17:50" data-tolerancia="13:30">Medio Tiempo Tarde (1:00 PM - 5:50 PM)</option>
+                            <option value="NOCTURNO"      data-entrada="22:00" data-salida="06:00" data-tolerancia="22:30">Turno Nocturno (10:00 PM - 6:00 AM)</option>
+                            <option value="PERSONALIZADO">Personalizado</option>
+                        </select>
+                    </div>
+
+                    <!-- Hora Entrada -->
+                    <div class="flex flex-col gap-1.5">
+                        <label class="text-sm font-semibold text-slate-700 flex items-center gap-2">
+                            <span class="material-symbols-outlined text-[#3b4bc9] text-lg">login</span>
+                            Hora de Entrada
+                        </label>
+                        <input type="time" id="m_entrada" name="HoraEntrada"
+                               class="w-full rounded-lg border border-slate-200 bg-white px-4 py-2.5 text-sm focus:ring-2 focus:ring-[#3b4bc9]/30 focus:border-[#3b4bc9] outline-none">
+                    </div>
+
+                    <!-- Hora Salida -->
+                    <div class="flex flex-col gap-1.5">
+                        <label class="text-sm font-semibold text-slate-700 flex items-center gap-2">
+                            <span class="material-symbols-outlined text-[#3b4bc9] text-lg">logout</span>
+                            Hora de Salida
+                        </label>
+                        <input type="time" id="m_salida" name="HoraSalida"
+                               class="w-full rounded-lg border border-slate-200 bg-white px-4 py-2.5 text-sm focus:ring-2 focus:ring-[#3b4bc9]/30 focus:border-[#3b4bc9] outline-none">
+                    </div>
+                </div>
+
+                <!-- Horas calculadas -->
+                <div id="m_horasInfo"
+                     class="hidden items-center gap-3 px-4 py-3 bg-[#3b4bc9]/5 border border-[#3b4bc9]/20 rounded-lg text-sm text-[#3b4bc9]">
+                    <span class="material-symbols-outlined text-lg">timer</span>
+                    <span>Total trabajado: <strong id="m_horasVal">0.00</strong> horas</span>
+                </div>
+
+                <!-- Tipo -->
+                <div class="flex flex-col gap-1.5">
+                    <label class="text-sm font-semibold text-slate-700 flex items-center gap-2">
+                        <span class="material-symbols-outlined text-[#3b4bc9] text-lg">label</span>
+                        Tipo de Asistencia
+                    </label>
+                    <select id="m_tipo" name="TipoAsistencia" required
+                            class="w-full rounded-lg border border-slate-200 bg-white px-4 py-2.5 text-sm focus:ring-2 focus:ring-[#3b4bc9]/30 focus:border-[#3b4bc9] outline-none">
+                        <option value="REGULAR">Regular</option>
+                        <option value="FERIADO">Feriado</option>
+                        <option value="EXTRA">Extra</option>
+                    </select>
+                </div>
+
+                <!-- Estado -->
+                <div class="flex flex-col gap-3">
+                    <label class="text-sm font-semibold text-slate-700">Estado de Asistencia</label>
+                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                        <label class="cursor-pointer group">
+                            <input class="peer hidden" type="radio" name="Estado" value="PRESENTE">
+                            <div class="flex flex-col items-center justify-center p-3 rounded-lg border-2 border-slate-100 bg-slate-50 peer-checked:border-emerald-500 peer-checked:bg-emerald-50 transition-all">
+                                <span class="material-symbols-outlined text-emerald-500 mb-1">check_circle</span>
+                                <span class="text-xs font-bold text-slate-600 group-hover:text-emerald-600">Presente</span>
+                            </div>
+                        </label>
+                        <label class="cursor-pointer group">
+                            <input class="peer hidden" type="radio" name="Estado" value="TARDANZA">
+                            <div class="flex flex-col items-center justify-center p-3 rounded-lg border-2 border-slate-100 bg-slate-50 peer-checked:border-amber-500 peer-checked:bg-amber-50 transition-all">
+                                <span class="material-symbols-outlined text-amber-500 mb-1">history</span>
+                                <span class="text-xs font-bold text-slate-600 group-hover:text-amber-600">Tardanza</span>
+                            </div>
+                        </label>
+                        <label class="cursor-pointer group">
+                            <input id="m_estadoAusente" class="peer hidden" type="radio" name="Estado" value="AUSENTE">
+                            <div class="flex flex-col items-center justify-center p-3 rounded-lg border-2 border-slate-100 bg-slate-50 peer-checked:border-rose-500 peer-checked:bg-rose-50 transition-all">
+                                <span class="material-symbols-outlined text-rose-500 mb-1">cancel</span>
+                                <span class="text-xs font-bold text-slate-600 group-hover:text-rose-600">Ausente</span>
+                            </div>
+                        </label>
+                        <label class="cursor-pointer group">
+                            <input class="peer hidden" type="radio" name="Estado" value="JUSTIFICADO">
+                            <div class="flex flex-col items-center justify-center p-3 rounded-lg border-2 border-slate-100 bg-slate-50 peer-checked:border-[#3b4bc9] peer-checked:bg-[#3b4bc9]/5 transition-all">
+                                <span class="material-symbols-outlined text-[#3b4bc9] mb-1">description</span>
+                                <span class="text-xs font-bold text-slate-600 group-hover:text-[#3b4bc9]">Justificado</span>
+                            </div>
+                        </label>
+                    </div>
+                    <p id="m_obsReq" class="hidden text-xs text-rose-600 flex items-center gap-1">
+                        <span class="material-symbols-outlined text-base">warning</span>
+                        Las observaciones son obligatorias cuando el empleado está ausente.
+                    </p>
+                </div>
+
+                <!-- Observaciones -->
+                <div class="flex flex-col gap-1.5">
+                    <label class="text-sm font-semibold text-slate-700 flex items-center gap-2">
+                        <span class="material-symbols-outlined text-[#3b4bc9] text-lg">chat</span>
+                        Observaciones <span class="text-xs font-normal text-slate-400 ml-1">Opcional</span>
+                    </label>
+                    <textarea id="m_obs" name="Observaciones" rows="3"
+                              placeholder="Ingrese el motivo de la tardanza o cualquier observación relevante..."
+                              class="w-full rounded-lg border border-slate-200 bg-white px-4 py-3 text-sm focus:ring-2 focus:ring-[#3b4bc9]/30 focus:border-[#3b4bc9] outline-none resize-none"></textarea>
+                </div>
+
+            </div><!-- /scroll area -->
+
+            <!-- Modal Footer -->
+            <div class="px-8 py-5 bg-slate-50 border-t border-slate-100 flex flex-col sm:flex-row gap-3 justify-end flex-shrink-0">
+                <button type="button" onclick="cerrarModal()"
+                        class="px-6 py-2.5 rounded-lg border border-slate-300 text-slate-700 font-semibold text-sm hover:bg-slate-100 transition-colors">
+                    Cancelar
+                </button>
+                <button type="submit"
+                        class="px-6 py-2.5 rounded-lg bg-[#3b4bc9] text-white font-semibold text-sm hover:bg-[#3b4bc9]/90 shadow-lg shadow-[#3b4bc9]/25 transition-all flex items-center justify-center gap-2">
+                    <span class="material-symbols-outlined text-sm">save</span>
+                    Guardar Cambios
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+<!-- ================================================================== -->
+
+<script>
+    // ——— Filtro tabla ———
+    const campoFiltro = document.getElementById('campoFiltro');
+    const valorFiltro = document.getElementById('valorFiltro');
+    if (campoFiltro && valorFiltro) {
+        [campoFiltro, valorFiltro].forEach(el => el.addEventListener(el.tagName === 'SELECT' ? 'change' : 'input', filtrarTabla));
+        function filtrarTabla() {
+            const col = parseInt(campoFiltro.value);
+            const term = valorFiltro.value.toLowerCase();
+            let vis = 0;
+            document.querySelectorAll('#tbodyAsistencias tr').forEach(row => {
+                const cell = row.querySelectorAll('td')[col];
+                const show = cell && cell.textContent.toLowerCase().includes(term);
+                row.style.display = show ? '' : 'none';
+                if (show) vis++;
+            });
+            const vc = document.getElementById('visibleCount');
+            if (vc) vc.textContent = vis;
+        }
+    }
+
+    function mostrarObservaciones(btn) {
+        alert('Observaciones:\n\n' + btn.getAttribute('data-observaciones'));
+    }
+
+    // ——— Modal ———
+    const jornadas = {
+        'COMPLETA':     { entrada: '08:00', salida: '17:00', tolerancia: '08:30' },
+        'MEDIO_MANANA': { entrada: '08:00', salida: '12:00', tolerancia: '08:30' },
+        'MEDIO_TARDE':  { entrada: '13:00', salida: '17:50', tolerancia: '13:30' },
+        'NOCTURNO':     { entrada: '22:00', salida: '06:00', tolerancia: '22:30' }
+    };
+
+    function abrirModal(btn) {
+        const d = btn.dataset;
+        // Título empleado
+        const nombres = d.nombres && d.apellidos ? `${d.apellidos}, ${d.nombres}` : `Empleado #${d.idempleado}`;
+        const initials = d.nombres && d.apellidos ? d.nombres.charAt(0) + d.apellidos.charAt(0) : 'NN';
+        document.getElementById('m_avatar').textContent = initials;
+        document.getElementById('m_nombre').textContent = nombres;
+        document.getElementById('m_id_badge').textContent = `ID: EMP-${d.idempleado}`;
+        document.getElementById('m_cargo').textContent = d.cargo ? `• ${d.cargo}` : '';
+
+        // Form action
+        document.getElementById('modalForm').action = `/asistencia/${d.id}`;
+
+        // Campos
+        document.getElementById('m_fecha').value    = d.fecha;
+        document.getElementById('m_jornada').value  = d.jornada;
+        document.getElementById('m_entrada').value  = d.entrada;
+        document.getElementById('m_salida').value   = d.salida;
+        document.getElementById('m_tipo').value     = d.tipo;
+        document.getElementById('m_obs').value      = d.observaciones;
+
+        // Estado radio
+        const radioEstado = document.querySelector(`#modalOverlay input[name="Estado"][value="${d.estado}"]`);
+        if (radioEstado) radioEstado.checked = true;
+
+        calcularHorasModal();
+        toggleAusenteModal();
+        document.getElementById('modalOverlay').classList.remove('hidden');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function cerrarModal() {
+        document.getElementById('modalOverlay').classList.add('hidden');
+        document.body.style.overflow = '';
+    }
+
+    function cerrarModalOverlay(e) {
+        if (e.target === document.getElementById('modalOverlay')) cerrarModal();
+    }
+
+    function calcularHorasModal() {
+        const e = document.getElementById('m_entrada').value;
+        const s = document.getElementById('m_salida').value;
+        const info = document.getElementById('m_horasInfo');
+        if (e && s) {
+            const [hE, mE] = e.split(':').map(Number);
+            const [hS, mS] = s.split(':').map(Number);
+            let mins = hS < hE ? (24 - hE) * 60 - mE + hS * 60 + mS : (hS - hE) * 60 + (mS - mE);
+            document.getElementById('m_horasVal').textContent = (mins / 60).toFixed(2);
+            info.classList.remove('hidden'); info.classList.add('flex');
+        } else {
+            info.classList.add('hidden'); info.classList.remove('flex');
+        }
+    }
+
+    function toggleAusenteModal() {
+        const ausente = document.getElementById('m_estadoAusente').checked;
+        const req = document.getElementById('m_obsReq');
+        const obs = document.getElementById('m_obs');
+        if (ausente) {
+            req.classList.remove('hidden'); req.classList.add('flex');
+            obs.setAttribute('required', 'required');
+        } else {
+            req.classList.add('hidden'); req.classList.remove('flex');
+            obs.removeAttribute('required');
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        const mJornada  = document.getElementById('m_jornada');
+        const mEntrada  = document.getElementById('m_entrada');
+        const mSalida   = document.getElementById('m_salida');
+
+        mJornada.addEventListener('change', function () {
+            const j = jornadas[this.value];
+            if (j) { mEntrada.value = j.entrada; mSalida.value = j.salida; }
+            calcularHorasModal();
+        });
+        mEntrada.addEventListener('change', calcularHorasModal);
+        mSalida.addEventListener('change', calcularHorasModal);
+        mEntrada.addEventListener('change', function () {
+            const j = jornadas[mJornada.value];
+            if (j) {
+                const radio = mEntrada.value <= j.tolerancia
+                    ? document.querySelector('#modalOverlay input[value="PRESENTE"]')
+                    : document.querySelector('#modalOverlay input[value="TARDANZA"]');
+                if (radio) radio.checked = true;
+            }
+        });
+
+        document.querySelectorAll('#modalOverlay input[name="Estado"]').forEach(r =>
+            r.addEventListener('change', toggleAusenteModal)
+        );
+
+        document.getElementById('modalForm').addEventListener('submit', function (e) {
+            if (document.getElementById('m_estadoAusente').checked && !document.getElementById('m_obs').value.trim()) {
+                e.preventDefault();
+                alert('Debe ingresar una observación cuando el estado es AUSENTE');
+                document.getElementById('m_obs').focus();
+                return;
+            }
+            if (!mJornada.value) {
+                e.preventDefault();
+                alert('Debe seleccionar una jornada laboral');
+                mJornada.focus();
+            }
+        });
+
+        // Cerrar con Escape
+        document.addEventListener('keydown', e => { if (e.key === 'Escape') cerrarModal(); });
+    });
+</script>
+<script src="/publico/js/layout.js?v=1772427290134"></script>
 </body>
 </html>
