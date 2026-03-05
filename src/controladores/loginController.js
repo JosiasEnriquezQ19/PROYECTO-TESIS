@@ -1,4 +1,5 @@
 const Usuario = require('../modelos/Usuario');
+const { log } = require('../middleware/auditoria');
 
 exports.mostrarLogin = (req, res) => {
     res.render('login/login', { error: null });
@@ -9,22 +10,18 @@ exports.procesarLogin = async (req, res) => {
     try {
         const usuario = await Usuario.autenticar(correo, clave);
         if (usuario) {
-            // Regenerar la sesión para evitar datos antiguos
+            await log(req, 'AUTH', 'LOGIN', `Inicio de sesion exitoso: ${correo}`);
             req.session.regenerate((err) => {
                 if (err) {
-                    console.error('Error al regenerar sesión:', err);
+                    console.error('Error al regenerar sesion:', err);
                     return res.render('login/login', { error: 'Error interno del servidor.' });
                 }
-                req.session.usuario = usuario; // Guardar usuario en la nueva sesión
+                req.session.usuario = usuario;
                 req.session.save((err) => {
                     if (err) {
-                        console.error('Error al guardar sesión:', err);
+                        console.error('Error al guardar sesion:', err);
                         return res.render('login/login', { error: 'Error interno del servidor.' });
                     }
-                    
-                    // Redirigir según el rol del usuario
-                    // IdRol 2 = Empleado -> va a marcado de asistencia
-                    // IdRol 1 (Admin) y 3 (Supervisor) -> van al dashboard
                     if (usuario.IdRol === 2) {
                         return res.redirect('/asistencia/marcar');
                     } else {
@@ -33,7 +30,8 @@ exports.procesarLogin = async (req, res) => {
                 });
             });
         } else {
-            res.render('login/login', { error: 'Correo o contraseña incorrectos.' });
+            await log(req, 'AUTH', 'LOGIN_FALLIDO', `Intento de acceso fallido: ${correo}`);
+            res.render('login/login', { error: 'Correo o contrasena incorrectos.' });
         }
     } catch (error) {
         console.error('Error en el login:', error);
@@ -41,12 +39,13 @@ exports.procesarLogin = async (req, res) => {
     }
 };
 
-exports.cerrarSesion = (req, res) => {
+exports.cerrarSesion = async (req, res) => {
+    await log(req, 'AUTH', 'LOGOUT', `Cierre de sesion: ${req.session.usuario ? req.session.usuario.Correo : 'desconocido'}`);
     req.session.destroy((err) => {
         if (err) {
-            console.error('Error al cerrar sesión:', err);
+            console.error('Error al cerrar sesion:', err);
         }
-        res.clearCookie('connect.sid'); // Limpiar cookie de sesión
-        res.redirect('/login'); // Redirigir al login
+        res.clearCookie('connect.sid');
+        res.redirect('/login');
     });
 };

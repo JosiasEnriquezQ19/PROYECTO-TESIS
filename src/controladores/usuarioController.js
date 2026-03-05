@@ -1,8 +1,8 @@
 const Usuario = require('../modelos/Usuario');
+const { log } = require('../middleware/auditoria');
 
 exports.listarUsuarios = async (req, res) => {
     try {
-        //console.log('Entrando a listarUsuarios');
         const usuarios = await Usuario.listar();
         const roles = await Usuario.obtenerRoles();
         res.render('usuarios/listar', {
@@ -20,11 +20,11 @@ exports.listarUsuarios = async (req, res) => {
 
 exports.mostrarFormularioCrear = async (req, res) => {
     try {
-        const roles = await Usuario.obtenerRoles(); // Obtener los roles desde el modelo
+        const roles = await Usuario.obtenerRoles();
         res.render('usuarios/crear', { roles, success: req.flash('success'), error: req.flash('error') });
     } catch (error) {
         console.error('Error en mostrarFormularioCrear:', error);
-        req.flash('error', 'Error al cargar el formulario de creación');
+        req.flash('error', 'Error al cargar el formulario de creacion');
         res.redirect('/usuarios');
     }
 };
@@ -32,6 +32,7 @@ exports.mostrarFormularioCrear = async (req, res) => {
 exports.crearUsuario = async (req, res) => {
     try {
         const usuarioId = await Usuario.crear(req.body);
+        await log(req, 'USUARIOS', 'CREAR', `Creo el usuario: ${req.body.Nombres} ${req.body.Apellidos} (${req.body.Correo})`);
         req.flash('success', 'Usuario creado exitosamente');
         res.redirect('/usuarios');
     } catch (error) {
@@ -53,8 +54,8 @@ exports.mostrarFormularioEditar = async (req, res) => {
         res.render('usuarios/editar', {
             usuario,
             roles,
-            error: req.flash('error'), // Asegúrate de enviar esto
-            success: req.flash('success') // Si usas mensajes de éxito
+            error: req.flash('error'),
+            success: req.flash('success')
         });
     } catch (error) {
         req.flash('error', 'Error al cargar el usuario');
@@ -66,35 +67,23 @@ exports.actualizarUsuario = async (req, res) => {
     try {
         const datosActualizacion = { ...req.body };
 
-        // Limpiar y validar campos de contraseña
         const clave = datosActualizacion.Clave ? datosActualizacion.Clave.trim() : '';
         const confirmarClave = datosActualizacion.ConfirmarClave ? datosActualizacion.ConfirmarClave.trim() : '';
 
-        // Siempre eliminar los campos de confirmación
         delete datosActualizacion.ConfirmarClave;
 
-        // Manejo de la contraseña
         if (clave === '' && confirmarClave === '') {
-            // Ambos campos vacíos = no cambiar contraseña
             delete datosActualizacion.Clave;
-            console.log('Contraseña no se cambiará - campos vacíos');
         } else if (clave !== '' && confirmarClave !== '') {
-            // Ambos campos llenos = cambiar contraseña
-            if (clave !== confirmarClave) {
-                throw new Error('Las contraseñas no coinciden');
-            }
-            if (clave.length < 6) {
-                throw new Error('La contraseña debe tener al menos 6 caracteres');
-            }
-            // Mantener la nueva contraseña en datosActualizacion
+            if (clave !== confirmarClave) throw new Error('Las contrasenas no coinciden');
+            if (clave.length < 6) throw new Error('La contrasena debe tener al menos 6 caracteres');
             datosActualizacion.Clave = clave;
-            console.log('Contraseña se cambiará');
         } else {
-            // Un campo lleno y otro vacío = error
-            throw new Error('Si desea cambiar la contraseña, debe completar ambos campos');
+            throw new Error('Si desea cambiar la contrasena, debe completar ambos campos');
         }
 
         await Usuario.actualizar(req.params.id, datosActualizacion);
+        await log(req, 'USUARIOS', 'ACTUALIZAR', `Actualizo el usuario ID ${req.params.id}: ${datosActualizacion.Nombres || ''} ${datosActualizacion.Apellidos || ''}`);
         req.flash('success', 'Usuario actualizado exitosamente');
         res.redirect('/usuarios');
     } catch (error) {
@@ -119,7 +108,9 @@ exports.actualizarUsuario = async (req, res) => {
 
 exports.eliminarUsuario = async (req, res) => {
     try {
+        const usuario = await Usuario.obtenerPorId(req.params.id);
         await Usuario.eliminar(req.params.id);
+        await log(req, 'USUARIOS', 'ELIMINAR', `Inactivo el usuario ID ${req.params.id}: ${usuario ? usuario.Nombres + ' ' + usuario.Apellidos : ''}`);
         req.flash('success', 'Usuario inactivado exitosamente');
         res.redirect('/usuarios');
     } catch (error) {

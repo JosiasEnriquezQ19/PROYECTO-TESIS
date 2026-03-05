@@ -84,6 +84,10 @@ app.use('/roles', notificacionMiddleware('roles'), rolRoutes);
 app.use('/reportes', reporteRoutes);
 app.use('/pagos', notificacionMiddleware('pagos'), require('./src/rutas/pagoRoutes'));
 
+// Bitacora de auditoria (solo admin)
+const auditoriaRoutes = require('./src/rutas/auditoriaRoutes');
+app.use('/', auditoriaRoutes);
+
 const PORT = process.env.PORT || 3000;
 console.log('Starting server on port:', PORT);
 app.listen(PORT, () => {

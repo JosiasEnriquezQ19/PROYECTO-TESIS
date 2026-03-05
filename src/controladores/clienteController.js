@@ -1,4 +1,5 @@
 const Cliente = require('../modelos/Cliente');
+const { log } = require('../middleware/auditoria');
 
 // Listar todos los clientes
 exports.listarClientes = async (req, res) => {
@@ -68,6 +69,7 @@ exports.crearCliente = async (req, res) => {
         };
 
         await Cliente.crear(clienteData);
+        await log(req, 'CLIENTES', 'CREAR', `Creo el cliente: ${clienteData.RazonSocial} (Doc: ${clienteData.Documento})`);
         res.redirect('/clientes?success=Cliente creado exitosamente');
     } catch (error) {
         console.error('Error al crear cliente:', error);
@@ -92,6 +94,7 @@ exports.actualizarCliente = async (req, res) => {
     const { Documento, RazonSocial, Direccion, Telefono, Celular, Email, Contacto } = req.body;
     try {
         await Cliente.actualizar(id, { Documento, RazonSocial, Direccion, Telefono, Celular, Email, Contacto });
+        await log(req, 'CLIENTES', 'ACTUALIZAR', `Actualizo el cliente ID ${id}: ${RazonSocial}`);
         res.redirect('/clientes');
     } catch (error) {
         console.error('Error al actualizar cliente:', error);
@@ -103,6 +106,7 @@ exports.actualizarCliente = async (req, res) => {
 exports.eliminarCliente = async (req, res) => {
     try {
         await Cliente.eliminar(req.params.id);
+        await log(req, 'CLIENTES', 'ELIMINAR', `Inactivo el cliente ID ${req.params.id}`);
         res.redirect('/clientes');
     } catch (error) {
         console.error('Error al inactivar cliente:', error);

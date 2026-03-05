@@ -64,7 +64,8 @@ exports.tienePermiso = (usuario, modulo) => {
             reportes: true,
             usuarios: true,
             asistencias: true,
-            empresa: true
+            empresa: true,
+            auditoria: true
         },
         // Empleado (IdRol = 2) - Solo acceso a marcado de asistencia
         2: {
@@ -77,7 +78,8 @@ exports.tienePermiso = (usuario, modulo) => {
             reportes: false,
             usuarios: false,
             asistencias: false,  // No acceso a gestión de asistencias
-            empresa: false
+            empresa: false,
+            auditoria: false
         },
         // Supervisor (IdRol = 3) - Acceso limitado
         3: {
@@ -90,7 +92,8 @@ exports.tienePermiso = (usuario, modulo) => {
             reportes: true,
             usuarios: false,  // NO acceso
             asistencias: true,
-            empresa: false    // NO acceso
+            empresa: false,   // NO acceso
+            auditoria: false
         }
     };
 

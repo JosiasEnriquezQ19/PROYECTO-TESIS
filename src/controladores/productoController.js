@@ -1,4 +1,5 @@
 const Producto = require('../modelos/Producto');
+const { log } = require('../middleware/auditoria');
 
 // Listar todos los productos
 exports.listarProductos = async (req, res) => {
@@ -64,6 +65,7 @@ exports.crearProducto = async (req, res) => {
             PrecioUnitario: req.body.PrecioUnitario || 0
         };
         await Producto.crear(productoData);
+        await log(req, 'PRODUCTOS', 'CREAR', `Creo el producto: ${productoData.Nombre} (Cod: ${productoData.Codigo}, Precio: S/ ${productoData.PrecioUnitario})`);
         res.redirect('/productos?success=Producto creado exitosamente');
     } catch (error) {
         console.error('Error al crear producto:', error);
@@ -112,6 +114,7 @@ exports.actualizarProducto = async (req, res) => {
             PrecioUnitario: req.body.PrecioUnitario || 0
         };
         await Producto.actualizar(req.params.id, productoData);
+        await log(req, 'PRODUCTOS', 'ACTUALIZAR', `Actualizo el producto ID ${req.params.id}: ${productoData.Nombre} (Precio: S/ ${productoData.PrecioUnitario})`);
         res.redirect('/productos?success=Producto actualizado exitosamente');
     } catch (error) {
         console.error('Error al actualizar producto:', error);
@@ -123,6 +126,7 @@ exports.actualizarProducto = async (req, res) => {
 exports.eliminarProducto = async (req, res) => {
     try {
         await Producto.eliminar(req.params.id);
+        await log(req, 'PRODUCTOS', 'ELIMINAR', `Inactivo el producto ID ${req.params.id}`);
         res.redirect('/productos?success=Producto inactivado exitosamente');
     } catch (error) {
         console.error('Error al inactivar producto:', error);

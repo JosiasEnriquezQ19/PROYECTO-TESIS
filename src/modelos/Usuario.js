@@ -1,52 +1,37 @@
 const db = require('../bd/conexion');
 const conexion = require('../bd/conexion');
+const bcrypt = require('bcrypt');
+const SALT_ROUNDS = 12;
 
 class Usuario {
     static async crear(usuarioData) {
         try {
-            // Validar campos obligatorios
             if (!usuarioData.Nombres || !usuarioData.Apellidos || !usuarioData.NumeroDocumento ||
                 !usuarioData.Correo || !usuarioData.Clave || !usuarioData.IdRol) {
                 throw new Error('Todos los campos obligatorios deben ser completados');
             }
 
-            // Verificar documento único
             const [docExistente] = await db.query('SELECT IdUsuario FROM USUARIO WHERE NumeroDocumento = ?', [usuarioData.NumeroDocumento]);
-            if (docExistente.length > 0) {
-                throw new Error('El número de documento ya está registrado');
-            }
+            if (docExistente.length > 0) throw new Error('El numero de documento ya esta registrado');
 
-            // Verificar correo único
             const [emailExistente] = await db.query('SELECT IdUsuario FROM USUARIO WHERE Correo = ?', [usuarioData.Correo]);
-            if (emailExistente.length > 0) {
-                throw new Error('El correo electrónico ya está registrado');
-            }
+            if (emailExistente.length > 0) throw new Error('El correo electronico ya esta registrado');
 
-            // Validar formato de correo
             const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            if (!emailRegex.test(usuarioData.Correo)) {
-                throw new Error('El formato del correo electrónico no es válido');
-            }
+            if (!emailRegex.test(usuarioData.Correo)) throw new Error('El formato del correo electronico no es valido');
 
-            // Verificar rol existente
             const [rolExistente] = await db.query('SELECT IdRol FROM ROL WHERE IdRol = ?', [usuarioData.IdRol]);
-            if (rolExistente.length === 0) {
-                throw new Error('El rol seleccionado no existe');
-            }
+            if (rolExistente.length === 0) throw new Error('El rol seleccionado no existe');
 
-            // Eliminar ConfirmarClave si existe
-            if ('ConfirmarClave' in usuarioData) {
-                delete usuarioData.ConfirmarClave;
-            }
+            if ('ConfirmarClave' in usuarioData) delete usuarioData.ConfirmarClave;
 
-            // Guardar la contraseña tal cual, sin hashear
-            const [result] = await db.query(
-                'INSERT INTO USUARIO SET ?',
-                {
-                    ...usuarioData,
-                    FechaRegistro: new Date()
-                }
-            );
+            // Hashear contrasena con bcrypt
+            usuarioData.Clave = await bcrypt.hash(usuarioData.Clave, SALT_ROUNDS);
+
+            const [result] = await db.query('INSERT INTO USUARIO SET ?', {
+                ...usuarioData,
+                FechaRegistro: new Date()
+            });
 
             return result.insertId;
         } catch (error) {
@@ -56,7 +41,7 @@ class Usuario {
 
     static async listar() {
         const [usuarios] = await db.query(`
-            SELECT u.*, r.Descripcion as Rol 
+            SELECT u.*, r.Descripcion as Rol
             FROM USUARIO u
             JOIN ROL r ON u.IdRol = r.IdRol
             ORDER BY u.FechaRegistro DESC
@@ -71,19 +56,14 @@ class Usuario {
 
     static async actualizar(id, usuarioData) {
         try {
-            // Eliminar ConfirmarClave si existe
-            if ('ConfirmarClave' in usuarioData) {
-                delete usuarioData.ConfirmarClave;
-            }
+            if ('ConfirmarClave' in usuarioData) delete usuarioData.ConfirmarClave;
 
-            // Validar que no se esté intentando actualizar con una contraseña vacía
-            if (usuarioData.hasOwnProperty('Clave') &&
-                (!usuarioData.Clave || usuarioData.Clave.trim() === '')) {
+            if (usuarioData.hasOwnProperty('Clave') && (!usuarioData.Clave || usuarioData.Clave.trim() === '')) {
                 delete usuarioData.Clave;
-                console.log('Contraseña vacía detectada en modelo - eliminada del update');
+            } else if (usuarioData.hasOwnProperty('Clave') && usuarioData.Clave.trim() !== '') {
+                // Hashear la nueva contrasena antes de guardar
+                usuarioData.Clave = await bcrypt.hash(usuarioData.Clave.trim(), SALT_ROUNDS);
             }
-
-            console.log('Datos que se actualizarán:', Object.keys(usuarioData));
 
             await db.query('UPDATE USUARIO SET ? WHERE IdUsuario = ?', [usuarioData, id]);
             return true;
@@ -106,13 +86,11 @@ class Usuario {
         }
     }
 
-    // Obtener todos los usuarios activos
     static async getAllActive() {
         try {
             const [rows] = await db.query(`
-                SELECT IdUsuario, Nombres, Apellidos, Correo 
-                FROM USUARIO 
-                WHERE Estado = 1
+                SELECT IdUsuario, Nombres, Apellidos, Correo
+                FROM USUARIO WHERE Estado = 1
                 ORDER BY Apellidos, Nombres
             `);
             return rows;
@@ -121,31 +99,43 @@ class Usuario {
         }
     }
 
-    // Obtener todos los usuarios
     static async getAll() {
         try {
-            const [rows] = await db.query(`
-                SELECT * FROM USUARIO
-                ORDER BY Apellidos, Nombres
-            `);
+            const [rows] = await db.query('SELECT * FROM USUARIO ORDER BY Apellidos, Nombres');
             return rows;
         } catch (error) {
             throw error;
         }
     }
 
+    /**
+     * Autenticacion con soporte de migracion automatica:
+     * - Si la contrasena almacenada es un hash bcrypt ($2b$), usa bcrypt.compare
+     * - Si es texto plano (contrasenas antiguas), compara directamente y actualiza el hash
+     */
     static async autenticar(correo, clave) {
         try {
             const sql = 'SELECT * FROM USUARIO WHERE Correo = ? AND Estado = 1';
             const [resultados] = await conexion.query(sql, [correo]);
-            if (resultados.length > 0) {
-                const usuario = resultados[0];
-                // Comparar directamente la contraseña ingresada con la almacenada
-                if (usuario.Clave === clave) {
-                    return usuario; // Usuario autenticado
+            if (resultados.length === 0) return null;
+
+            const usuario = resultados[0];
+            const claveAlmacenada = usuario.Clave;
+
+            // Detectar si ya es bcrypt hash
+            if (claveAlmacenada.startsWith('$2b$') || claveAlmacenada.startsWith('$2a$')) {
+                const valido = await bcrypt.compare(clave, claveAlmacenada);
+                return valido ? usuario : null;
+            } else {
+                // Contrasena en texto plano (usuario antiguo): comparar y migrar automaticamente
+                if (claveAlmacenada === clave) {
+                    const nuevoHash = await bcrypt.hash(clave, SALT_ROUNDS);
+                    await conexion.query('UPDATE USUARIO SET Clave = ? WHERE IdUsuario = ?', [nuevoHash, usuario.IdUsuario]);
+                    console.log(`[Seguridad] Contrasena del usuario ${usuario.IdUsuario} migrada a bcrypt.`);
+                    return usuario;
                 }
+                return null;
             }
-            return null; // Usuario no encontrado o contraseña incorrecta
         } catch (error) {
             throw error;
         }

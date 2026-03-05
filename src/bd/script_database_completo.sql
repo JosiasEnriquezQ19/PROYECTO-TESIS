@@ -326,6 +326,29 @@ CREATE TABLE notificaciones (
 -- Índices adicionales para rendimiento
 CREATE INDEX idx_empleado_estado ON EMPLEADO(Estado);
 
+
+
+
+--tabla para auditoria
+
+CREATE TABLE IF NOT EXISTS AUDITORIA (
+    IdAuditoria  INT           PRIMARY KEY AUTO_INCREMENT,
+    IdUsuario    INT           NULL,
+    NombreUsuario VARCHAR(120) NOT NULL DEFAULT 'Sistema',
+    Modulo       VARCHAR(50)  NOT NULL,
+    Accion       VARCHAR(30)  NOT NULL,   -- CREAR | ACTUALIZAR | ELIMINAR | LOGIN | LOGOUT | ERROR
+    Descripcion  TEXT         NULL,
+    IP           VARCHAR(50)  NULL,
+    FechaHora    DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (IdUsuario) REFERENCES USUARIO(IdUsuario) ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- Indices para acelerar consultas del dashboard y reportes
+ALTER TABLE AUDITORIA ADD INDEX idx_auditoria_fecha   (FechaHora);
+ALTER TABLE AUDITORIA ADD INDEX idx_auditoria_modulo  (Modulo);
+ALTER TABLE AUDITORIA ADD INDEX idx_auditoria_usuario (IdUsuario);
+
+
 -- =============================================
 -- 2. INSERCIÓN DE DATOS (10 registros por tabla)
 -- =============================================
@@ -584,6 +607,22 @@ INSERT INTO notificaciones (Tipo, Modulo, Mensaje, Detalle, Usuario, Leida) VALU
 ('ELIMINAR', 'clientes', 'Se desactivó un cliente', 'Cliente: Universidad Nacional de Ingenieria', 'Ana Lucia Martinez Rios', 0),
 ('CREAR', 'contratos', 'Se creó un nuevo contrato', 'Contrato: CON-2025-001 con Constructora Los Andes', 'Juan Carlos Perez Lopez', 0),
 ('ACTUALIZAR', 'empleados', 'Se actualizó información de empleado', 'Empleado: Pedro Antonio Rodriguez Silva - Cambio de área', 'Ana Lucia Martinez Rios', 0);
+
+
+--Insertar registros para auditoría (10 registros)
+insert into auditoria (Usuario, Accion, Tabla, Detalle) values
+('Juan Carlos Perez Lopez', 'INSERT', 'CLIENTE', 'Se registró el cliente Constructora Los Andes S.A.C.'),
+('Juan Carlos Perez Lopez', 'INSERT', 'PROFORMA', 'Se creó la proforma PRO-2025-001 por S/ 2,419.00'),
+('Juan Carlos Perez Lopez', 'UPDATE', 'PROFORMA', 'Proforma PRO-2025-001 cambió a APROBADA'),
+('Juan Carlos Perez Lopez', 'INSERT', 'FACTURA', 'Se generó la factura FAC-2025-001 por S/ 2,419.00'),
+('Juan Carlos Perez Lopez', 'INSERT', 'PRODUCTO', 'Se registró el producto Bomba Sumergible 1HP'),
+('Juan Carlos Perez Lopez', 'UPDATE', 'FACTURA', 'Factura FAC-2025-001 cambió a PAGADA'),
+('Juan Carlos Perez Lopez', 'INSERT', 'EMPLEADO', 'Se registró el empleado Maria Elena Garcia Torres'),
+('Ana Lucia Martinez Rios', 'DELETE', 'CLIENTE', 'Se desactivó el cliente Universidad Nacional de Ingenieria'),
+('Juan Carlos Perez Lopez', 'INSERT', 'CONTRATO', 'Se creó el contrato CON-2025-001 con Constructora Los Andes'),
+('Ana Lucia Martinez Rios', 'UPDATE', 'EMPLEADO', 'Empleado Pedro Antonio Rodriguez Silva - Cambio de área');
+
+
 
 -- =============================================
 -- 3. PROCEDIMIENTOS ALMACENADOS

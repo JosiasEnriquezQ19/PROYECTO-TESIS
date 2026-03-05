@@ -1,4 +1,6 @@
 const db = require('../bd/conexion');
+const bcrypt = require('bcrypt');
+const SALT_ROUNDS = 12;
 
 // Busca usuario por correo y que esté activo
 exports.buscarPorCorreo = async (correo) => {
@@ -13,9 +15,10 @@ exports.buscarPorCorreo = async (correo) => {
 // Actualiza la clave del usuario
 exports.actualizarClave = async (usuarioId, nuevaClave) => {
     try {
+        const claveHasheada = await bcrypt.hash(nuevaClave, SALT_ROUNDS);
         const [result] = await db.query(
             'UPDATE USUARIO SET Clave = ? WHERE IdUsuario = ?',
-            [nuevaClave, usuarioId]
+            [claveHasheada, usuarioId]
         );
         return result.affectedRows;
     } catch (error) {
