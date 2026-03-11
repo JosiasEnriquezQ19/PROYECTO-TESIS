@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alertas de Stock - CARSIL Equipos y Servicios SAC</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: { "primary": "#3b4bc9", "background-light": "#f6f6f8" },
+                    fontFamily: { "display": ["Inter", "sans-serif"] },
+                    borderRadius: { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" },
+                },
+            },
+        }
+    </script>
+    <link rel="stylesheet" href="/publico/css/layout.css">
+    <script src="/publico/js/paginacion.js"></script>
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        .main-content { padding: 0 !important; background: #f6f6f8; }
+    </style>
+</head>
+<body class="bg-[#f6f6f8] text-slate-900 font-display">
+<div class="wrapper">
+    <%- include("../parciales/sidebar") %>
+
+    <div class="main-content" id="main-content">
+        <div class="p-8">
+
+            <!-- Page Title -->
+            <div class="mb-8 flex items-start justify-between">
+                <div>
+                    <div class="flex items-center gap-3 mb-2">
+                        <a href="/productos" class="text-slate-400 hover:text-slate-600 text-sm flex items-center gap-1" style="text-decoration:none;">
+                            <i class="bi bi-box"></i> Productos
+                        </a>
+                        <i class="bi bi-chevron-right text-slate-300 text-xs"></i>
+                        <span class="text-sm text-slate-600 font-medium">Alertas de Stock</span>
+                    </div>
+                    <h2 class="text-2xl font-bold text-slate-900 mb-2 flex items-center gap-2">
+                        <span class="inline-flex items-center justify-center w-9 h-9 rounded-xl bg-amber-100 text-amber-600">
+                            <i class="bi bi-exclamation-triangle-fill"></i>
+                        </span>
+                        Alertas de Stock Mínimo
+                    </h2>
+                    <p class="text-slate-500">Productos que requieren reposición urgente.</p>
+                </div>
+                <a href="/productos" class="flex items-center gap-2 px-4 py-2 bg-white border border-slate-200 rounded-xl text-slate-600 text-sm font-medium hover:bg-slate-50 transition-colors" style="text-decoration:none;">
+                    <i class="bi bi-arrow-left"></i> Volver a Productos
+                </a>
+            </div>
+
+            <!-- Flash Messages -->
+            <% if (typeof success !== 'undefined' && success) { %>
+            <div class="mb-6 flex items-center gap-3 bg-emerald-50 border border-emerald-200 text-emerald-800 px-4 py-3 rounded-xl text-sm">
+                <span class="material-symbols-outlined text-emerald-500">check_circle</span>
+                <span><%= success %></span>
+            </div>
+            <% } %>
+            <% if (typeof error !== 'undefined' && error) { %>
+            <div class="mb-6 flex items-center gap-3 bg-rose-50 border border-rose-200 text-rose-800 px-4 py-3 rounded-xl text-sm">
+                <span class="material-symbols-outlined text-rose-500">error</span>
+                <span><%= error %></span>
+            </div>
+            <% } %>
+
+            <%
+                const sinStock     = productos ? productos.filter(p => p.Stock === 0) : [];
+                const criticos     = productos ? productos.filter(p => p.Stock > 0 && p.Stock <= Math.ceil(p.StockMinimo / 2)) : [];
+                const bajos        = productos ? productos.filter(p => p.Stock > 0 && p.Stock > Math.ceil(p.StockMinimo / 2)) : [];
+            %>
+
+            <!-- Stats Cards -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 mb-8">
+                <div class="bg-white p-5 rounded-xl border border-slate-100 shadow-sm border-t-4 border-t-amber-500">
+                    <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Total Alertas</p>
+                    <p class="text-3xl font-bold text-amber-600"><%= productos ? productos.length : 0 %></p>
+                    <p class="text-xs text-slate-400 mt-1">Productos por reponer</p>
+                </div>
+                <div class="bg-white p-5 rounded-xl border border-slate-100 shadow-sm border-t-4 border-t-rose-500">
+                    <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Sin Stock</p>
+                    <p class="text-3xl font-bold text-rose-600"><%= sinStock.length %></p>
+                    <p class="text-xs text-slate-400 mt-1">Stock = 0</p>
+                </div>
+                <div class="bg-white p-5 rounded-xl border border-slate-100 shadow-sm border-t-4 border-t-orange-500">
+                    <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Críticos</p>
+                    <p class="text-3xl font-bold text-orange-600"><%= criticos.length %></p>
+                    <p class="text-xs text-slate-400 mt-1">Stock ≤ 50% del mínimo</p>
+                </div>
+                <div class="bg-white p-5 rounded-xl border border-slate-100 shadow-sm border-t-4 border-t-yellow-500">
+                    <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Stock Bajo</p>
+                    <p class="text-3xl font-bold text-yellow-600"><%= bajos.length %></p>
+                    <p class="text-xs text-slate-400 mt-1">Por debajo del mínimo</p>
+                </div>
+            </div>
+
+            <!-- Legend Bar -->
+            <div class="flex items-center gap-6 mb-5 px-1">
+                <div class="flex items-center gap-2 text-xs text-slate-500">
+                    <span class="inline-block w-3 h-3 rounded-full bg-rose-500"></span>
+                    Sin Stock (0 unidades)
+                </div>
+                <div class="flex items-center gap-2 text-xs text-slate-500">
+                    <span class="inline-block w-3 h-3 rounded-full bg-orange-500"></span>
+                    Crítico (≤ 50% del mínimo)
+                </div>
+                <div class="flex items-center gap-2 text-xs text-slate-500">
+                    <span class="inline-block w-3 h-3 rounded-full bg-yellow-400"></span>
+                    Bajo (≤ mínimo)
+                </div>
+            </div>
+
+            <!-- Filter/Search Bar -->
+            <div class="bg-white border border-slate-200 rounded-xl px-5 py-4 mb-5 flex flex-wrap items-center gap-3">
+                <div class="flex items-center gap-2 flex-1 min-w-[200px]">
+                    <i class="bi bi-search text-slate-400 text-sm"></i>
+                    <input type="text" id="searchInput" placeholder="Buscar producto..."
+                        class="bg-transparent outline-none text-sm text-slate-700 w-full placeholder-slate-400"
+                        oninput="filtrarAlertas(this.value)">
+                </div>
+                <div class="flex items-center gap-2">
+                    <label class="text-xs text-slate-500 font-medium">Filtrar:</label>
+                    <select id="filterTipo" onchange="filtrarPorTipo(this.value)"
+                        class="text-xs border border-slate-200 rounded-lg px-3 py-1.5 bg-white text-slate-600 outline-none focus:border-[#3b4bc9]">
+                        <option value="">Todos</option>
+                        <option value="sin-stock">Sin Stock</option>
+                        <option value="critico">Críticos</option>
+                        <option value="bajo">Bajos</option>
+                    </select>
+                </div>
+                <span class="text-xs text-slate-400" id="pagAInfoLabel">
+                    Mostrando <span id="pagAlertasInfo">-</span> de <span id="pagAlertasTotal">-</span>
+                </span>
+            </div>
+
+            <!-- Alerts Table -->
+            <% if (productos && productos.length > 0) { %>
+            <div class="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm">
+                <table class="w-full">
+                    <thead>
+                        <tr class="border-b border-slate-100">
+                            <th class="text-left text-xs font-semibold text-slate-400 uppercase tracking-wider px-6 py-3">Producto</th>
+                            <th class="text-left text-xs font-semibold text-slate-400 uppercase tracking-wider px-4 py-3">Código</th>
+                            <th class="text-left text-xs font-semibold text-slate-400 uppercase tracking-wider px-4 py-3">Tipo</th>
+                            <th class="text-center text-xs font-semibold text-slate-400 uppercase tracking-wider px-4 py-3">Stock Actual</th>
+                            <th class="text-center text-xs font-semibold text-slate-400 uppercase tracking-wider px-4 py-3">Stock Mínimo</th>
+                            <th class="text-center text-xs font-semibold text-slate-400 uppercase tracking-wider px-4 py-3">Estado</th>
+                            <th class="text-left text-xs font-semibold text-slate-400 uppercase tracking-wider px-4 py-3">Precio</th>
+                            <th class="text-center text-xs font-semibold text-slate-400 uppercase tracking-wider px-4 py-3">Acción</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbodyAlertas">
+                        <% productos.forEach(function(p) {
+                            let estadoTipo = 'bajo';
+                            if (p.Stock === 0) estadoTipo = 'sin-stock';
+                            else if (p.Stock <= Math.ceil(p.StockMinimo / 2)) estadoTipo = 'critico';
+                        %>
+                        <tr class="border-b border-slate-50 hover:bg-slate-50 transition-colors" data-tipo="<%= estadoTipo %>">
+                            <td class="px-6 py-4">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0
+                                        <%= p.Stock === 0 ? 'bg-rose-50' : (p.Stock <= Math.ceil(p.StockMinimo / 2) ? 'bg-orange-50' : 'bg-yellow-50') %>">
+                                        <i class="bi bi-box-seam text-sm
+                                            <%= p.Stock === 0 ? 'text-rose-500' : (p.Stock <= Math.ceil(p.StockMinimo / 2) ? 'text-orange-500' : 'text-yellow-500') %>"></i>
+                                    </div>
+                                    <div>
+                                        <p class="text-sm font-semibold text-slate-800"><%= p.Nombre %></p>
+                                        <% if (p.Marca || p.Modelo) { %>
+                                        <p class="text-xs text-slate-400"><%= [p.Marca, p.Modelo].filter(Boolean).join(' · ') %></p>
+                                        <% } %>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="px-4 py-4">
+                                <code class="text-xs bg-slate-100 px-2 py-1 rounded-lg text-slate-600"><%= p.Codigo %></code>
+                            </td>
+                            <td class="px-4 py-4">
+                                <span class="text-sm text-slate-500"><%= p.Tipo || '—' %></span>
+                            </td>
+                            <td class="px-4 py-4 text-center">
+                                <% if (p.Stock === 0) { %>
+                                    <span class="inline-flex items-center gap-1 text-sm font-bold text-rose-600">
+                                        <i class="bi bi-x-circle-fill text-xs"></i> 0
+                                    </span>
+                                <% } else { %>
+                                    <span class="text-sm font-bold <%= p.Stock <= Math.ceil(p.StockMinimo / 2) ? 'text-orange-600' : 'text-yellow-600' %>">
+                                        <%= p.Stock %>
+                                    </span>
+                                <% } %>
+                                <span class="text-xs text-slate-400 ml-1"><%= p.UnidadMedida || 'UNID' %></span>
+                            </td>
+                            <td class="px-4 py-4 text-center text-sm text-slate-500">
+                                <%= p.StockMinimo %> <span class="text-xs"><%= p.UnidadMedida || 'UNID' %></span>
+                            </td>
+                            <td class="px-4 py-4 text-center">
+                                <% if (p.Stock === 0) { %>
+                                    <span class="inline-flex items-center gap-1 text-xs font-semibold px-2.5 py-1 rounded-full bg-rose-100 text-rose-700">
+                                        <i class="bi bi-x-circle"></i> Sin Stock
+                                    </span>
+                                <% } else if (p.Stock <= Math.ceil(p.StockMinimo / 2)) { %>
+                                    <span class="inline-flex items-center gap-1 text-xs font-semibold px-2.5 py-1 rounded-full bg-orange-100 text-orange-700">
+                                        <i class="bi bi-exclamation-circle"></i> Crítico
+                                    </span>
+                                <% } else { %>
+                                    <span class="inline-flex items-center gap-1 text-xs font-semibold px-2.5 py-1 rounded-full bg-yellow-100 text-yellow-700">
+                                        <i class="bi bi-exclamation-triangle"></i> Bajo
+                                    </span>
+                                <% } %>
+                            </td>
+                            <td class="px-4 py-4 text-sm text-slate-700 font-medium">
+                                S/ <%= Number(p.PrecioUnitario).toLocaleString('es-PE', { minimumFractionDigits: 2 }) %>
+                            </td>
+                            <td class="px-4 py-4 text-center">
+                                <a href="/productos/editar/<%= p.IdProducto %>"
+                                    class="inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-lg bg-[#3b4bc9] text-white hover:bg-[#2d3ab0] transition-colors"
+                                    style="text-decoration:none;">
+                                    <i class="bi bi-pencil-square"></i> Reponer
+                                </a>
+                            </td>
+                        </tr>
+                        <% }); %>
+                    </tbody>
+                </table>
+
+                <!-- Pagination Footer -->
+                <div class="flex items-center justify-between px-6 py-4 border-t border-slate-100 bg-slate-50">
+                    <span class="text-xs text-slate-500">
+                        Mostrando <span id="pagAlertasInfo">-</span> de <span id="pagAlertasTotal">-</span> alertas — <span id="pagAlertasPage">Página 1 de 1</span>
+                    </span>
+                    <div class="flex items-center gap-2">
+                        <button id="pagAlertasPrev" onclick="pagAlertas.prev()"
+                            class="flex items-center gap-1 px-3 py-1.5 text-xs font-medium border border-slate-200 rounded-lg hover:bg-white transition-colors text-slate-500 disabled:opacity-40">
+                            <i class="bi bi-chevron-left"></i> Anterior
+                        </button>
+                        <button id="pagAlertasNext" onclick="pagAlertas.next()"
+                            class="flex items-center gap-1 px-3 py-1.5 text-xs font-medium border border-slate-200 rounded-lg hover:bg-white transition-colors text-slate-500 disabled:opacity-40">
+                            Siguiente <i class="bi bi-chevron-right"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <% } else { %>
+            <!-- Empty State -->
+            <div class="bg-white border border-slate-200 rounded-xl p-16 text-center">
+                <div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-emerald-50 mb-4">
+                    <i class="bi bi-shield-check text-2xl text-emerald-500"></i>
+                </div>
+                <h3 class="text-lg font-bold text-slate-800 mb-2">¡Todo en orden!</h3>
+                <p class="text-slate-500 text-sm mb-6">No hay productos con stock por debajo del mínimo configurado.</p>
+                <a href="/productos" class="inline-flex items-center gap-2 px-5 py-2.5 bg-[#3b4bc9] text-white rounded-xl text-sm font-semibold hover:bg-[#2d3ab0] transition-colors" style="text-decoration:none;">
+                    <i class="bi bi-box"></i> Ver Productos
+                </a>
+            </div>
+            <% } %>
+
+        </div>
+    </div>
+</div>
+
+<script src="/publico/js/layout.js"></script>
+<script>
+    // Pagination instance (20 rows per page)
+    // Prefix auto-derived: tbodyAlertas → pagAlertas
+    // IDs used: pagAlertasInfo, pagAlertasTotal, pagAlertasPage, pagAlertasPrev, pagAlertasNext
+    const pagAlertas = new TablePagination('tbodyAlertas', 20);
+
+    // Text search filter
+    function filtrarAlertas(termino) {
+        const t = termino.toLowerCase().trim();
+        document.querySelectorAll('#tbodyAlertas tr').forEach(row => {
+            const match = !t || row.textContent.toLowerCase().includes(t);
+            row.dataset.filterHidden = match ? '' : '1';
+        });
+        pagAlertas.reset();
+    }
+
+    // Type filter
+    function filtrarPorTipo(tipo) {
+        const searchVal = document.getElementById('searchInput').value.toLowerCase().trim();
+        document.querySelectorAll('#tbodyAlertas tr').forEach(row => {
+            const matchTipo = !tipo || row.dataset.tipo === tipo;
+            const matchSearch = !searchVal || row.textContent.toLowerCase().includes(searchVal);
+            row.dataset.filterHidden = (matchTipo && matchSearch) ? '' : '1';
+        });
+        pagAlertas.reset();
+    }
+</script>
+</body>
+</html>

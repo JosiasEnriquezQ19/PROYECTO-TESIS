@@ -2,6 +2,10 @@ const Usuario = require('../modelos/Usuario');
 const { log } = require('../middleware/auditoria');
 
 exports.mostrarLogin = (req, res) => {
+    // Si ya tiene sesión activa, redirigir al menú
+    if (req.session && req.session.usuario) {
+        return res.redirect('/menu/principal');
+    }
     res.render('login/login', { error: null });
 };
 
@@ -16,6 +20,7 @@ exports.procesarLogin = async (req, res) => {
                     console.error('Error al regenerar sesion:', err);
                     return res.render('login/login', { error: 'Error interno del servidor.' });
                 }
+                usuario.LoginTime = Date.now();
                 req.session.usuario = usuario;
                 req.session.save((err) => {
                     if (err) {

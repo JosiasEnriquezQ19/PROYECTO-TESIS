@@ -3,6 +3,7 @@ const Cliente = require('../modelos/Cliente');
 const Usuario = require('../modelos/Usuario');
 const Empresa = require('../modelos/Empresa');
 const Producto = require('../modelos/Producto');
+const emailService = require('../servicios/emailService');
 
 exports.list = async (req, res) => {
     try {
@@ -320,6 +321,99 @@ exports.aprobar = async (req, res) => {
         res.status(500).json({
             success: false,
             message: 'Error al actualizar estado de proforma',
+            error: error.message
+        });
+    }
+};
+
+// Enviar proforma por correo
+exports.enviarEmail = async (req, res) => {
+    try {
+        const idProforma = req.params.id;
+        console.log(`Iniciando envío de correo para proforma ${idProforma}`);
+
+        // 1. Obtener datos de la proforma
+        const proformaData = await Proforma.obtenerPorId(idProforma);
+
+        if (!proformaData || !proformaData.proforma) {
+            return res.status(404).json({
+                success: false,
+                message: 'Proforma no encontrada'
+            });
+        }
+
+        // El id es `IdProforma` o de forma similar devuelto en la propiedad proforma
+        const proformaObj = { IdProforma: proformaData.proforma.IdProforma || idProforma, ...proformaData.proforma };
+        const detalles = proformaData.detalles || [];
+
+        // 2. Obtener datos del cliente
+        let clienteObj = { Nombre: proformaObj.ClienteNombre || 'Cliente' };
+        if (proformaObj.IdCliente) {
+            const clientes = await Cliente.listar();
+            const clienteFila = clientes.find(c => c.IdCliente === proformaObj.IdCliente);
+            if (clienteFila) {
+                clienteObj = clienteFila;
+            }
+        }
+
+        // Validación crítica: El cliente DEBE tener correo electrónico
+        if (!clienteObj.Email && !proformaObj.ClienteEmail) {
+            return res.status(400).json({
+                success: false,
+                message: 'El cliente no tiene un correo electrónico registrado.'
+            });
+        }
+
+        // 3. Obtener datos de la empresa
+        let empresaObj = {
+            Nombre: 'Nuestra Empresa',
+            Email: 'contacto@nuestraempresa.com',
+            Telefono: '---'
+        };
+
+        if (proformaObj.IdEmpresa) {
+            try {
+                const empresas = await Empresa.getAll();
+                const empresaFila = empresas.find(e => e.IdEmpresa == proformaObj.IdEmpresa);
+                if (empresaFila) {
+                    empresaObj = empresaFila;
+                }
+            } catch (err) {
+                console.warn('No se pudo obtener datos detallados de la empresa, usando formato básico', err);
+                if (proformaObj.EmpresaNombre) {
+                    empresaObj.Nombre = proformaObj.EmpresaNombre;
+                }
+            }
+        }
+
+        // 4. Enviar el correo usando el servicio
+        console.log(`Enviando proforma ${proformaObj.Codigo} al correo ${clienteObj.Email || proformaObj.ClienteEmail}`);
+
+        const resultadoEnvio = await emailService.enviarProforma(
+            proformaObj,
+            detalles,
+            clienteObj,
+            empresaObj
+        );
+
+        if (resultadoEnvio.exito) {
+            res.json({
+                success: true,
+                message: 'Proforma enviada exitosamente por correo electrónico'
+            });
+        } else {
+            res.status(500).json({
+                success: false,
+                message: 'No se pudo enviar el correo',
+                error: resultadoEnvio.error || 'Error desconocido'
+            });
+        }
+
+    } catch (error) {
+        console.error('Error crítico al enviar proforma por correo:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Error interno al procesar el envío de correo',
             error: error.message
         });
     }

@@ -873,8 +873,26 @@
             }
         });
 
-        // Button loading state
+        // Recuérdame – guardar/cargar correo en localStorage
+        (function () {
+            const emailInput = document.getElementById('correo');
+            const checkbox = document.getElementById('rememberMe');
+            const saved = localStorage.getItem('recordar_correo');
+            if (saved) {
+                emailInput.value = saved;
+                checkbox.checked = true;
+            }
+        })();
+
+        // Button loading state + guardar correo si "Recuérdame" está marcado
         document.querySelector('form').addEventListener('submit', function () {
+            const emailInput = document.getElementById('correo');
+            const checkbox = document.getElementById('rememberMe');
+            if (checkbox.checked) {
+                localStorage.setItem('recordar_correo', emailInput.value);
+            } else {
+                localStorage.removeItem('recordar_correo');
+            }
             const btn = document.getElementById('btn-login');
             btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Verificando...';
             btn.disabled = true;

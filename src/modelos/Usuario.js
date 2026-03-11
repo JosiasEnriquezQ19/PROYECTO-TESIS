@@ -1,5 +1,5 @@
 const db = require('../bd/conexion');
-    const bcrypt = require('bcrypt');
+const bcrypt = require('bcrypt');
 const SALT_ROUNDS = 12;
 
 class Usuario {
@@ -78,7 +78,7 @@ class Usuario {
             // Filtrar solo campos permitidos (seguridad)
             const camposPermitidos = ['Nombres', 'Apellidos', 'TipoDocumento', 'NumeroDocumento', 'Correo', 'Telefono', 'Direccion', 'IdRol', 'Estado', 'Clave'];
             const datosLimpios = {};
-            
+
             for (const campo of camposPermitidos) {
                 if (campo in usuarioData && usuarioData[campo] !== undefined) {
                     datosLimpios[campo] = usuarioData[campo];
@@ -109,11 +109,11 @@ class Usuario {
             }
 
             const [result] = await db.query('UPDATE USUARIO SET ? WHERE IdUsuario = ?', [datosLimpios, id]);
-            
+
             if (result.affectedRows === 0) {
                 throw new Error('Usuario no encontrado o sin cambios realizados');
             }
-            
+
             return true;
         } catch (error) {
             throw error;
@@ -164,7 +164,12 @@ class Usuario {
 
     static async autenticar(correo, clave) {
         try {
-            const sql = 'SELECT * FROM USUARIO WHERE Correo = ? AND Estado = 1';
+            const sql = `
+                SELECT u.*, r.Descripcion as RolNombre 
+                FROM USUARIO u
+                LEFT JOIN ROL r ON u.IdRol = r.IdRol
+                WHERE u.Correo = ? AND u.Estado = 1
+            `;
             const [resultados] = await db.query(sql, [correo]);
 
             if (resultados.length === 0) {

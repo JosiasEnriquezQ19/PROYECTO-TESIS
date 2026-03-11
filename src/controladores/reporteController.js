@@ -24,9 +24,22 @@ class ReporteController {
     static async proformasPorMes(req, res) {
         try {
             const conexion = require('../bd/conexion');
-            
+            const periodo = req.query.periodo || 'todo';
+            let whereClause = '';
+
+            // Generar condición de filtro de fechas según periodo
+            if (periodo === 'mes') {
+                whereClause = 'WHERE MONTH(FechaEmision) = MONTH(CURDATE()) AND YEAR(FechaEmision) = YEAR(CURDATE())';
+            } else if (periodo === 'trimestre') {
+                whereClause = 'WHERE FechaEmision >= DATE_SUB(CURDATE(), INTERVAL 3 MONTH)';
+            } else if (periodo === 'semestre') {
+                whereClause = 'WHERE FechaEmision >= DATE_SUB(CURDATE(), INTERVAL 6 MONTH)';
+            } else if (periodo === 'anio') {
+                whereClause = 'WHERE YEAR(FechaEmision) = YEAR(CURDATE())';
+            }
+
             console.log('🔍 [proformasPorMes] Iniciando consulta...');
-            
+
             // Consulta directa y simple
             let sql = `
                 SELECT 
@@ -34,13 +47,14 @@ class ReporteController {
                     COUNT(*) as cantidad,
                     SUM(COALESCE(Total, 0)) as total_ventas
                 FROM PROFORMA 
+                ${whereClause}
                 GROUP BY DATE_FORMAT(FechaEmision, '%Y-%m')
                 ORDER BY mes ASC
             `;
-            
+
             let [resultados] = await conexion.query(sql);
             console.log('✅ Datos PROFORMA obtenidos:', resultados.length, 'registros');
-            
+
             // Si no hay datos en PROFORMA, intentar FACTURA
             if (!resultados || resultados.length === 0) {
                 console.log('🔄 PROFORMA vacía, intentando FACTURA...');
@@ -50,13 +64,14 @@ class ReporteController {
                         COUNT(*) as cantidad,
                         SUM(COALESCE(Total, 0)) as total_ventas
                     FROM FACTURA 
+                    ${whereClause}
                     GROUP BY DATE_FORMAT(FechaEmision, '%Y-%m')
                     ORDER BY mes ASC
                 `;
                 [resultados] = await conexion.query(sql);
                 console.log('✅ Datos FACTURA obtenidos:', resultados.length, 'registros');
             }
-            
+
             // Normalizar datos: convertir a números para Chart.js
             let datosNormalizados = [];
             if (resultados && resultados.length > 0) {
@@ -66,9 +81,9 @@ class ReporteController {
                     total_ventas: parseFloat(r.total_ventas) || 0
                 }));
             }
-            
+
             console.log('📊 Datos finales para el gráfico:', datosNormalizados);
-            
+
             // Respuesta
             res.json({
                 success: true,
@@ -88,12 +103,26 @@ class ReporteController {
     // API: Obtener distribución de estados de proformas
     static async proformasPorEstado(req, res) {
         try {
+            const periodo = req.query.periodo || 'todo';
+            let whereClause = '';
+
+            if (periodo === 'mes') {
+                whereClause = 'WHERE MONTH(FechaEmision) = MONTH(CURDATE()) AND YEAR(FechaEmision) = YEAR(CURDATE())';
+            } else if (periodo === 'trimestre') {
+                whereClause = 'WHERE FechaEmision >= DATE_SUB(CURDATE(), INTERVAL 3 MONTH)';
+            } else if (periodo === 'semestre') {
+                whereClause = 'WHERE FechaEmision >= DATE_SUB(CURDATE(), INTERVAL 6 MONTH)';
+            } else if (periodo === 'anio') {
+                whereClause = 'WHERE YEAR(FechaEmision) = YEAR(CURDATE())';
+            }
+
             const sql = `
                 SELECT 
                     Estado,
                     COUNT(*) as cantidad,
-                    ROUND((COUNT(*) * 100.0 / (SELECT COUNT(*) FROM PROFORMA)), 2) as porcentaje
+                    ROUND((COUNT(*) * 100.0 / NULLIF((SELECT COUNT(*) FROM PROFORMA ${whereClause}), 0)), 2) as porcentaje
                 FROM PROFORMA 
+                ${whereClause}
                 GROUP BY Estado
                 ORDER BY cantidad DESC
             `;
@@ -117,6 +146,19 @@ class ReporteController {
     // API: Obtener top clientes con más proformas
     static async topClientesProformas(req, res) {
         try {
+            const periodo = req.query.periodo || 'todo';
+            let whereClause = '';
+
+            if (periodo === 'mes') {
+                whereClause = 'WHERE MONTH(p.FechaEmision) = MONTH(CURDATE()) AND YEAR(p.FechaEmision) = YEAR(CURDATE())';
+            } else if (periodo === 'trimestre') {
+                whereClause = 'WHERE p.FechaEmision >= DATE_SUB(CURDATE(), INTERVAL 3 MONTH)';
+            } else if (periodo === 'semestre') {
+                whereClause = 'WHERE p.FechaEmision >= DATE_SUB(CURDATE(), INTERVAL 6 MONTH)';
+            } else if (periodo === 'anio') {
+                whereClause = 'WHERE YEAR(p.FechaEmision) = YEAR(CURDATE())';
+            }
+
             const sql = `
                 SELECT 
                     c.RazonSocial,
@@ -125,6 +167,7 @@ class ReporteController {
                     ROUND(AVG(p.Total), 2) as promedio_venta
                 FROM CLIENTE c
                 INNER JOIN PROFORMA p ON c.IdCliente = p.IdCliente
+                ${whereClause}
                 GROUP BY c.IdCliente, c.RazonSocial
                 ORDER BY total_proformas DESC
                 LIMIT 10
@@ -150,6 +193,29 @@ class ReporteController {
     static async obtenerKPIs(req, res) {
         try {
             console.log('Obteniendo KPIs separando proformas de ventas...');
+            const periodo = req.query.periodo || 'todo';
+            let whereClauseProforma = '';
+            let whereClauseVenta = '';
+            let whereClauseFactura = '';
+
+            // Generar condición de filtro de fechas según periodo
+            if (periodo === 'mes') {
+                whereClauseProforma = 'WHERE MONTH(p.FechaEmision) = MONTH(CURDATE()) AND YEAR(p.FechaEmision) = YEAR(CURDATE())';
+                whereClauseVenta = 'WHERE MONTH(v.FechaVenta) = MONTH(CURDATE()) AND YEAR(v.FechaVenta) = YEAR(CURDATE())';
+                whereClauseFactura = 'WHERE MONTH(f.FechaEmision) = MONTH(CURDATE()) AND YEAR(f.FechaEmision) = YEAR(CURDATE())';
+            } else if (periodo === 'trimestre') {
+                whereClauseProforma = 'WHERE p.FechaEmision >= DATE_SUB(CURDATE(), INTERVAL 3 MONTH)';
+                whereClauseVenta = 'WHERE v.FechaVenta >= DATE_SUB(CURDATE(), INTERVAL 3 MONTH)';
+                whereClauseFactura = 'WHERE f.FechaEmision >= DATE_SUB(CURDATE(), INTERVAL 3 MONTH)';
+            } else if (periodo === 'semestre') {
+                whereClauseProforma = 'WHERE p.FechaEmision >= DATE_SUB(CURDATE(), INTERVAL 6 MONTH)';
+                whereClauseVenta = 'WHERE v.FechaVenta >= DATE_SUB(CURDATE(), INTERVAL 6 MONTH)';
+                whereClauseFactura = 'WHERE f.FechaEmision >= DATE_SUB(CURDATE(), INTERVAL 6 MONTH)';
+            } else if (periodo === 'anio') {
+                whereClauseProforma = 'WHERE YEAR(p.FechaEmision) = YEAR(CURDATE())';
+                whereClauseVenta = 'WHERE YEAR(v.FechaVenta) = YEAR(CURDATE())';
+                whereClauseFactura = 'WHERE YEAR(f.FechaEmision) = YEAR(CURDATE())';
+            }
 
             // Verificar y actualizar proformas vencidas
             await Proforma.verificarProformasVencidas();
@@ -157,17 +223,18 @@ class ReporteController {
             // === MÉTRICAS DE PROFORMAS (posibles ventas) ===
 
             // Total de proformas
-            const [totalProformas] = await conexion.query('SELECT COUNT(*) as total FROM PROFORMA');
+            const [totalProformas] = await conexion.query(`SELECT COUNT(*) as total FROM PROFORMA p ${whereClauseProforma}`);
             console.log('Total proformas:', totalProformas[0].total);
 
             // Proformas por estado
             const [estadisticasProformas] = await conexion.query(`
                 SELECT 
-                    Estado,
+                    p.Estado,
                     COUNT(*) as cantidad,
-                    SUM(Total) as total_monto
-                FROM PROFORMA
-                GROUP BY Estado
+                    SUM(p.Total) as total_monto
+                FROM PROFORMA p
+                ${whereClauseProforma}
+                GROUP BY p.Estado
             `);
 
             // Procesar estadísticas de proformas
@@ -177,18 +244,18 @@ class ReporteController {
             const proformasConvertidas = estadisticasProformas.find(e => e.Estado === 'CONVERTIDA')?.cantidad || 0;
 
             // Valor promedio de proformas
-            const [promedioProformas] = await conexion.query('SELECT ROUND(AVG(Total), 2) as promedio FROM PROFORMA');
+            const [promedioProformas] = await conexion.query(`SELECT ROUND(AVG(p.Total), 2) as promedio FROM PROFORMA p ${whereClauseProforma}`);
             console.log('Promedio proformas:', promedioProformas[0].promedio);
 
             // === MÉTRICAS DE VENTAS REALES (desde facturas) ===
 
             // Verificar si hay datos en VENTA, si no hay, intentar inicializarlos desde FACTURA
-            const [verificacionVenta] = await conexion.query('SELECT COUNT(*) as total FROM VENTA');
+            const [verificacionVenta] = await conexion.query('SELECT COUNT(*) as total FROM VENTA v');
             console.log('Total registros en VENTA:', verificacionVenta[0].total);
 
             if (verificacionVenta[0].total === 0) {
                 console.log('Inicializando registros de VENTA desde FACTURA...');
-                const [facturas] = await conexion.query('SELECT COUNT(*) as total FROM FACTURA');
+                const [facturas] = await conexion.query('SELECT COUNT(*) as total FROM FACTURA f');
 
                 if (facturas[0].total > 0) {
                     // Insertar registros en VENTA basados en las facturas existentes
@@ -207,27 +274,28 @@ class ReporteController {
                 }
             }
 
-            // Total de ventas reales
-            const [totalVentas] = await conexion.query('SELECT COUNT(*) as total FROM VENTA');
+            // Total de ventas reales (filtrado)
+            const [totalVentas] = await conexion.query(`SELECT COUNT(*) as total FROM VENTA v ${whereClauseVenta}`);
 
-            // Ventas del mes actual (ventas reales)
+            // Ventas del mes actual (ventas reales) independientemente del filtro general, para el "Trend"
             const [ventasMes] = await conexion.query(`
                 SELECT 
-                    COALESCE(SUM(Total), 0) as ventas_mes,
+                    COALESCE(SUM(v.Total), 0) as ventas_mes,
                     COUNT(*) as cantidad_ventas_mes
-                FROM VENTA 
-                WHERE MONTH(FechaVenta) = MONTH(CURDATE()) 
-                AND YEAR(FechaVenta) = YEAR(CURDATE())
+                FROM VENTA v
+                WHERE MONTH(v.FechaVenta) = MONTH(CURDATE()) 
+                AND YEAR(v.FechaVenta) = YEAR(CURDATE())
             `);
             console.log('Ventas del mes:', ventasMes[0].ventas_mes);
 
-            // Ventas completadas vs pendientes
+            // Ventas completadas vs pendientes (filtradas)
             const [estadisticasVentas] = await conexion.query(`
                 SELECT 
-                    COUNT(CASE WHEN Estado = 'COMPLETADA' THEN 1 END) as completadas,
-                    COUNT(CASE WHEN Estado != 'COMPLETADA' THEN 1 END) as pendientes,
-                    COALESCE(SUM(CASE WHEN Estado = 'COMPLETADA' THEN Total END), 0) as total_completadas
-                FROM VENTA
+                    COUNT(CASE WHEN v.Estado = 'COMPLETADA' THEN 1 END) as completadas,
+                    COUNT(CASE WHEN v.Estado != 'COMPLETADA' THEN 1 END) as pendientes,
+                    COALESCE(SUM(CASE WHEN v.Estado = 'COMPLETADA' THEN v.Total END), 0) as total_completadas
+                FROM VENTA v
+                ${whereClauseVenta}
             `);
 
             // Tasa de conversión (proformas que se convirtieron en ventas)
@@ -293,6 +361,19 @@ class ReporteController {
     // API: Obtener proformas por cliente (para gráfico circular)
     static async proformasPorCliente(req, res) {
         try {
+            const periodo = req.query.periodo || 'todo';
+            let whereClause = '';
+
+            if (periodo === 'mes') {
+                whereClause = 'WHERE MONTH(p.FechaEmision) = MONTH(CURDATE()) AND YEAR(p.FechaEmision) = YEAR(CURDATE())';
+            } else if (periodo === 'trimestre') {
+                whereClause = 'WHERE p.FechaEmision >= DATE_SUB(CURDATE(), INTERVAL 3 MONTH)';
+            } else if (periodo === 'semestre') {
+                whereClause = 'WHERE p.FechaEmision >= DATE_SUB(CURDATE(), INTERVAL 6 MONTH)';
+            } else if (periodo === 'anio') {
+                whereClause = 'WHERE YEAR(p.FechaEmision) = YEAR(CURDATE())';
+            }
+
             const sql = `
                 SELECT 
                     c.RazonSocial as cliente,
@@ -300,6 +381,7 @@ class ReporteController {
                     SUM(p.Total) as total_ventas
                 FROM CLIENTE c
                 INNER JOIN PROFORMA p ON c.IdCliente = p.IdCliente
+                ${whereClause}
                 GROUP BY c.IdCliente, c.RazonSocial
                 ORDER BY cantidad DESC
                 LIMIT 8
@@ -603,6 +685,19 @@ class ReporteController {
                 return;
             }
 
+            const periodo = req.query.periodo || 'todo';
+            let whereClause = '';
+
+            if (periodo === 'mes') {
+                whereClause = 'WHERE MONTH(v.FechaVenta) = MONTH(CURDATE()) AND YEAR(v.FechaVenta) = YEAR(CURDATE())';
+            } else if (periodo === 'trimestre') {
+                whereClause = 'WHERE v.FechaVenta >= DATE_SUB(CURDATE(), INTERVAL 3 MONTH)';
+            } else if (periodo === 'semestre') {
+                whereClause = 'WHERE v.FechaVenta >= DATE_SUB(CURDATE(), INTERVAL 6 MONTH)';
+            } else if (periodo === 'anio') {
+                whereClause = 'WHERE YEAR(v.FechaVenta) = YEAR(CURDATE())';
+            }
+
             const sql = `
                 SELECT 
                     c.RazonSocial,
@@ -612,6 +707,7 @@ class ReporteController {
                 FROM CLIENTE c
                 INNER JOIN FACTURA f ON c.IdCliente = f.IdCliente
                 INNER JOIN VENTA v ON f.IdFactura = v.IdFactura
+                ${whereClause}
                 GROUP BY c.IdCliente, c.RazonSocial
                 ORDER BY total_monto DESC
                 LIMIT 10
@@ -812,6 +908,76 @@ class ReporteController {
         } catch (error) {
             console.error('Error en auditoriaReciente:', error);
             res.status(500).json({ success: false, message: 'Error al obtener auditoría' });
+        }
+    }
+
+    // API: Cuentas por Cobrar - Facturas pendientes y vencidas agrupadas por cliente
+    static async cuentasPorCobrar(req, res) {
+        try {
+            // Resumen general
+            const [resumen] = await conexion.query(`
+                SELECT 
+                    COUNT(*) as totalFacturas,
+                    COALESCE(SUM(Total), 0) as montoTotal,
+                    COUNT(CASE WHEN FechaVencimiento < CURDATE() THEN 1 END) as totalVencidas,
+                    COALESCE(SUM(CASE WHEN FechaVencimiento < CURDATE() THEN Total END), 0) as montoVencido,
+                    COUNT(CASE WHEN FechaVencimiento >= CURDATE() THEN 1 END) as totalPendientes,
+                    COALESCE(SUM(CASE WHEN FechaVencimiento >= CURDATE() THEN Total END), 0) as montoPendiente
+                FROM FACTURA
+                WHERE Estado NOT IN ('PAGADA', 'ANULADA')
+            `);
+
+            // Detalle por cliente
+            const [porCliente] = await conexion.query(`
+                SELECT 
+                    c.IdCliente,
+                    c.RazonSocial,
+                    COUNT(f.IdFactura) as cantidadFacturas,
+                    COALESCE(SUM(f.Total), 0) as montoTotal,
+                    COUNT(CASE WHEN f.FechaVencimiento < CURDATE() THEN 1 END) as facturasVencidas,
+                    COALESCE(SUM(CASE WHEN f.FechaVencimiento < CURDATE() THEN f.Total END), 0) as montoVencido
+                FROM FACTURA f
+                INNER JOIN CLIENTE c ON f.IdCliente = c.IdCliente
+                WHERE f.Estado NOT IN ('PAGADA', 'ANULADA')
+                GROUP BY c.IdCliente, c.RazonSocial
+                ORDER BY montoTotal DESC
+            `);
+
+            // Detalle de facturas individuales
+            const [facturas] = await conexion.query(`
+                SELECT 
+                    f.IdFactura,
+                    f.Codigo,
+                    c.RazonSocial,
+                    f.FechaEmision,
+                    f.FechaVencimiento,
+                    f.Total,
+                    f.Estado,
+                    CASE 
+                        WHEN f.FechaVencimiento < CURDATE() THEN DATEDIFF(CURDATE(), f.FechaVencimiento)
+                        ELSE 0
+                    END as diasVencido
+                FROM FACTURA f
+                INNER JOIN CLIENTE c ON f.IdCliente = c.IdCliente
+                WHERE f.Estado NOT IN ('PAGADA', 'ANULADA')
+                ORDER BY f.FechaVencimiento ASC
+                LIMIT 50
+            `);
+
+            res.json({
+                success: true,
+                data: {
+                    resumen: resumen[0],
+                    porCliente: porCliente,
+                    facturas: facturas
+                }
+            });
+        } catch (error) {
+            console.error('Error en cuentasPorCobrar:', error);
+            res.status(500).json({
+                success: false,
+                message: 'Error al obtener cuentas por cobrar: ' + error.message
+            });
         }
     }
 }

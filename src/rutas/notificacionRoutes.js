@@ -11,6 +11,23 @@ function verificarAuth(req, res, next) {
     }
 }
 
+// GET /notificaciones - Vista de página de notificaciones
+router.get('/notificaciones', verificarAuth, async (req, res) => {
+    try {
+        const notificaciones = await Notificacion.obtenerRecientes(50);
+        res.render('notificaciones/lista', {
+            title: 'Notificaciones',
+            notificaciones,
+            success: req.flash('success'),
+            error: req.flash('error')
+        });
+    } catch (error) {
+        console.error('Error al cargar la página de notificaciones:', error);
+        req.flash('error', 'Error al cargar notificaciones');
+        res.redirect('/menu/principal');
+    }
+});
+
 // GET /api/notificaciones - Obtener notificaciones recientes
 router.get('/api/notificaciones', verificarAuth, async (req, res) => {
     try {

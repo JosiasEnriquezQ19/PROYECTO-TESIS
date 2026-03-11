@@ -166,6 +166,7 @@ class Proforma {
             const sqlProformas = `SELECT p.*, 
                                      COALESCE(c.RazonSocial, 'Cliente no encontrado') as ClienteNombre, 
                                      COALESCE(c.Documento, '') as ClienteDocumento,
+                                     COALESCE(c.Email, '') as ClienteEmail,
                                      COALESCE(CONCAT(u.Nombres, ' ', u.Apellidos), 'Usuario no encontrado') as UsuarioNombre, 
                                      COALESCE(u.Apellidos, '') as UsuarioApellido,
                                      COALESCE(e.Nombre, 'Empresa no encontrada') as EmpresaNombre,

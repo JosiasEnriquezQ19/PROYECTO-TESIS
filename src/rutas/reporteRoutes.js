@@ -27,4 +27,7 @@ router.get('/api/diagnostico-venta', ReporteController.diagnosticoVenta);
 router.get('/api/proformas-recientes', ReporteController.proformasRecientes);
 router.get('/api/auditoria-reciente', ReporteController.auditoriaReciente);
 
+// Endpoint para cuentas por cobrar
+router.get('/api/cuentas-por-cobrar', ReporteController.cuentasPorCobrar);
+
 module.exports = router;

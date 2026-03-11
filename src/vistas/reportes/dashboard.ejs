@@ -8,11 +8,14 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+        rel="stylesheet">
     <link rel="stylesheet" href="/publico/css/layout.css?v=1772427290147">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
 
         /* ========== REPORT DASHBOARD ========== */
         .report-page {
@@ -435,6 +438,10 @@
             .rp-chart-container {
                 height: 220px;
             }
+
+            #cxcKpis {
+                grid-template-columns: 1fr 1fr !important;
+            }
         }
     </style>
 </head>
@@ -557,6 +564,64 @@
                             </div>
                         </div>
                     </div>
+
+                    <!-- Cuentas por Cobrar Section -->
+                    <div style="margin-top: 24px;">
+                        <div class="rp-chart-card" style="padding: 24px;">
+                            <div class="rp-chart-header" style="margin-bottom: 20px;">
+                                <div>
+                                    <div class="rp-chart-title" style="display:flex;align-items:center;gap:8px;">
+                                        <i class="bi bi-cash-coin" style="color: var(--primary); font-size:1.1rem;"></i>
+                                        Cuentas por Cobrar
+                                    </div>
+                                    <div class="rp-chart-subtitle">Facturas pendientes y vencidas por cliente</div>
+                                </div>
+                            </div>
+
+                            <!-- KPI mini cards -->
+                            <div id="cxcKpis" style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px;">
+                                <div style="background:var(--bg-main,#f8fafc);border:1px solid var(--border,#e2e8f0);border-radius:10px;padding:14px 16px;text-align:center;">
+                                    <div style="font-size:0.7rem;font-weight:600;color:var(--text-secondary,#64748b);text-transform:uppercase;letter-spacing:0.03em;">Total por Cobrar</div>
+                                    <div id="cxcMontoTotal" style="font-size:1.25rem;font-weight:700;color:var(--text-primary,#0f172a);margin-top:4px;">S/ 0</div>
+                                    <div style="font-size:0.7rem;color:var(--text-secondary,#64748b);margin-top:2px;"><span id="cxcTotalFacturas">0</span> facturas</div>
+                                </div>
+                                <div style="background:#fef2f2;border:1px solid #fecaca;border-radius:10px;padding:14px 16px;text-align:center;">
+                                    <div style="font-size:0.7rem;font-weight:600;color:#991b1b;text-transform:uppercase;letter-spacing:0.03em;">Monto Vencido</div>
+                                    <div id="cxcMontoVencido" style="font-size:1.25rem;font-weight:700;color:#dc2626;margin-top:4px;">S/ 0</div>
+                                    <div style="font-size:0.7rem;color:#991b1b;margin-top:2px;"><span id="cxcTotalVencidas">0</span> vencidas</div>
+                                </div>
+                                <div style="background:#fffbeb;border:1px solid #fde68a;border-radius:10px;padding:14px 16px;text-align:center;">
+                                    <div style="font-size:0.7rem;font-weight:600;color:#92400e;text-transform:uppercase;letter-spacing:0.03em;">Monto Pendiente</div>
+                                    <div id="cxcMontoPendiente" style="font-size:1.25rem;font-weight:700;color:#d97706;margin-top:4px;">S/ 0</div>
+                                    <div style="font-size:0.7rem;color:#92400e;margin-top:2px;"><span id="cxcTotalPendientes">0</span> al día</div>
+                                </div>
+                                <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:10px;padding:14px 16px;text-align:center;">
+                                    <div style="font-size:0.7rem;font-weight:600;color:#166534;text-transform:uppercase;letter-spacing:0.03em;">Clientes Deudores</div>
+                                    <div id="cxcTotalClientes" style="font-size:1.25rem;font-weight:700;color:#16a34a;margin-top:4px;">0</div>
+                                    <div style="font-size:0.7rem;color:#166534;margin-top:2px;">con facturas abiertas</div>
+                                </div>
+                            </div>
+
+                            <!-- Table of invoices -->
+                            <div style="overflow-x:auto;border:1px solid var(--border,#e2e8f0);border-radius:10px;">
+                                <table style="width:100%;border-collapse:collapse;font-size:0.8125rem;">
+                                    <thead>
+                                        <tr style="background:var(--bg-main,#f8fafc);">
+                                            <th style="padding:10px 14px;text-align:left;font-weight:600;color:var(--text-secondary,#64748b);font-size:0.7rem;text-transform:uppercase;letter-spacing:0.04em;border-bottom:1px solid var(--border,#e2e8f0);">Factura</th>
+                                            <th style="padding:10px 14px;text-align:left;font-weight:600;color:var(--text-secondary,#64748b);font-size:0.7rem;text-transform:uppercase;letter-spacing:0.04em;border-bottom:1px solid var(--border,#e2e8f0);">Cliente</th>
+                                            <th style="padding:10px 14px;text-align:left;font-weight:600;color:var(--text-secondary,#64748b);font-size:0.7rem;text-transform:uppercase;letter-spacing:0.04em;border-bottom:1px solid var(--border,#e2e8f0);">Emisión</th>
+                                            <th style="padding:10px 14px;text-align:left;font-weight:600;color:var(--text-secondary,#64748b);font-size:0.7rem;text-transform:uppercase;letter-spacing:0.04em;border-bottom:1px solid var(--border,#e2e8f0);">Vencimiento</th>
+                                            <th style="padding:10px 14px;text-align:right;font-weight:600;color:var(--text-secondary,#64748b);font-size:0.7rem;text-transform:uppercase;letter-spacing:0.04em;border-bottom:1px solid var(--border,#e2e8f0);">Monto</th>
+                                            <th style="padding:10px 14px;text-align:center;font-weight:600;color:var(--text-secondary,#64748b);font-size:0.7rem;text-transform:uppercase;letter-spacing:0.04em;border-bottom:1px solid var(--border,#e2e8f0);">Estado</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="cxcTablaBody">
+                                        <tr><td colspan="6" style="padding:24px;text-align:center;color:var(--text-secondary,#64748b);">Cargando...</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
     </div>
@@ -580,19 +645,24 @@
         });
 
         async function actualizarDatos() {
+            const periodo = document.getElementById('periodoFiltro').value;
             await Promise.all([
-                cargarKPIs(),
-                cargarProformasMes(),
-                cargarEstados(),
-                cargarTopClientes(),
-                cargarFacturas()
+                cargarKPIs(periodo),
+                cargarProformasMes(periodo),
+                cargarEstados(periodo),
+                cargarTopClientes(periodo),
+                cargarFacturas(periodo),
+                cargarCuentasPorCobrar()
             ]);
         }
 
+        // Event listener para cuando cambie el select
+        document.getElementById('periodoFiltro').addEventListener('change', actualizarDatos);
+
         // ===== KPIs =====
-        async function cargarKPIs() {
+        async function cargarKPIs(periodo = 'todo') {
             try {
-                const res = await fetch('/reportes/api/kpis');
+                const res = await fetch(`/reportes/api/kpis?periodo=${periodo}`);
                 const json = await res.json();
                 if (!json.success) return;
                 const d = json.data;
@@ -623,15 +693,15 @@
 
         // ===== Proformas por Mes =====
         let chartMensualInstance = null;
-        async function cargarProformasMes() {
+        async function cargarProformasMes(periodo = 'todo') {
             try {
                 console.log('🔄 Cargando gráfico de Actividad Mensual...');
-                
-                const res = await fetch('/reportes/api/proformas-por-mes');
+
+                const res = await fetch(`/reportes/api/proformas-por-mes?periodo=${periodo}`);
                 const json = await res.json();
-                
+
                 console.log('📡 Respuesta API:', json);
-                
+
                 if (!json.success) {
                     console.warn('❌ API retornó error:', json.message);
                     throw new Error(json.message || 'Error en API');
@@ -646,7 +716,7 @@
                     console.error('❌ No se encontró canvas #chartMensual');
                     return;
                 }
-                
+
                 const canvasContext = ctx.getContext('2d');
                 if (chartMensualInstance) {
                     chartMensualInstance.destroy();
@@ -656,13 +726,13 @@
                 // Si tiene datos
                 if (tieneDatos) {
                     console.log('✅ Renderizando gráfico con datos reales');
-                    
+
                     const labels = json.data.map(d => {
                         const [y, m] = d.mes.split('-');
                         const month = new Date(y, m - 1).toLocaleDateString('es-PE', { month: 'short' });
                         return month + ' ' + y;
                     });
-                    
+
                     const cantidades = json.data.map(d => parseInt(d.cantidad) || 0);
                     const montos = json.data.map(d => parseFloat(d.total_ventas) || 0);
 
@@ -754,12 +824,12 @@
                             }
                         }
                     });
-                    
+
                     console.log('✅ Gráfico renderizado exitosamente');
                 } else {
                     // Sin datos - mostrar gráfico vacío
                     console.warn('⚠️ Sin datos, mostrando gráfico vacío');
-                    
+
                     chartMensualInstance = new Chart(canvasContext, {
                         type: 'bar',
                         data: {
@@ -790,16 +860,16 @@
                         }
                     });
                 }
-            } catch (err) { 
+            } catch (err) {
                 console.error('❌ ERROR en cargarProformasMes:', err);
-                
+
                 // Fallback - mostrar error en el canvas
                 try {
                     const ctx = document.getElementById('chartMensual');
                     if (ctx && chartMensualInstance) {
                         chartMensualInstance.destroy();
                     }
-                    
+
                     chartMensualInstance = new Chart(ctx.getContext('2d'), {
                         type: 'bar',
                         data: {
@@ -829,9 +899,10 @@
         }
 
         // ===== Estados Doughnut =====
-        async function cargarEstados() {
+        let chartEstadosInstance = null;
+        async function cargarEstados(periodo = 'todo') {
             try {
-                const res = await fetch('/reportes/api/proformas-por-estado');
+                const res = await fetch(`/reportes/api/proformas-por-estado?periodo=${periodo}`);
                 const json = await res.json();
                 if (!json.success) return;
 
@@ -900,9 +971,10 @@
         }
 
         // ===== Top Clientes =====
-        async function cargarTopClientes() {
+        async function cargarTopClientes(periodo = 'todo') {
             try {
-                const res = await fetch('/reportes/api/top-clientes');
+                // Modificado para Top Clientes Ventas
+                const res = await fetch(`/reportes/api/top-clientes-ventas?periodo=${periodo}`);
                 const json = await res.json();
                 if (!json.success) return;
 
@@ -932,9 +1004,11 @@
         }
 
         // ===== Facturas Bar Chart =====
-        async function cargarFacturas() {
+        let chartFacturasInstance = null;
+        async function cargarFacturas(periodo = 'todo') {
             try {
-                const res = await fetch('/reportes/api/ventas-por-mes');
+                // Nuevo endpoint de ventas por mes
+                const res = await fetch(`/reportes/api/ventas-por-mes?periodo=${periodo}`);
                 const json = await res.json();
                 if (!json.success) return;
 
@@ -991,6 +1065,54 @@
                     }
                 });
             } catch (err) { console.error('Error chartFacturas:', err); }
+        }
+
+        // ===== Cuentas por Cobrar =====
+        async function cargarCuentasPorCobrar() {
+            try {
+                const res = await fetch('/reportes/api/cuentas-por-cobrar');
+                const json = await res.json();
+                if (!json.success) return;
+
+                const { resumen, facturas } = json.data;
+                const fmt = (v) => 'S/ ' + Number(v || 0).toLocaleString('es-PE', { minimumFractionDigits: 2 });
+
+                // KPIs
+                document.getElementById('cxcMontoTotal').textContent = fmt(resumen.montoTotal);
+                document.getElementById('cxcTotalFacturas').textContent = resumen.totalFacturas || 0;
+                document.getElementById('cxcMontoVencido').textContent = fmt(resumen.montoVencido);
+                document.getElementById('cxcTotalVencidas').textContent = resumen.totalVencidas || 0;
+                document.getElementById('cxcMontoPendiente').textContent = fmt(resumen.montoPendiente);
+                document.getElementById('cxcTotalPendientes').textContent = resumen.totalPendientes || 0;
+                document.getElementById('cxcTotalClientes').textContent = (json.data.porCliente || []).length;
+
+                // Table
+                const tbody = document.getElementById('cxcTablaBody');
+                if (!facturas || facturas.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="6" style="padding:24px;text-align:center;color:var(--text-secondary,#64748b);"><i class="bi bi-check-circle" style="font-size:1.2rem;color:#10b981;margin-right:6px;"></i>No hay facturas pendientes de cobro</td></tr>';
+                    return;
+                }
+
+                tbody.innerHTML = facturas.map(f => {
+                    const esVencida = f.diasVencido > 0;
+                    const badgeColor = esVencida ? 'background:#fef2f2;color:#dc2626;' : 'background:#fffbeb;color:#d97706;';
+                    const badgeText = esVencida ? 'Vencida (' + f.diasVencido + 'd)' : 'Pendiente';
+                    const fechaEmision = f.FechaEmision ? new Date(f.FechaEmision).toLocaleDateString('es-PE') : '-';
+                    const fechaVenc = f.FechaVencimiento ? new Date(f.FechaVencimiento).toLocaleDateString('es-PE') : '-';
+
+                    return '<tr style="border-bottom:1px solid var(--border,#e2e8f0);">' +
+                        '<td style="padding:10px 14px;font-weight:600;color:var(--text-primary,#0f172a);">' + (f.Codigo || '-') + '</td>' +
+                        '<td style="padding:10px 14px;color:var(--text-primary,#0f172a);">' + (f.RazonSocial || '-') + '</td>' +
+                        '<td style="padding:10px 14px;color:var(--text-secondary,#64748b);">' + fechaEmision + '</td>' +
+                        '<td style="padding:10px 14px;color:' + (esVencida ? '#dc2626' : 'var(--text-secondary,#64748b)') + ';font-weight:' + (esVencida ? '600' : '400') + ';">' + fechaVenc + '</td>' +
+                        '<td style="padding:10px 14px;text-align:right;font-weight:600;color:var(--text-primary,#0f172a);">' + fmt(f.Total) + '</td>' +
+                        '<td style="padding:10px 14px;text-align:center;"><span style="display:inline-block;padding:3px 10px;border-radius:9999px;font-size:0.7rem;font-weight:600;' + badgeColor + '">' + badgeText + '</span></td>' +
+                        '</tr>';
+                }).join('');
+            } catch (err) {
+                console.error('Error cuentasPorCobrar:', err);
+                document.getElementById('cxcTablaBody').innerHTML = '<tr><td colspan="6" style="padding:24px;text-align:center;color:#dc2626;">Error al cargar datos</td></tr>';
+            }
         }
 
 

@@ -7,6 +7,18 @@ const pool = require('../bd/conexion');
 
 exports.mostrarMenu = async (req, res) => {
     try {
+        const periodo = req.query.periodo || 'todo';
+        let filterWhere = '';
+        if (periodo === 'mes') {
+            filterWhere = 'AND MONTH(FechaRegistro) = MONTH(CURDATE()) AND YEAR(FechaRegistro) = YEAR(CURDATE())';
+        } else if (periodo === 'trimestre') {
+            filterWhere = 'AND FechaRegistro >= DATE_SUB(CURDATE(), INTERVAL 3 MONTH)';
+        } else if (periodo === 'semestre') {
+            filterWhere = 'AND FechaRegistro >= DATE_SUB(CURDATE(), INTERVAL 6 MONTH)';
+        } else if (periodo === 'anio') {
+            filterWhere = 'AND YEAR(FechaRegistro) = YEAR(CURDATE())';
+        }
+
         // Objeto para almacenar estadisticas
         let estadisticas = {
             clientes: 0,
@@ -16,10 +28,25 @@ exports.mostrarMenu = async (req, res) => {
         };
 
         // Contadores basicos
-        try { estadisticas.clientes = await Cliente.contarActivos(); } catch (err) { console.error('Error al contar clientes:', err); }
-        try { estadisticas.empleados = await Empleado.contarActivos(); } catch (err) { console.error('Error al contar empleados:', err); }
-        try { estadisticas.proformas = await Proforma.contarProformas(); } catch (err) { console.error('Error al contar proformas:', err); }
-        try { estadisticas.productos = await Producto.contarActivos(); } catch (err) { console.error('Error al contar productos:', err); }
+        try {
+            const [c] = await pool.query(`SELECT COUNT(*) as t FROM CLIENTE WHERE Estado = 'ACTIVO' ${filterWhere}`);
+            estadisticas.clientes = c[0].t;
+        } catch (err) { console.error('Error al contar clientes:', err); }
+
+        try {
+            const [e] = await pool.query(`SELECT COUNT(*) as t FROM EMPLEADO WHERE Estado = 'ACTIVO'`);
+            estadisticas.empleados = e[0].t;
+        } catch (err) { console.error('Error al contar empleados:', err); }
+
+        try {
+            const [p] = await pool.query(`SELECT COUNT(*) as t FROM PROFORMA WHERE 1=1 ${filterWhere}`);
+            estadisticas.proformas = p[0].t;
+        } catch (err) { console.error('Error al contar proformas:', err); }
+
+        try {
+            const [pr] = await pool.query(`SELECT COUNT(*) as t FROM PRODUCTO WHERE Estado = 'ACTIVO'`);
+            estadisticas.productos = pr[0].t;
+        } catch (err) { console.error('Error al contar productos:', err); }
 
         // Actividad de proformas por dia de la semana (ultimos 7 dias)
         let actividadSemanal = [0, 0, 0, 0, 0, 0, 0]; // Lun, Mar, Mie, Jue, Vie, Sab, Dom
@@ -69,6 +96,7 @@ exports.mostrarMenu = async (req, res) => {
                        COALESCE(c.RazonSocial, 'Sin cliente') as ClienteNombre
                 FROM PROFORMA p
                 LEFT JOIN CLIENTE c ON p.IdCliente = c.IdCliente
+                WHERE 1=1 ${filterWhere.replace('FechaRegistro', 'p.FechaEmision')}
                 ORDER BY p.FechaRegistro DESC
                 LIMIT 10
             `);
@@ -83,6 +111,7 @@ exports.mostrarMenu = async (req, res) => {
             const [rows] = await pool.query(`
                 SELECT Estado, COUNT(*) as total
                 FROM PROFORMA
+                WHERE 1=1 ${filterWhere}
                 GROUP BY Estado
             `);
             rows.forEach(r => {
@@ -99,7 +128,7 @@ exports.mostrarMenu = async (req, res) => {
         // Conteo de facturas
         let totalFacturas = 0;
         try {
-            const [rows] = await pool.query('SELECT COUNT(*) as total FROM FACTURA');
+            const [rows] = await pool.query(`SELECT COUNT(*) as total FROM FACTURA WHERE 1=1 ${filterWhere.replace('FechaRegistro', 'FechaEmision')}`);
             totalFacturas = rows[0].total;
         } catch (err) {
             console.error('Error al contar facturas:', err);
@@ -113,7 +142,15 @@ exports.mostrarMenu = async (req, res) => {
             console.log(`✓ Auditoria cargada: ${auditoriaReciente.length} registros`);
         } catch (err) {
             console.error('✗ Error al obtener auditoria reciente:', err.message);
-            auditoriaReciente = []; // Pasar array vacío si hay error
+            auditoriaReciente = [];
+        }
+
+        // Productos con stock bajo (stock <= stockMinimo)
+        let productosStockBajo = [];
+        try {
+            productosStockBajo = await Producto.listarStockBajo();
+        } catch (err) {
+            console.error('Error al obtener stock bajo:', err.message);
         }
 
         // Pasar datos a la vista
@@ -124,7 +161,9 @@ exports.mostrarMenu = async (req, res) => {
             proformasRecientes,
             estadosProformas: JSON.stringify(estadosProformas),
             totalFacturas,
-            auditoriaReciente
+            auditoriaReciente,
+            productosStockBajo,
+            periodo
         });
     } catch (error) {
         console.error('Error general al obtener estadisticas:', error);
@@ -135,7 +174,9 @@ exports.mostrarMenu = async (req, res) => {
             proformasRecientes: [],
             estadosProformas: JSON.stringify({ pendientes: 0, aprobadas: 0, vendidas: 0, vencidas: 0 }),
             totalFacturas: 0,
-            auditoriaReciente: []
+            auditoriaReciente: [],
+            productosStockBajo: [],
+            periodo: 'todo'
         });
     }
 };

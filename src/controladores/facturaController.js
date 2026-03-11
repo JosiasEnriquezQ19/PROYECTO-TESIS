@@ -4,6 +4,7 @@ const Producto = require('../modelos/Producto');
 const Empresa = require('../modelos/Empresa');
 const Proforma = require('../modelos/Proforma');
 const Usuario = require('../modelos/Usuario');
+const emailService = require('../servicios/emailService');
 
 class FacturaController {
     constructor() {
@@ -802,36 +803,232 @@ class FacturaController {
                 });
             }
 
-            const { factura } = resultado;
-
             // Actualizar solo el estado
-            const datosActualizacion = {
-                IdCliente: factura.IdCliente,
-                FechaEmision: factura.FechaEmision,
-                FechaVencimiento: factura.FechaVencimiento,
-                SubTotal: factura.SubTotal,
-                TotalIGV: factura.TotalIGV,
-                Total: factura.Total,
-                Estado: estado.toUpperCase(),
-                FormaPago: factura.FormaPago,
-                Observaciones: factura.Observaciones
-            };
+            const datosFactura = { ...resultado.factura, Estado: estado };
+            const actualizado = await this.facturaModel.actualizarSoloFactura(idFactura, datosFactura);
 
-            await this.facturaModel.actualizarSoloFactura(idFactura, datosActualizacion);
+            // Log detail
+            console.log(`Resultado actualización: ${actualizado}`);
 
-            console.log(`✅ Factura ${idFactura} actualizada a estado: ${estado}`);
+            if (req.headers['content-type'] && req.headers['content-type'].includes('application/json')) {
+                res.json({
+                    success: actualizado,
+                    message: actualizado ? 'Estado de la factura actualizado correctamente' : 'No se pudo actualizar la factura'
+                });
+            } else {
+                if (actualizado) {
+                    res.redirect('/facturas?success=' + encodeURIComponent('Estado actualizado correctamente'));
+                } else {
+                    res.redirect('/facturas?error=' + encodeURIComponent('No se pudo actualizar el estado'));
+                }
+            }
+        } catch (error) {
+            console.error('Error al cambiar estado de factura:', error);
 
-            res.json({
-                success: true,
-                message: 'Estado actualizado exitosamente',
-                nuevoEstado: estado.toUpperCase()
-            });
+            if (req.headers['content-type'] && req.headers['content-type'].includes('application/json')) {
+                res.status(500).json({
+                    success: false,
+                    message: 'Error al actualizar el estado',
+                    error: error.message
+                });
+            } else {
+                res.redirect('/facturas?error=' + encodeURIComponent('Error al actualizar el estado: ' + error.message));
+            }
+        }
+    }
+
+    // Agregar producto adicional
+    async agregarProducto(req, res) {
+        try {
+            const idFactura = req.params.id;
+            const productoData = req.body;
+
+            console.log(`➕ Agregando producto adicional a factura ${idFactura}:`, productoData);
+
+            if (!productoData.IdProducto || !productoData.Cantidad || !productoData.PrecioUnitario) {
+                return res.status(400).json({
+                    success: false,
+                    message: 'Datos del producto incompletos'
+                });
+            }
+
+            // Obtener factura para verificar que exista
+            const facturaResult = await this.facturaModel.obtenerPorId(idFactura);
+            if (!facturaResult) {
+                return res.status(404).json({
+                    success: false,
+                    message: 'Factura no encontrada'
+                });
+            }
+
+            // Agregar el producto a la base de datos
+            await this.facturaModel.agregarProductoAdicional(idFactura, productoData);
+
+            // Recalcular y actualizar totales de la factura
+            const detallesAct = await this.facturaModel.obtenerDetallesPorFactura(idFactura);
+            let subTotal = 0;
+
+            for (const detalle of detallesAct) {
+                subTotal += parseFloat(detalle.Total);
+            }
+
+            const igv = subTotal * 0.18;
+            const totalFinal = subTotal + igv;
+
+            // Actualizar totales de la factura
+            const facturaObj = facturaResult.factura;
+            facturaObj.SubTotal = subTotal;
+            facturaObj.TotalIGV = igv;
+            facturaObj.Total = totalFinal;
+
+            await this.facturaModel.actualizarSoloFactura(idFactura, facturaObj);
+
+            if (req.xhr || (req.headers['content-type'] && req.headers['content-type'].includes('application/json'))) {
+                res.json({
+                    success: true,
+                    message: 'Producto agregado correctamente'
+                });
+            } else {
+                res.redirect(`/facturas/${idFactura}/editar?success=${encodeURIComponent('Producto agregado correctamente')}`);
+            }
 
         } catch (error) {
-            console.error('❌ Error al cambiar estado:', error);
+            console.error('Error al agregar producto adicional:', error);
+
+            if (req.xhr || (req.headers['content-type'] && req.headers['content-type'].includes('application/json'))) {
+                res.status(500).json({
+                    success: false,
+                    message: 'Error al agregar producto',
+                    error: error.message
+                });
+            } else {
+                res.redirect(`/facturas/${req.params.id}/editar?error=${encodeURIComponent('Error al agregar producto: ' + error.message)}`);
+            }
+        }
+    }
+
+    // Eliminar producto adicional o verificar su tipo
+    async eliminarProducto(req, res) {
+        try {
+            const idFactura = req.params.id;
+            const idDetalle = req.params.idDetalle;
+
+            console.log(`➖ Eliminando producto ${idDetalle} de factura ${idFactura}`);
+
+            // Validar que el detalle pertenece a la factura
+            const detalles = await this.facturaModel.obtenerDetallesPorFactura(idFactura);
+            const detalleExiste = detalles.find(d => d.IdDetalleFactura == idDetalle);
+
+            if (!detalleExiste) {
+                return res.status(404).json({
+                    success: false,
+                    message: 'Detalle de factura no encontrado'
+                });
+            }
+
+            // Eliminar el detalle de la base de datos
+            await this.facturaModel.eliminarDetalleFactura(idDetalle);
+
+            // Recalcular y actualizar totales
+            const detallesRestantes = await this.facturaModel.obtenerDetallesPorFactura(idFactura);
+            let subTotal = 0;
+
+            for (const detalle of detallesRestantes) {
+                subTotal += parseFloat(detalle.Total);
+            }
+
+            const igv = subTotal * 0.18;
+            const totalFinal = subTotal + igv;
+
+            // Actualizar totales de la factura
+            const facturaResult = await this.facturaModel.obtenerPorId(idFactura);
+            if (facturaResult) {
+                const facturaObj = facturaResult.factura;
+                facturaObj.SubTotal = subTotal;
+                facturaObj.TotalIGV = igv;
+                facturaObj.Total = totalFinal;
+
+                await this.facturaModel.actualizarSoloFactura(idFactura, facturaObj);
+            }
+
+            if (req.xhr || (req.headers['content-type'] && req.headers['content-type'].includes('application/json'))) {
+                res.json({
+                    success: true,
+                    message: 'Producto eliminado correctamente'
+                });
+            } else {
+                res.redirect(`/facturas/${idFactura}/editar?success=${encodeURIComponent('Producto eliminado correctamente')}`);
+            }
+
+        } catch (error) {
+            console.error('Error al eliminar producto de factura:', error);
+
+            if (req.xhr || (req.headers['content-type'] && req.headers['content-type'].includes('application/json'))) {
+                res.status(500).json({
+                    success: false,
+                    message: 'Error al eliminar producto',
+                    error: error.message
+                });
+            } else {
+                res.redirect(`/facturas/${req.params.id}/editar?error=${encodeURIComponent('Error al eliminar producto: ' + error.message)}`);
+            }
+        }
+    }
+
+    /**
+     * Envía la factura por correo usando el EmailService
+     */
+    async enviarEmail(req, res) {
+        try {
+            const idFactura = req.params.id;
+
+            if (!emailService.estaConfigurado()) {
+                return res.status(500).json({
+                    success: false,
+                    message: 'El servicio de correo no está configurado (faltan credenciales).'
+                });
+            }
+
+            const resultado = await this.facturaModel.obtenerPorId(idFactura);
+
+            if (!resultado) {
+                return res.status(404).json({
+                    success: false,
+                    message: 'Factura no encontrada'
+                });
+            }
+
+            const { factura, detalles } = resultado;
+
+            const [cliente, empresa] = await Promise.all([
+                Cliente.obtenerPorId(factura.IdCliente),
+                Empresa.getById(factura.IdEmpresa)
+            ]);
+
+            if (!cliente || !cliente.Email) {
+                return res.status(400).json({
+                    success: false,
+                    message: 'El cliente no tiene un correo electrónico registrado.'
+                });
+            }
+
+            // Llamar al servicio de email
+            const resultadoEmail = await emailService.enviarFactura(factura, detalles, cliente, empresa);
+
+            if (resultadoEmail.exito) {
+                res.json({
+                    success: true,
+                    message: resultadoEmail.mensaje
+                });
+            } else {
+                throw new Error("No se pudo enviar el correo");
+            }
+
+        } catch (error) {
+            console.error('Error al enviar correo de la factura:', error);
             res.status(500).json({
                 success: false,
-                message: 'Error al cambiar estado',
+                message: 'Error al enviar el correo',
                 error: error.message
             });
         }
@@ -841,7 +1038,6 @@ class FacturaController {
     async buscarProformaPorCodigo(req, res) {
         try {
             const codigo = req.params.codigo;
-
             const resultado = await Proforma.obtenerPorCodigo(codigo);
 
             if (!resultado) {
@@ -908,64 +1104,6 @@ class FacturaController {
             res.json({
                 success: false,
                 message: 'Error interno del servidor: ' + error.message
-            });
-        }
-    }
-
-    // NUEVO MÉTODO: Agregar producto adicional
-    async agregarProducto(req, res) {
-        try {
-            const idFactura = req.params.id;
-            const { IdProducto, Cantidad, PrecioUnitario, DescripcionAdicional } = req.body;
-
-            // Validaciones
-            if (!IdProducto || !Cantidad || !PrecioUnitario) {
-                return res.status(400).json({
-                    success: false,
-                    message: 'Datos requeridos faltantes'
-                });
-            }
-
-            await this.facturaModel.agregarProductoAdicional(idFactura, {
-                IdProducto,
-                Cantidad: parseFloat(Cantidad),
-                PrecioUnitario: parseFloat(PrecioUnitario),
-                DescripcionAdicional
-            });
-
-            res.json({
-                success: true,
-                message: 'Producto agregado exitosamente'
-            });
-
-        } catch (error) {
-            console.error('Error al agregar producto:', error);
-            res.status(500).json({
-                success: false,
-                message: 'Error al agregar producto',
-                error: error.message
-            });
-        }
-    }
-
-    // NUEVO MÉTODO: Eliminar producto adicional
-    async eliminarProducto(req, res) {
-        try {
-            const { id: idFactura, idDetalle } = req.params;
-
-            await this.facturaModel.eliminarProductoAdicional(idDetalle, idFactura);
-
-            res.json({
-                success: true,
-                message: 'Producto eliminado exitosamente'
-            });
-
-        } catch (error) {
-            console.error('Error al eliminar producto:', error);
-            res.status(500).json({
-                success: false,
-                message: 'Error al eliminar producto',
-                error: error.message
             });
         }
     }

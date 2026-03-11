@@ -24,8 +24,8 @@ class Producto {
 
     static async crear(productoData) {
         const sql = `INSERT INTO PRODUCTO 
-            (Codigo, Nombre, Descripcion, Marca, Modelo, Tipo, UnidadMedida, PrecioUnitario, Estado) 
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, 1)`;
+            (Codigo, Nombre, Descripcion, Marca, Modelo, Tipo, UnidadMedida, PrecioUnitario, Stock, StockMinimo, Estado) 
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1)`;
         const valores = [
             productoData.Codigo,
             productoData.Nombre,
@@ -34,7 +34,9 @@ class Producto {
             productoData.Modelo,
             productoData.Tipo,
             productoData.UnidadMedida,
-            productoData.PrecioUnitario
+            productoData.PrecioUnitario,
+            productoData.Stock || 0,
+            productoData.StockMinimo || 5
         ];
         await conexion.query(sql, valores);
     }
@@ -55,7 +57,9 @@ class Producto {
                 Modelo = ?, 
                 Tipo = ?, 
                 UnidadMedida = ?, 
-                PrecioUnitario = ?
+                PrecioUnitario = ?,
+                Stock = ?,
+                StockMinimo = ?
             WHERE IdProducto = ?
         `;
         const valores = [
@@ -67,6 +71,8 @@ class Producto {
             productoData.Tipo,
             productoData.UnidadMedida,
             productoData.PrecioUnitario,
+            productoData.Stock || 0,
+            productoData.StockMinimo || 5,
             id
         ];
         await conexion.query(sql, valores);
@@ -90,6 +96,21 @@ class Producto {
         const valores = codigoTipo ? [codigoTipo] : [];
         const [resultados] = await conexion.query(sql, valores);
         return resultados;
+    }
+
+    static async listarStockBajo() {
+        const sql = `SELECT * FROM PRODUCTO 
+            WHERE Estado = 1 AND Stock <= StockMinimo 
+            ORDER BY Stock ASC, Nombre ASC`;
+        const [resultados] = await conexion.query(sql);
+        return resultados;
+    }
+
+    static async contarStockBajo() {
+        const sql = `SELECT COUNT(*) as total FROM PRODUCTO 
+            WHERE Estado = 1 AND Stock <= StockMinimo`;
+        const [resultados] = await conexion.query(sql);
+        return resultados[0].total;
     }
 }
 

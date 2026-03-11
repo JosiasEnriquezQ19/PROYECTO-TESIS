@@ -62,7 +62,9 @@ exports.crearProducto = async (req, res) => {
             Modelo: req.body.Modelo || null,
             Tipo: req.body.Tipo || null,
             UnidadMedida: req.body.UnidadMedida || 'UNID',
-            PrecioUnitario: req.body.PrecioUnitario || 0
+            PrecioUnitario: req.body.PrecioUnitario || 0,
+            Stock: parseInt(req.body.Stock) || 0,
+            StockMinimo: parseInt(req.body.StockMinimo) || 5
         };
         await Producto.crear(productoData);
         await log(req, 'PRODUCTOS', 'CREAR', `Creo el producto: ${productoData.Nombre} (Cod: ${productoData.Codigo}, Precio: S/ ${productoData.PrecioUnitario})`);
@@ -111,7 +113,9 @@ exports.actualizarProducto = async (req, res) => {
             Modelo: req.body.Modelo || null,
             Tipo: req.body.Tipo || null,
             UnidadMedida: req.body.UnidadMedida || 'UNID',
-            PrecioUnitario: req.body.PrecioUnitario || 0
+            PrecioUnitario: req.body.PrecioUnitario || 0,
+            Stock: parseInt(req.body.Stock) || 0,
+            StockMinimo: parseInt(req.body.StockMinimo) || 5
         };
         await Producto.actualizar(req.params.id, productoData);
         await log(req, 'PRODUCTOS', 'ACTUALIZAR', `Actualizo el producto ID ${req.params.id}: ${productoData.Nombre} (Precio: S/ ${productoData.PrecioUnitario})`);
@@ -131,6 +135,39 @@ exports.eliminarProducto = async (req, res) => {
     } catch (error) {
         console.error('Error al inactivar producto:', error);
         res.redirect('/productos?error=Error al inactivar el producto');
+    }
+};
+
+// Listar alertas de stock mínimo
+exports.listarAlertas = async (req, res) => {
+    try {
+        const productos = await Producto.listarStockBajo();
+        res.render('productos/stock-alertas', {
+            productos,
+            title: 'Alertas de Stock',
+            user: req.user,
+            success: req.query.success || null,
+            error: req.query.error || null
+        });
+    } catch (error) {
+        console.error('Error al listar alertas de stock:', error);
+        res.render('productos/stock-alertas', {
+            productos: [],
+            title: 'Alertas de Stock',
+            user: req.user,
+            success: null,
+            error: 'Error al cargar alertas: ' + error.message
+        });
+    }
+};
+
+// API: Contar productos con stock bajo
+exports.contarAlertasAPI = async (req, res) => {
+    try {
+        const count = await Producto.contarStockBajo();
+        res.json({ success: true, count });
+    } catch (error) {
+        res.json({ success: false, count: 0 });
     }
 };
 

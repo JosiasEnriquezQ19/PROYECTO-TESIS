@@ -14,5 +14,6 @@ router.get('/:id/editar', proformaController.editForm);
 router.post('/:id/editar', proformaController.update);
 router.post('/:id/eliminar', proformaController.delete);
 router.post('/:id/aprobar', proformaController.aprobar);
+router.post('/:id/enviar-email', proformaController.enviarEmail);
 
 module.exports = router;

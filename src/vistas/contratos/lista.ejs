@@ -9,6 +9,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/publico/css/layout.css?v=1772427290138">
     <link rel="stylesheet" href="/publico/css/list-views.css">
+    <script src="/publico/js/paginacion.js"></script>
 </head>
 <body>
 
@@ -153,7 +154,7 @@
                                 <th class="text-center">Acciones</th>
                             </tr>
                         </thead>
-                        <tbody>
+                        <tbody id="tbodyContratos">
                             <% contratos.forEach(function(contrato) { %>
                             <tr data-estado="<%= contrato.Estado %>">
                                 <td><input class="form-check-input custom-checkbox" type="checkbox"></td>
@@ -249,6 +250,23 @@
                         </tbody>
                     </table>
                 </div>
+                <!-- Pagination footer -->
+                <div class="d-flex align-items-center justify-content-between px-3 py-3 border-top bg-white">
+                    <p class="text-muted small mb-0">
+                        Mostrando <span id="pagContratosInfo">—</span> de <strong id="pagContratosTotal">0</strong> contratos
+                    </p>
+                    <div class="d-flex align-items-center gap-2">
+                        <button id="pagContratosPrev" onclick="pagContratos.prev()"
+                            class="btn btn-sm btn-outline-secondary" disabled>
+                            <i class="bi bi-chevron-left"></i> Anterior
+                        </button>
+                        <span id="pagContratosPage" class="text-muted small px-2">Página 1 de 1</span>
+                        <button id="pagContratosNext" onclick="pagContratos.next()"
+                            class="btn btn-sm btn-outline-secondary" disabled>
+                            Siguiente <i class="bi bi-chevron-right"></i>
+                        </button>
+                    </div>
+                </div>
                 <% } else { %>
                 <div class="empty-state">
                     <i class="bi bi-file-earmark-check display-1 mb-3"></i>
@@ -319,8 +337,9 @@ document.addEventListener('DOMContentLoaded', function() {
             const coincideEstado = !estadoSeleccionado || estado === estadoSeleccionado;
             const coincideTexto = !textoBusqueda || textoFila.includes(textoBusqueda);
             
-            fila.style.display = (coincideEstado && coincideTexto) ? '' : 'none';
+            fila.dataset.filterHidden = (coincideEstado && coincideTexto) ? '' : '1';
         });
+        pagContratos.reset();
     }
     
     // Cambiar estado
@@ -436,5 +455,6 @@ document.addEventListener('DOMContentLoaded', function() {
 </script>
 
     <script src="/publico/js/layout.js?v=1772427290138"></script>
+    <script>const pagContratos = new TablePagination('tbodyContratos', 20);</script>
 </body>
 </html>

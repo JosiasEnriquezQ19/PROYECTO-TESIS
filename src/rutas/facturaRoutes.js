@@ -100,8 +100,12 @@ router.post('/:id/estado', (req, res) => {
     facturaController.cambiarEstado(req, res);
 });
 
-// === RUTAS DE IMPRESIÓN Y EXPORTACIÓN ===
+// === RUTAS DE IMPRESIÓN, EXPORTACIÓN Y CORREO ===
 
+// POST /facturas/:id/enviar-email - Enviar factura por correo
+router.post('/:id/enviar-email', (req, res) => {
+    facturaController.enviarEmail(req, res);
+});
 // GET /facturas/:id/imprimir - Vista de impresión de factura
 router.get('/:id/imprimir', (req, res) => {
     // Redirigir a la vista de detalle con parámetro de impresión

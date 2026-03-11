@@ -14,6 +14,10 @@ router.get('/editar/:id', productoController.mostrarFormularioEditar);
 router.post('/editar/:id', productoController.actualizarProducto);
 router.get('/eliminar/:id', productoController.eliminarProducto);
 
+// Rutas de alertas de stock
+router.get('/alertas', productoController.listarAlertas);
+router.get('/api/alertas-count', productoController.contarAlertasAPI);
+
 // Ruta API para obtener productos (para AJAX)
 router.get('/api/listar', productoController.listarProductosAPI);
 

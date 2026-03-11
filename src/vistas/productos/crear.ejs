@@ -154,6 +154,32 @@
                                         <small class="text-muted">Precio sin IGV</small>
                                     </div>
                                 </div>
+
+                                <div class="col-md-4">
+                                    <div class="form-group-modern">
+                                        <label class="label-modern">Stock Actual</label>
+                                        <div class="input-group">
+                                            <span class="input-group-text input-group-text-modern">
+                                                <i class="bi bi-boxes"></i>
+                                            </span>
+                                            <input type="number" min="0" name="Stock" class="form-control-modern input-modern" placeholder="0" value="0">
+                                        </div>
+                                        <small class="text-muted">Cantidad disponible en inventario</small>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-4">
+                                    <div class="form-group-modern">
+                                        <label class="label-modern">Stock Mínimo <span style="color:#d97706;">&#9888;</span></label>
+                                        <div class="input-group">
+                                            <span class="input-group-text input-group-text-modern">
+                                                <i class="bi bi-exclamation-triangle"></i>
+                                            </span>
+                                            <input type="number" min="0" name="StockMinimo" class="form-control-modern input-modern" placeholder="5" value="5">
+                                        </div>
+                                        <small class="text-muted">Alerta cuando stock ≤ este valor</small>
+                                    </div>
+                                </div>
                             </div>
                             
                             <div class="d-flex justify-content-end gap-3 mt-4 pt-3 border-top">

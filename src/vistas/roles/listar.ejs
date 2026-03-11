@@ -9,6 +9,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/publico/css/layout.css?v=1772427290148">
     <link rel="stylesheet" href="/publico/css/list-views.css">
+    <script src="/publico/js/paginacion.js"></script>
 </head>
 <body>
     <div class="wrapper">
@@ -84,7 +85,7 @@
                                     <th class="text-center">Acciones</th>
                                 </tr>
                             </thead>
-                            <tbody>
+                            <tbody id="tbodyRoles">
                                 <% if (roles && roles.length > 0) { %>
                                     <% roles.forEach(function(rol) { %>
                                         <tr>
@@ -134,6 +135,23 @@
                             </tbody>
                         </table>
                     </div>
+                    <!-- Pagination footer -->
+                    <div class="d-flex align-items-center justify-content-between px-3 py-3 border-top bg-white">
+                        <p class="text-muted small mb-0">
+                            Mostrando <span id="pagRolesInfo">—</span> de <strong id="pagRolesTotal">0</strong> roles
+                        </p>
+                        <div class="d-flex align-items-center gap-2">
+                            <button id="pagRolesPrev" onclick="pagRoles.prev()"
+                                class="btn btn-sm btn-outline-secondary" disabled>
+                                <i class="bi bi-chevron-left"></i> Anterior
+                            </button>
+                            <span id="pagRolesPage" class="text-muted small px-2">Página 1 de 1</span>
+                            <button id="pagRolesNext" onclick="pagRoles.next()"
+                                class="btn btn-sm btn-outline-secondary" disabled>
+                                Siguiente <i class="bi bi-chevron-right"></i>
+                            </button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -167,5 +185,6 @@
         // Menú activo});
     </script>
     <script src="/publico/js/layout.js?v=1772427290148"></script>
+    <script>const pagRoles = new TablePagination('tbodyRoles', 20);</script>
 </body>
 </html>

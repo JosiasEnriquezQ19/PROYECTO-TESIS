@@ -24,6 +24,7 @@
         }
     </script>
     <link rel="stylesheet" href="/publico/css/layout.css?v=1772427290144">
+    <script src="/publico/js/paginacion.js"></script>
     <style>
         body {
             font-family: 'Inter', sans-serif;
@@ -396,14 +397,23 @@
                                 </table>
                             </div>
                             <!-- Pagination footer -->
-                            <div class="px-6 py-4 border-t border-slate-100 flex items-center justify-between">
+                            <div class="px-6 py-4 border-t border-slate-100 flex items-center justify-between gap-4 flex-wrap">
                                 <p class="text-sm text-slate-500">
-                                    Mostrando <span id="visibleCount">
-                                        <%= totalPagos %>
-                                    </span> de <strong>
-                                        <%= totalPagos %>
-                                    </strong> pagos
+                                    Mostrando <span id="pagPagosInfo">—</span> de <strong id="pagPagosTotal">0</strong> pagos
                                 </p>
+                                <div class="flex items-center gap-2">
+                                    <button id="pagPagosPrev" onclick="pagPagos.prev()"
+                                        class="inline-flex items-center gap-1 px-3 py-1.5 text-sm font-medium rounded-lg border border-slate-200 text-slate-600 hover:bg-slate-50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors">
+                                        <span class="material-symbols-outlined text-sm leading-none">chevron_left</span>
+                                        Anterior
+                                    </button>
+                                    <span id="pagPagosPage" class="text-sm text-slate-500 min-w-[110px] text-center">Página 1 de 1</span>
+                                    <button id="pagPagosNext" onclick="pagPagos.next()"
+                                        class="inline-flex items-center gap-1 px-3 py-1.5 text-sm font-medium rounded-lg border border-slate-200 text-slate-600 hover:bg-slate-50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors">
+                                        Siguiente
+                                        <span class="material-symbols-outlined text-sm leading-none">chevron_right</span>
+                                    </button>
+                                </div>
                             </div>
                         </div>
 
@@ -484,22 +494,20 @@
                 function filtrarTabla() {
                     const col = parseInt(campoFiltro.value);
                     const term = valorFiltro.value.toLowerCase().replace(/s\/|\+|\-/g, '').trim();
-                    let vis = 0;
                     document.querySelectorAll('#tbodyPagos tr').forEach(row => {
                         const tds = row.querySelectorAll('td');
                         if (tds.length < 10) return;
                         const cell = tds[col];
                         let cellText = cell ? cell.textContent.toLowerCase().replace(/s\/|\+|\-/g, '').trim() : '';
                         const show = cellText.includes(term);
-                        row.style.display = show ? '' : 'none';
-                        if (show) vis++;
+                        row.dataset.filterHidden = show ? '' : '1';
                     });
-                    const vc = document.getElementById('visibleCount');
-                    if (vc) vc.textContent = vis;
+                    pagPagos.reset();
                 }
             }
         </script>
         <script src="/publico/js/layout.js?v=1772427290144"></script>
+        <script>const pagPagos = new TablePagination('tbodyPagos', 20);</script>
 </body>
 
 </html>

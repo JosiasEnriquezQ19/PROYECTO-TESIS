@@ -15,6 +15,8 @@ SET FOREIGN_KEY_CHECKS = 0;
 
 DROP TRIGGER IF EXISTS after_factura_insert;
 DROP TRIGGER IF EXISTS after_factura_update;
+DROP TRIGGER IF EXISTS after_detalle_factura_insert;
+DROP TRIGGER IF EXISTS after_detalle_factura_delete;
 DROP VIEW IF EXISTS VistaAsistenciaSemanal;
 DROP PROCEDURE IF EXISTS CalcularPagoSemanal;
 DROP PROCEDURE IF EXISTS RegistrarAsistencia;
@@ -119,6 +121,8 @@ CREATE TABLE PRODUCTO(
     Tipo VARCHAR(100),
     UnidadMedida VARCHAR(20) DEFAULT 'UNID',
     PrecioUnitario DECIMAL(12,2) NOT NULL,
+    Stock INT DEFAULT 0 COMMENT 'Stock actual disponible',
+    StockMinimo INT DEFAULT 5 COMMENT 'Stock mínimo para alerta',
     Estado TINYINT(1) DEFAULT 1,
     FechaRegistro DATETIME DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
@@ -432,17 +436,17 @@ INSERT INTO CLIENTE (Documento, RazonSocial, Direccion, Telefono, Celular, Email
 -- -----------------------------------------------
 -- 2.6 PRODUCTO (10 registros)
 -- -----------------------------------------------
-INSERT INTO PRODUCTO (Codigo, Nombre, Descripcion, Marca, Modelo, Tipo, UnidadMedida, PrecioUnitario) VALUES
-('BOM-SUM-001', 'Bomba Sumergible 1HP', 'Bomba sumergible para pozo profundo, acero inoxidable, 1HP, 220V', 'Pedrollo', '4SR1m/13', 'Sumergible', 'UNID', 850.00),
-('BOM-SUM-002', 'Bomba Sumergible 2HP', 'Bomba sumergible para aguas limpias, 2HP, 380V, caudal 5m3/h', 'Grundfos', 'SP 5-50', 'Sumergible', 'UNID', 1200.00),
-('BOM-SUM-003', 'Bomba Sumergible 3HP', 'Bomba sumergible para aguas residuales con solidos hasta 50mm', 'Ebara', 'Drainage DVS', 'Sumergible', 'UNID', 1800.00),
-('ELE-001', 'Electrobomba Centrifuga 1HP', 'Electrobomba horizontal monofasica, 1HP, caudal 1.5m3/h', 'Pedrollo', 'PKm 60', 'Centrifuga', 'UNID', 480.00),
-('ELE-002', 'Electrobomba Autocebante 2HP', 'Electrobomba autocebante para riego, 2HP, 380V', 'Lowara', 'EASY', 'Autocebante', 'UNID', 750.00),
-('ELE-003', 'Electrobomba Presurizadora 0.75HP', 'Electrobomba para sistema de presion constante, 0.75HP', 'Grundfos', 'SCALA2', 'Presurizadora', 'UNID', 920.00),
-('BOM-SUP-001', 'Bomba Superficie 1HP', 'Bomba de superficie para riego, 1HP, caudal 3m3/h', 'Pedrollo', 'CPm 158', 'Superficie', 'UNID', 420.00),
-('BOM-RES-001', 'Bomba Aguas Residuales 2HP', 'Bomba sumergible para aguas residuales con triturador', 'Franklin', 'SEWAGE', 'Residuales', 'UNID', 2100.00),
-('SIS-BOM-001', 'Sistema Hidroneumatico 500L', 'Tanque hidroneumatico + bomba 2HP + controles, capacidad 500L', 'Grundfos', 'Hydro 500', 'Sistema', 'UNID', 2800.00),
-('ACC-CON-002', 'Controlador de Bomba', 'Controlador electronico para bomba con proteccion por sequia', 'Franklin', 'Control Pro', 'Accesorio', 'UNID', 120.00);
+INSERT INTO PRODUCTO (Codigo, Nombre, Descripcion, Marca, Modelo, Tipo, UnidadMedida, PrecioUnitario, Stock, StockMinimo) VALUES
+('BOM-SUM-001', 'Bomba Sumergible 1HP', 'Bomba sumergible para pozo profundo, acero inoxidable, 1HP, 220V', 'Pedrollo', '4SR1m/13', 'Sumergible', 'UNID', 850.00, 8, 5),
+('BOM-SUM-002', 'Bomba Sumergible 2HP', 'Bomba sumergible para aguas limpias, 2HP, 380V, caudal 5m3/h', 'Grundfos', 'SP 5-50', 'Sumergible', 'UNID', 1200.00, 3, 5),
+('BOM-SUM-003', 'Bomba Sumergible 3HP', 'Bomba sumergible para aguas residuales con solidos hasta 50mm', 'Ebara', 'Drainage DVS', 'Sumergible', 'UNID', 1800.00, 0, 3),
+('ELE-001', 'Electrobomba Centrifuga 1HP', 'Electrobomba horizontal monofasica, 1HP, caudal 1.5m3/h', 'Pedrollo', 'PKm 60', 'Centrifuga', 'UNID', 480.00, 12, 5),
+('ELE-002', 'Electrobomba Autocebante 2HP', 'Electrobomba autocebante para riego, 2HP, 380V', 'Lowara', 'EASY', 'Autocebante', 'UNID', 750.00, 2, 4),
+('ELE-003', 'Electrobomba Presurizadora 0.75HP', 'Electrobomba para sistema de presion constante, 0.75HP', 'Grundfos', 'SCALA2', 'Presurizadora', 'UNID', 920.00, 6, 3),
+('BOM-SUP-001', 'Bomba Superficie 1HP', 'Bomba de superficie para riego, 1HP, caudal 3m3/h', 'Pedrollo', 'CPm 158', 'Superficie', 'UNID', 420.00, 15, 5),
+('BOM-RES-001', 'Bomba Aguas Residuales 2HP', 'Bomba sumergible para aguas residuales con triturador', 'Franklin', 'SEWAGE', 'Residuales', 'UNID', 2100.00, 1, 3),
+('SIS-BOM-001', 'Sistema Hidroneumatico 500L', 'Tanque hidroneumatico + bomba 2HP + controles, capacidad 500L', 'Grundfos', 'Hydro 500', 'Sistema', 'UNID', 2800.00, 4, 2),
+('ACC-CON-002', 'Controlador de Bomba', 'Controlador electronico para bomba con proteccion por sequia', 'Franklin', 'Control Pro', 'Accesorio', 'UNID', 120.00, 0, 10);
 
 -- -----------------------------------------------
 -- 2.7 PROFORMA (10 registros)
@@ -871,6 +875,26 @@ BEGIN
     END IF;
 END//
 
+-- Trigger: Al insertar un detalle de factura, descontar stock del producto
+CREATE TRIGGER after_detalle_factura_insert
+AFTER INSERT ON DETALLE_FACTURA
+FOR EACH ROW
+BEGIN
+    UPDATE PRODUCTO 
+    SET Stock = GREATEST(Stock - CAST(NEW.Cantidad AS SIGNED), 0)
+    WHERE IdProducto = NEW.IdProducto;
+END//
+
+-- Trigger: Al eliminar un detalle de factura, restaurar stock del producto
+CREATE TRIGGER after_detalle_factura_delete
+AFTER DELETE ON DETALLE_FACTURA
+FOR EACH ROW
+BEGIN
+    UPDATE PRODUCTO 
+    SET Stock = Stock + CAST(OLD.Cantidad AS SIGNED)
+    WHERE IdProducto = OLD.IdProducto;
+END//
+
 DELIMITER ;
 
 -- =============================================
@@ -900,3 +924,4 @@ UNION ALL SELECT 'EMPLEADO', COUNT(*) FROM EMPLEADO
 UNION ALL SELECT 'ASISTENCIA', COUNT(*) FROM ASISTENCIA
 UNION ALL SELECT 'PAGO', COUNT(*) FROM PAGO
 UNION ALL SELECT 'notificaciones', COUNT(*) FROM notificaciones;
+UNION ALL SELECT 'auditoria', COUNT(*) FROM auditoria;

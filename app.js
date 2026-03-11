@@ -22,7 +22,10 @@ app.use(session({
     store: new FileStore({ path: './sessions' }),
     secret: 'carsil-secret', // Cambia esto por una clave segura
     resave: false,
-    saveUninitialized: false
+    saveUninitialized: false,
+    cookie: {
+        maxAge: 20 * 60 * 1000 // 20 minutos de inactividad
+    }
 }));
 app.use(flash());
 
@@ -32,15 +35,111 @@ app.use((req, res, next) => {
     next();
 });
 
-// Middleware global para pasar información del usuario a todas las vistas
+// Importar modelo Notificacion para uso en middleware
+const Notificacion = require('./src/modelos/Notificacion');
 const { tienePermiso } = require('./src/middleware/auth');
 
-app.use((req, res, next) => {
+// Middleware para cargar datos globales en res.locals
+app.use(async (req, res, next) => {
+    // Garantizar que LoginTime siempre exista en la sesión
+    if (req.session && req.session.usuario && !req.session.usuario.LoginTime) {
+        req.session.usuario.LoginTime = Date.now();
+        // Guardar explícitamente para que express-session lo registre en disco
+        req.session.save();
+    }
     res.locals.user = req.session && req.session.usuario ? req.session.usuario : null;
-    // Hacer disponible la función tienePermiso en todas las vistas
     res.locals.tienePermiso = tienePermiso;
+
+    if (res.locals.user) {
+        try {
+            res.locals.unreadNotificationsCount = await Notificacion.contarNoLeidas();
+        } catch (error) {
+            console.error('Error fetching unread notifications:', error);
+            res.locals.unreadNotificationsCount = 0;
+        }
+    } else {
+        res.locals.unreadNotificationsCount = 0;
+    }
     next();
 });
+
+// === MIDDLEWARE DE SEGURIDAD GLOBAL ===
+// Proteger TODAS las rutas por defecto, excepto las explícitamente públicas
+app.use((req, res, next) => {
+    const publicPathsStrict = ['/login', '/login/procesar', '/recuperar', '/recuperar/procesar', '/recuperar/restablecer'];
+    const publicPrefixes = ['/css/', '/js/', '/img/', '/publico/', '/api/'];
+
+    // Comprobar rutas exactas
+    if (publicPathsStrict.includes(req.path)) {
+        return next();
+    }
+
+    // Comprobar prefijos
+    const isPublicPrefix = publicPrefixes.some(prefix => req.path.startsWith(prefix));
+    if (isPublicPrefix) {
+        return next();
+    }
+
+    // Si no es pública, requerir sesión
+    if (!req.session || !req.session.usuario) {
+        req.flash('error', 'Por seguridad, debes iniciar sesión para acceder al sistema');
+        return res.redirect('/login');
+    }
+
+    // Evitar caché de páginas protegidas
+    res.set('Cache-Control', 'no-store, no-cache, must-revalidate, private');
+    next();
+});
+// =====================================
+
+// === MIDDLEWARE DE CONTROL DE ROLES ===
+// Verificar permisos de rol según la ruta solicitada
+app.use((req, res, next) => {
+    if (!req.session || !req.session.usuario) return next();
+
+    const usuario = req.session.usuario;
+
+    // Permitir siempre el marcado de asistencia para todos los roles
+    if (req.path === '/asistencia/marcar' || req.path.startsWith('/asistencia/marcar/')) {
+        return next();
+    }
+
+    // Empleados (rol 2) solo pueden acceder a /asistencia/marcar
+    if (usuario.IdRol === 2) {
+        req.flash('error', 'No tiene permisos para acceder a esta sección');
+        return res.redirect('/asistencia/marcar');
+    }
+
+    // Mapa de rutas a módulos de permisos
+    const pathModuleMap = {
+        '/proformas': 'proformas',
+        '/facturas': 'facturas',
+        '/clientes': 'clientes',
+        '/productos': 'productos',
+        '/empleados': 'empleados',
+        '/pagos': 'pagos',
+        '/reportes': 'reportes',
+        '/usuarios': 'usuarios',
+        '/asistencia': 'asistencias',
+        '/empresa': 'empresa',
+        '/auditoria': 'auditoria',
+        '/roles': 'usuarios'
+    };
+
+    // Buscar el módulo correspondiente a la ruta actual
+    const moduloPath = Object.keys(pathModuleMap).find(p => req.path.startsWith(p));
+
+    if (moduloPath) {
+        const modulo = pathModuleMap[moduloPath];
+        if (!tienePermiso(usuario, modulo)) {
+            req.flash('error', 'No tiene permisos para acceder a esta sección');
+            return res.redirect('/menu/principal');
+        }
+    }
+
+    next();
+});
+// =====================================
 
 // Rutas
 const loginRoutes = require('./src/rutas/loginRoutes');

@@ -47,8 +47,8 @@ class Auditoria {
 
         const [[{ total }]] = await db.query(`SELECT COUNT(*) as total FROM AUDITORIA ${where}`, params);
         const [rows] = await db.query(
-            `SELECT * FROM AUDITORIA ${where} ORDER BY FechaHora DESC LIMIT ? OFFSET ?`,
-            [...params, limite, offset]
+            `SELECT * FROM AUDITORIA ${where} ORDER BY FechaHora DESC LIMIT ${Number(limite)} OFFSET ${Number(offset)}`,
+            params
         );
 
         return { rows, total, paginas: Math.ceil(total / limite) };

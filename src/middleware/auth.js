@@ -4,6 +4,8 @@ exports.verificarAutenticacion = (req, res, next) => {
     if (req.session && req.session.usuario) {
         // Si está autenticado, guarda el usuario en req.user para usarlo en las vistas
         req.user = req.session.usuario;
+        // Evitar que el navegador cachee páginas protegidas
+        res.set('Cache-Control', 'no-store, no-cache, must-revalidate, private');
         return next();
     }
     

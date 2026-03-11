@@ -24,6 +24,7 @@
         }
     </script>
     <link rel="stylesheet" href="/publico/css/layout.css?v=1772427290149">
+    <script src="/publico/js/paginacion.js"></script>
     <style>
         body {
             font-family: 'Inter', sans-serif;
@@ -298,6 +299,25 @@
                                                                             <% } %>
                                                         </tbody>
                                                     </table>
+                                                </div>
+                                                <!-- Pagination footer -->
+                                                <div class="px-6 py-4 border-t border-slate-100 flex items-center justify-between gap-4 flex-wrap">
+                                                    <p class="text-sm text-slate-500">
+                                                        Mostrando <span id="pagUsuariosInfo">—</span> de <strong id="pagUsuariosTotal">0</strong> usuarios
+                                                    </p>
+                                                    <div class="flex items-center gap-2">
+                                                        <button id="pagUsuariosPrev" onclick="pagUsuarios.prev()"
+                                                            class="inline-flex items-center gap-1 px-3 py-1.5 text-sm font-medium rounded-lg border border-slate-200 text-slate-600 hover:bg-slate-50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors">
+                                                            <span class="material-symbols-outlined text-sm leading-none">chevron_left</span>
+                                                            Anterior
+                                                        </button>
+                                                        <span id="pagUsuariosPage" class="text-sm text-slate-500 min-w-[110px] text-center">Página 1 de 1</span>
+                                                        <button id="pagUsuariosNext" onclick="pagUsuarios.next()"
+                                                            class="inline-flex items-center gap-1 px-3 py-1.5 text-sm font-medium rounded-lg border border-slate-200 text-slate-600 hover:bg-slate-50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors">
+                                                            Siguiente
+                                                            <span class="material-symbols-outlined text-sm leading-none">chevron_right</span>
+                                                        </button>
+                                                    </div>
                                                 </div>
                                             </div>
 
@@ -776,8 +796,9 @@
                     const tds = row.querySelectorAll('td');
                     if (tds.length < 7) return;
                     const show = tds[col] && tds[col].textContent.toLowerCase().includes(term);
-                    row.style.display = show ? '' : 'none';
+                    row.dataset.filterHidden = show ? '' : '1';
                 });
+                pagUsuarios.reset();
             }
         }
 
@@ -873,6 +894,7 @@
 
     </script>
     <script src="/publico/js/layout.js?v=1772427290149"></script>
+    <script>const pagUsuarios = new TablePagination('tbodyUsuarios', 20);</script>
 </body>
 
 </html>
