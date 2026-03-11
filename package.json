@@ -4,7 +4,13 @@
   "main": "app.js",
   "scripts": {
     "start": "node app.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage"
+  },
+  "jest": {
+    "testEnvironment": "node",
+    "testMatch": ["**/tests/**/*.test.js"]
   },
   "keywords": [],
   "author": "",
@@ -25,5 +31,8 @@
     "nodemailer": "^7.0.3",
     "pdfkit": "^0.17.2",
     "session-file-store": "^1.5.0"
+  },
+  "devDependencies": {
+    "jest": "^30.3.0"
   }
 }
