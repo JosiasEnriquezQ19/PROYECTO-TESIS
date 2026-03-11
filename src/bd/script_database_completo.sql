@@ -26,7 +26,6 @@ DROP TABLE IF EXISTS notificaciones;
 DROP TABLE IF EXISTS PAGO;
 DROP TABLE IF EXISTS ASISTENCIA;
 DROP TABLE IF EXISTS EMPLEADO;
-DROP TABLE IF EXISTS CONTRATO;
 DROP TABLE IF EXISTS VENTA;
 DROP TABLE IF EXISTS DETALLE_FACTURA;
 DROP TABLE IF EXISTS FACTURA;
@@ -229,23 +228,6 @@ CREATE TABLE VENTA(
     Total DECIMAL(12,2) NOT NULL,
     Estado VARCHAR(20),
     FechaRegistro DATETIME DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (IdFactura) REFERENCES FACTURA(IdFactura)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
--- Tabla para contratos
-CREATE TABLE CONTRATO(
-    IdContrato INT PRIMARY KEY AUTO_INCREMENT,
-    Codigo VARCHAR(20) NOT NULL,
-    IdCliente INT NOT NULL,
-    IdFactura INT,
-    NumeroCuentaBanco VARCHAR(50),
-    FechaInicio DATE NOT NULL,
-    FechaFin DATE,
-    PagoSemanal DECIMAL(12,2),
-    Estado VARCHAR(20) DEFAULT 'ACTIVO',
-    Terminos TEXT,
-    FechaRegistro DATETIME DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (IdCliente) REFERENCES CLIENTE(IdCliente),
     FOREIGN KEY (IdFactura) REFERENCES FACTURA(IdFactura)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
@@ -539,21 +521,6 @@ INSERT INTO VENTA (IdFactura, FechaVenta, Total, Estado) VALUES
 (10, '2025-05-10', 1003.00, 'PENDIENTE');
 
 -- -----------------------------------------------
--- 2.13 CONTRATO (10 registros)
--- -----------------------------------------------
-INSERT INTO CONTRATO (Codigo, IdCliente, IdFactura, NumeroCuentaBanco, FechaInicio, FechaFin, PagoSemanal, Estado, Terminos) VALUES
-('CON-2025-001', 1, 1, '1234567890123', '2025-01-20', '2025-07-20', 400.00, 'ACTIVO', 'Contrato de suministro e instalación de bombas sumergibles. Incluye garantía de 12 meses.'),
-('CON-2025-002', 2, 2, '2345678901234', '2025-01-25', '2025-12-25', 500.00, 'ACTIVO', 'Contrato de bombeo para operación minera. Mantenimiento mensual incluido.'),
-('CON-2025-003', 4, 3, '3456789012345', '2025-02-20', '2025-08-20', 700.00, 'ACTIVO', 'Contrato con municipalidad para mantenimiento de fuentes ornamentales.'),
-('CON-2025-004', 6, 4, '4567890123456', '2025-03-10', '2025-09-10', 600.00, 'ACTIVO', 'Contrato industrial para planta textil. Servicio técnico quincenal.'),
-('CON-2025-005', 8, 5, '5678901234567', '2025-03-20', '2025-06-20', 350.00, 'FINALIZADO', 'Contrato breve para instalación en cervecería artesanal.'),
-('CON-2025-006', 9, 6, '6789012345678', '2025-04-10', '2026-04-10', 280.00, 'ACTIVO', 'Contrato anual de mantenimiento sistema hidroneumático condominio.'),
-('CON-2025-007', 3, NULL, '7890123456789', '2025-05-01', '2025-11-01', 250.00, 'ACTIVO', 'Contrato de servicio de riego para fundo agroindustrial.'),
-('CON-2025-008', 5, NULL, '8901234567890', '2025-05-15', '2026-05-15', 300.00, 'ACTIVO', 'Contrato mantenimiento bombas del hotel. Visitas semanales.'),
-('CON-2025-009', 7, NULL, '9012345678901', '2025-06-01', '2025-12-01', 450.00, 'PENDIENTE', 'Contrato en negociación para pesquera del norte.'),
-('CON-2025-010', 10, NULL, '0123456789012', '2025-06-15', '2026-06-15', 200.00, 'PENDIENTE', 'Contrato de mantenimiento equipos de laboratorio UNI.');
-
--- -----------------------------------------------
 -- 2.14 EMPLEADO (10 registros - vinculados a usuarios)
 -- -----------------------------------------------
 INSERT INTO EMPLEADO (IdUsuario, Cargo, Area, FechaContratacion, TipoContrato, SueldoBase, Banco, NumeroCuenta, TipoCuenta) VALUES
@@ -610,7 +577,6 @@ INSERT INTO notificaciones (Tipo, Modulo, Mensaje, Detalle, Usuario, Leida) VALU
 ('ACTUALIZAR', 'facturas', 'Se actualizó estado de factura', 'Factura: FAC-2025-001 cambió a PAGADA', 'Juan Carlos Perez Lopez', 0),
 ('CREAR', 'empleados', 'Se registró un nuevo empleado', 'Empleado: Maria Elena Garcia Torres', 'Juan Carlos Perez Lopez', 0),
 ('ELIMINAR', 'clientes', 'Se desactivó un cliente', 'Cliente: Universidad Nacional de Ingenieria', 'Ana Lucia Martinez Rios', 0),
-('CREAR', 'contratos', 'Se creó un nuevo contrato', 'Contrato: CON-2025-001 con Constructora Los Andes', 'Juan Carlos Perez Lopez', 0),
 ('ACTUALIZAR', 'empleados', 'Se actualizó información de empleado', 'Empleado: Pedro Antonio Rodriguez Silva - Cambio de área', 'Ana Lucia Martinez Rios', 0);
 
 
@@ -624,7 +590,6 @@ insert into auditoria (Usuario, Accion, Tabla, Detalle) values
 ('Juan Carlos Perez Lopez', 'UPDATE', 'FACTURA', 'Factura FAC-2025-001 cambió a PAGADA'),
 ('Juan Carlos Perez Lopez', 'INSERT', 'EMPLEADO', 'Se registró el empleado Maria Elena Garcia Torres'),
 ('Ana Lucia Martinez Rios', 'DELETE', 'CLIENTE', 'Se desactivó el cliente Universidad Nacional de Ingenieria'),
-('Juan Carlos Perez Lopez', 'INSERT', 'CONTRATO', 'Se creó el contrato CON-2025-001 con Constructora Los Andes'),
 ('Ana Lucia Martinez Rios', 'UPDATE', 'EMPLEADO', 'Empleado Pedro Antonio Rodriguez Silva - Cambio de área');
 
 
@@ -919,7 +884,6 @@ UNION ALL SELECT 'CONDICIONES_PRODUCTO', COUNT(*) FROM CONDICIONES_PRODUCTO
 UNION ALL SELECT 'FACTURA', COUNT(*) FROM FACTURA
 UNION ALL SELECT 'DETALLE_FACTURA', COUNT(*) FROM DETALLE_FACTURA
 UNION ALL SELECT 'VENTA', COUNT(*) FROM VENTA
-UNION ALL SELECT 'CONTRATO', COUNT(*) FROM CONTRATO
 UNION ALL SELECT 'EMPLEADO', COUNT(*) FROM EMPLEADO
 UNION ALL SELECT 'ASISTENCIA', COUNT(*) FROM ASISTENCIA
 UNION ALL SELECT 'PAGO', COUNT(*) FROM PAGO

@@ -183,7 +183,7 @@ document.addEventListener('DOMContentLoaded', function () {
             if (lower.includes('sesión') || lower.includes('sesion') || lower.includes('cerrar')) {
                 return { btn: 'Sí, cerrar sesión', icon: 'bi-box-arrow-left', cancelBtn: 'Cancelar, seguir aquí' };
             }
-            if (lower.includes('crear') || lower.includes('contrato')) {
+            if (lower.includes('crear')) {
                 return { btn: 'Sí, continuar', icon: 'bi-check-lg', cancelBtn: 'Cancelar' };
             }
             return { btn: 'Sí, continuar', icon: 'bi-exclamation-triangle', cancelBtn: 'Cancelar, mantener todo' };

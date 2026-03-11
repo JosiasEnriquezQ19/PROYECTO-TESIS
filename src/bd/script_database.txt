@@ -183,23 +183,6 @@ CREATE TABLE VENTA(
     FOREIGN KEY (IdFactura) REFERENCES FACTURA(IdFactura)
 );
 
--- Tabla para contratos
-CREATE TABLE CONTRATO(
-    IdContrato INT PRIMARY KEY AUTO_INCREMENT,
-    Codigo VARCHAR(20) NOT NULL,
-    IdCliente INT NOT NULL,
-    IdFactura INT,
-    NumeroCuentaBanco VARCHAR(50),
-    FechaInicio DATE NOT NULL,
-    FechaFin DATE,
-    PagoSemanal DECIMAL(12,2),
-    Estado VARCHAR(20) DEFAULT 'ACTIVO',
-    Terminos TEXT,
-    FechaRegistro DATETIME DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (IdCliente) REFERENCES CLIENTE(IdCliente),
-    FOREIGN KEY (IdFactura) REFERENCES FACTURA(IdFactura)
-);
-
 
 
 

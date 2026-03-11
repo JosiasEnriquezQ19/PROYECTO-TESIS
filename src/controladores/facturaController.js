@@ -408,7 +408,7 @@ class FacturaController {
 
             await this.facturaModel.eliminar(idFactura);
 
-            const mensaje = verificacion.tieneVentas || verificacion.tieneContratos ?
+            const mensaje = verificacion.tieneVentas ?
                 `Factura inactivada exitosamente. ${verificacion.razon}` :
                 'Factura inactivada exitosamente';
 

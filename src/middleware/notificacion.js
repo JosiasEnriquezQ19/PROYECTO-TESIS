@@ -11,8 +11,7 @@ const moduloIconos = {
     asistencias: 'bi-calendar-check',
     usuarios: 'bi-shield-check',
     roles: 'bi-key',
-    empresa: 'bi-gear',
-    contratos: 'bi-file-earmark-medical'
+    empresa: 'bi-gear'
 };
 
 // Nombres legibles por modulo
@@ -26,8 +25,7 @@ const moduloNombres = {
     asistencias: 'Asistencia',
     usuarios: 'Usuario',
     roles: 'Rol',
-    empresa: 'Empresa',
-    contratos: 'Contrato'
+    empresa: 'Empresa'
 };
 
 /**

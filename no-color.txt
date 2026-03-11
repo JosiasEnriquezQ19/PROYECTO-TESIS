@@ -1,0 +1,2445 @@
+
+> proyecto-gestion-proforma@1.0.0 test
+> jest --coverage --no-colors
+
+FAIL tests/modelos/Usuario.test.js
+  ● Console
+
+    console.log
+      Datos que se actualizarán: []
+
+      at Usuario.log [as actualizar] (src/modelos/Usuario.js:105:21)
+
+    console.log
+      Contraseña actualizada para usuario ID: 1
+
+      at Usuario.log [as actualizar] (src/modelos/Usuario.js:101:29)
+
+    console.log
+      Datos que se actualizarán: [ 'Nombres', 'Clave' ]
+
+      at Usuario.log [as actualizar] (src/modelos/Usuario.js:105:21)
+
+    console.log
+      Contrasena vacia detectada en modelo - eliminada del update
+
+      at Usuario.log [as actualizar] (src/modelos/Usuario.js:98:29)
+
+    console.log
+      Datos que se actualizarán: [ 'Nombres' ]
+
+      at Usuario.log [as actualizar] (src/modelos/Usuario.js:105:21)
+
+    console.log
+      Datos que se actualizarán: [ 'Nombres' ]
+
+      at Usuario.log [as actualizar] (src/modelos/Usuario.js:105:21)
+
+  ● Usuario Model › autenticar › migración: debe autenticar con clave plana y hashear
+
+    TypeError: Cannot read properties of undefined (reading 'Clave')
+
+    [0m [90m 178 |[39m
+     [90m 179 |[39m             [36mconst[39m usuario [33m=[39m resultados[[35m0[39m][33m;[39m
+    [31m[1m>[22m[39m[90m 180 |[39m             [36mconst[39m claveGuardada [33m=[39m usuario[33m.[39m[33mClave[39m [33m||[39m [32m''[39m[33m;[39m
+     [90m     |[39m                                           [31m[1m^[22m[39m
+     [90m 181 |[39m             [36mlet[39m autenticado [33m=[39m [36mfalse[39m[33m;[39m
+     [90m 182 |[39m
+     [90m 183 |[39m             [90m// Soporte para claves hasheadas con bcrypt.[39m[0m
+
+      at Usuario.Clave [as autenticar] (src/modelos/Usuario.js:180:43)
+      at Object.<anonymous> (tests/modelos/Usuario.test.js:162:25)
+
+PASS tests/servicios/emailService.test.js
+  ● Console
+
+    console.log
+      [dotenv@17.3.1] injecting env (3) from .env -- tip: 🔐 prevent committing .env to code: https://dotenvx.com/precommit
+
+      at _log (node_modules/dotenv/lib/main.js:139:11)
+
+    console.error
+      Error enviando email factura: Error: SMTP connection refused
+          at Object.<anonymous> (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\tests\servicios\emailService.test.js:114:44)
+          at Promise.finally.completed (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-circus\build\jestAdapterInit.js:1557:28)
+          at new Promise (<anonymous>)
+          at callAsyncCircusFn (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-circus\build\jestAdapterInit.js:1497:10)
+          at _callCircusTest (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-circus\build\jestAdapterInit.js:1007:40)
+          at processTicksAndRejections (node:internal/process/task_queues:104:5)
+          at _runTest (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-circus\build\jestAdapterInit.js:947:3)
+          at E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-circus\build\jestAdapterInit.js:849:7
+          at _runTestsForDescribeBlock (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-circus\build\jestAdapterInit.js:862:11)
+          at _runTestsForDescribeBlock (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-circus\build\jestAdapterInit.js:857:11)
+          at _runTestsForDescribeBlock (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-circus\build\jestAdapterInit.js:857:11)
+          at run (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-circus\build\jestAdapterInit.js:761:3)
+          at runAndTransformResultsToJestFormat (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-circus\build\jestAdapterInit.js:1918:21)
+          at jestAdapter (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-circus\build\runner.js:101:19)
+          at runTestInternal (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-runner\build\index.js:275:16)
+          at runTest (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-runner\build\index.js:343:7)
+
+    [0m [90m 244 |[39m             [36mreturn[39m { exito[33m:[39m [36mtrue[39m[33m,[39m mensaje[33m:[39m [32m`Factura enviada con PDF a ${correoDestino}`[39m[33m,[39m info }[33m;[39m
+     [90m 245 |[39m         } [36mcatch[39m (error) {
+    [31m[1m>[22m[39m[90m 246 |[39m             console[33m.[39merror([32m'Error enviando email factura:'[39m[33m,[39m error)[33m;[39m
+     [90m     |[39m                     [31m[1m^[22m[39m
+     [90m 247 |[39m             [36mthrow[39m [36mnew[39m [33mError[39m([32m`Error al enviar correo: ${error.message}`[39m)[33m;[39m
+     [90m 248 |[39m         }
+     [90m 249 |[39m     }[0m
+
+      at EmailService.error [as enviarFactura] (src/servicios/emailService.js:246:21)
+      at Object.<anonymous> (tests/servicios/emailService.test.js:116:13)
+
+    console.error
+      Error enviando email proforma: Error: Network error
+          at Object.<anonymous> (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\tests\servicios\emailService.test.js:188:44)
+          at Promise.finally.completed (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-circus\build\jestAdapterInit.js:1557:28)
+          at new Promise (<anonymous>)
+          at callAsyncCircusFn (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-circus\build\jestAdapterInit.js:1497:10)
+          at _callCircusTest (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-circus\build\jestAdapterInit.js:1007:40)
+          at processTicksAndRejections (node:internal/process/task_queues:104:5)
+          at _runTest (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-circus\build\jestAdapterInit.js:947:3)
+          at E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-circus\build\jestAdapterInit.js:849:7
+          at _runTestsForDescribeBlock (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-circus\build\jestAdapterInit.js:862:11)
+          at _runTestsForDescribeBlock (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-circus\build\jestAdapterInit.js:857:11)
+          at _runTestsForDescribeBlock (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-circus\build\jestAdapterInit.js:857:11)
+          at run (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-circus\build\jestAdapterInit.js:761:3)
+          at runAndTransformResultsToJestFormat (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-circus\build\jestAdapterInit.js:1918:21)
+          at jestAdapter (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-circus\build\runner.js:101:19)
+          at runTestInternal (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-runner\build\index.js:275:16)
+          at runTest (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-runner\build\index.js:343:7)
+
+    [0m [90m 306 |[39m             [36mreturn[39m { exito[33m:[39m [36mtrue[39m[33m,[39m mensaje[33m:[39m [32m`Proforma enviada con PDF a ${correoDestino}`[39m[33m,[39m info }[33m;[39m
+     [90m 307 |[39m         } [36mcatch[39m (error) {
+    [31m[1m>[22m[39m[90m 308 |[39m             console[33m.[39merror([32m'Error enviando email proforma:'[39m[33m,[39m error)[33m;[39m
+     [90m     |[39m                     [31m[1m^[22m[39m
+     [90m 309 |[39m             [36mthrow[39m [36mnew[39m [33mError[39m([32m`Error al enviar correo: ${error.message}`[39m)[33m;[39m
+     [90m 310 |[39m         }
+     [90m 311 |[39m     }[0m
+
+      at EmailService.error [as enviarProforma] (src/servicios/emailService.js:308:21)
+      at Object.<anonymous> (tests/servicios/emailService.test.js:190:13)
+
+PASS tests/rutas/loginRoutes.test.js
+PASS tests/controladores/reporteController.test.js
+  ● Console
+
+    console.log
+      Renderizando dashboard de reportes...
+
+      at ReporteController.log [as mostrarReportes] (src/controladores/reporteController.js:9:21)
+
+    console.log
+      Renderizando dashboard de reportes...
+
+      at ReporteController.log [as mostrarReportes] (src/controladores/reporteController.js:9:21)
+
+    console.error
+      Error al mostrar reportes: Error: DB Error
+          at Object.<anonymous> (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\tests\controladores\reporteController.test.js:47:67)
+          at Promise.finally.completed (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-circus\build\jestAdapterInit.js:1557:28)
+          at new Promise (<anonymous>)
+          at callAsyncCircusFn (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-circus\build\jestAdapterInit.js:1497:10)
+          at _callCircusTest (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-circus\build\jestAdapterInit.js:1007:40)
+          at _runTest (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-circus\build\jestAdapterInit.js:947:3)
+          at E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-circus\build\jestAdapterInit.js:849:7
+          at _runTestsForDescribeBlock (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-circus\build\jestAdapterInit.js:862:11)
+          at _runTestsForDescribeBlock (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-circus\build\jestAdapterInit.js:857:11)
+          at _runTestsForDescribeBlock (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-circus\build\jestAdapterInit.js:857:11)
+          at run (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-circus\build\jestAdapterInit.js:761:3)
+          at runAndTransformResultsToJestFormat (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-circus\build\jestAdapterInit.js:1918:21)
+          at jestAdapter (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-circus\build\runner.js:101:19)
+          at runTestInternal (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-runner\build\index.js:275:16)
+          at runTest (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-runner\build\index.js:343:7)
+
+    [0m [90m 16 |[39m             })[33m;[39m
+     [90m 17 |[39m         } [36mcatch[39m (error) {
+    [31m[1m>[22m[39m[90m 18 |[39m             console[33m.[39merror([32m'Error al mostrar reportes:'[39m[33m,[39m error)[33m;[39m
+     [90m    |[39m                     [31m[1m^[22m[39m
+     [90m 19 |[39m             res[33m.[39mstatus([35m500[39m)[33m.[39msend([32m'Error interno del servidor: '[39m [33m+[39m error[33m.[39mmessage)[33m;[39m
+     [90m 20 |[39m         }
+     [90m 21 |[39m     }[0m
+
+      at ReporteController.error [as mostrarReportes] (src/controladores/reporteController.js:18:21)
+      at Object.<anonymous> (tests/controladores/reporteController.test.js:49:13)
+
+    console.log
+      🔍 [proformasPorMes] Iniciando consulta...
+
+      at ReporteController.log [as proformasPorMes] (src/controladores/reporteController.js:41:21)
+
+    console.log
+      ✅ Datos PROFORMA obtenidos: 2 registros
+
+      at ReporteController.log [as proformasPorMes] (src/controladores/reporteController.js:56:21)
+
+    console.log
+      📊 Datos finales para el gráfico: [
+        { mes: '2023-01', cantidad: 5, total_ventas: 500 },
+        { mes: '2023-02', cantidad: 3, total_ventas: 300 }
+      ]
+
+      at ReporteController.log [as proformasPorMes] (src/controladores/reporteController.js:85:21)
+
+    console.log
+      🔍 [proformasPorMes] Iniciando consulta...
+
+      at ReporteController.log [as proformasPorMes] (src/controladores/reporteController.js:41:21)
+
+    console.log
+      ✅ Datos PROFORMA obtenidos: 0 registros
+
+      at ReporteController.log [as proformasPorMes] (src/controladores/reporteController.js:56:21)
+
+    console.log
+      🔄 PROFORMA vacía, intentando FACTURA...
+
+      at ReporteController.log [as proformasPorMes] (src/controladores/reporteController.js:60:25)
+
+    console.log
+      ✅ Datos FACTURA obtenidos: 1 registros
+
+      at ReporteController.log [as proformasPorMes] (src/controladores/reporteController.js:72:25)
+
+    console.log
+      📊 Datos finales para el gráfico: [ { mes: '2023-01', cantidad: 1, total_ventas: 100 } ]
+
+      at ReporteController.log [as proformasPorMes] (src/controladores/reporteController.js:85:21)
+
+    console.log
+      🔍 [proformasPorMes] Iniciando consulta...
+
+      at ReporteController.log [as proformasPorMes] (src/controladores/reporteController.js:41:21)
+
+    console.error
+      ❌ ERROR en proformasPorMes: SQL Error
+
+    [0m [90m 92 |[39m             })[33m;[39m
+     [90m 93 |[39m         } [36mcatch[39m (error) {
+    [31m[1m>[22m[39m[90m 94 |[39m             console[33m.[39merror([32m'❌ ERROR en proformasPorMes:'[39m[33m,[39m error[33m.[39mmessage)[33m;[39m
+     [90m    |[39m                     [31m[1m^[22m[39m
+     [90m 95 |[39m             res[33m.[39mstatus([35m500[39m)[33m.[39mjson({
+     [90m 96 |[39m                 success[33m:[39m [36mfalse[39m[33m,[39m
+     [90m 97 |[39m                 message[33m:[39m error[33m.[39mmessage[33m,[39m[0m
+
+      at ReporteController.error [as proformasPorMes] (src/controladores/reporteController.js:94:21)
+      at Object.<anonymous> (tests/controladores/reporteController.test.js:98:13)
+
+    console.log
+      🔍 [proformasPorMes] Iniciando consulta...
+
+      at ReporteController.log [as proformasPorMes] (src/controladores/reporteController.js:41:21)
+
+    console.log
+      ✅ Datos PROFORMA obtenidos: 1 registros
+
+      at ReporteController.log [as proformasPorMes] (src/controladores/reporteController.js:56:21)
+
+    console.log
+      📊 Datos finales para el gráfico: [ { mes: '2023-10', cantidad: 2, total_ventas: 200 } ]
+
+      at ReporteController.log [as proformasPorMes] (src/controladores/reporteController.js:85:21)
+
+    console.log
+      🔍 [proformasPorMes] Iniciando consulta...
+
+      at ReporteController.log [as proformasPorMes] (src/controladores/reporteController.js:41:21)
+
+    console.log
+      ✅ Datos PROFORMA obtenidos: 1 registros
+
+      at ReporteController.log [as proformasPorMes] (src/controladores/reporteController.js:56:21)
+
+    console.log
+      📊 Datos finales para el gráfico: [ { mes: '2023-09', cantidad: 1, total_ventas: 100 } ]
+
+      at ReporteController.log [as proformasPorMes] (src/controladores/reporteController.js:85:21)
+
+    console.log
+      🔍 [proformasPorMes] Iniciando consulta...
+
+      at ReporteController.log [as proformasPorMes] (src/controladores/reporteController.js:41:21)
+
+    console.log
+      ✅ Datos PROFORMA obtenidos: 1 registros
+
+      at ReporteController.log [as proformasPorMes] (src/controladores/reporteController.js:56:21)
+
+    console.log
+      📊 Datos finales para el gráfico: [ { mes: '2023-06', cantidad: 3, total_ventas: 300 } ]
+
+      at ReporteController.log [as proformasPorMes] (src/controladores/reporteController.js:85:21)
+
+    console.error
+      Error en proformasPorEstado: Error: DB fail
+          at Object.<anonymous> (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\tests\controladores\reporteController.test.js:176:46)
+          at Promise.finally.completed (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-circus\build\jestAdapterInit.js:1557:28)
+          at new Promise (<anonymous>)
+          at callAsyncCircusFn (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-circus\build\jestAdapterInit.js:1497:10)
+          at _callCircusTest (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-circus\build\jestAdapterInit.js:1007:40)
+          at _runTest (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-circus\build\jestAdapterInit.js:947:3)
+          at E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-circus\build\jestAdapterInit.js:849:7
+          at _runTestsForDescribeBlock (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-circus\build\jestAdapterInit.js:862:11)
+          at _runTestsForDescribeBlock (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-circus\build\jestAdapterInit.js:857:11)
+          at _runTestsForDescribeBlock (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-circus\build\jestAdapterInit.js:857:11)
+          at run (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-circus\build\jestAdapterInit.js:761:3)
+          at runAndTransformResultsToJestFormat (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-circus\build\jestAdapterInit.js:1918:21)
+          at jestAdapter (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-circus\build\runner.js:101:19)
+          at runTestInternal (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-runner\build\index.js:275:16)
+          at runTest (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-runner\build\index.js:343:7)
+
+    [0m [90m 136 |[39m             })[33m;[39m
+     [90m 137 |[39m         } [36mcatch[39m (error) {
+    [31m[1m>[22m[39m[90m 138 |[39m             console[33m.[39merror([32m'Error en proformasPorEstado:'[39m[33m,[39m error)[33m;[39m
+     [90m     |[39m                     [31m[1m^[22m[39m
+     [90m 139 |[39m             res[33m.[39mstatus([35m500[39m)[33m.[39mjson({
+     [90m 140 |[39m                 success[33m:[39m [36mfalse[39m[33m,[39m
+     [90m 141 |[39m                 message[33m:[39m [32m'Error al obtener datos'[39m[0m
+
+      at ReporteController.error [as proformasPorEstado] (src/controladores/reporteController.js:138:21)
+      at Object.<anonymous> (tests/controladores/reporteController.test.js:177:13)
+
+    console.error
+      Error en proformasPorCliente: Error: fail
+          at Object.<anonymous> (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\tests\controladores\reporteController.test.js:221:46)
+          at Promise.finally.completed (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-circus\build\jestAdapterInit.js:1557:28)
+          at new Promise (<anonymous>)
+          at callAsyncCircusFn (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-circus\build\jestAdapterInit.js:1497:10)
+          at _callCircusTest (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-circus\build\jestAdapterInit.js:1007:40)
+          at _runTest (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-circus\build\jestAdapterInit.js:947:3)
+          at E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-circus\build\jestAdapterInit.js:849:7
+          at _runTestsForDescribeBlock (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-circus\build\jestAdapterInit.js:862:11)
+          at _runTestsForDescribeBlock (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-circus\build\jestAdapterInit.js:857:11)
+          at _runTestsForDescribeBlock (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-circus\build\jestAdapterInit.js:857:11)
+          at run (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-circus\build\jestAdapterInit.js:761:3)
+          at runAndTransformResultsToJestFormat (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-circus\build\jestAdapterInit.js:1918:21)
+          at jestAdapter (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-circus\build\runner.js:101:19)
+          at runTestInternal (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-runner\build\index.js:275:16)
+          at runTest (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-runner\build\index.js:343:7)
+
+    [0m [90m 396 |[39m             })[33m;[39m
+     [90m 397 |[39m         } [36mcatch[39m (error) {
+    [31m[1m>[22m[39m[90m 398 |[39m             console[33m.[39merror([32m'Error en proformasPorCliente:'[39m[33m,[39m error)[33m;[39m
+     [90m     |[39m                     [31m[1m^[22m[39m
+     [90m 399 |[39m             res[33m.[39mstatus([35m500[39m)[33m.[39mjson({
+     [90m 400 |[39m                 success[33m:[39m [36mfalse[39m[33m,[39m
+     [90m 401 |[39m                 message[33m:[39m [32m'Error al obtener datos'[39m[0m
+
+      at ReporteController.error [as proformasPorCliente] (src/controladores/reporteController.js:398:21)
+      at Object.<anonymous> (tests/controladores/reporteController.test.js:222:13)
+
+    console.error
+      Error en topClientesProformas: Error: fail
+          at Object.<anonymous> (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\tests\controladores\reporteController.test.js:265:46)
+          at Promise.finally.completed (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-circus\build\jestAdapterInit.js:1557:28)
+          at new Promise (<anonymous>)
+          at callAsyncCircusFn (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-circus\build\jestAdapterInit.js:1497:10)
+          at _callCircusTest (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-circus\build\jestAdapterInit.js:1007:40)
+          at _runTest (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-circus\build\jestAdapterInit.js:947:3)
+          at E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-circus\build\jestAdapterInit.js:849:7
+          at _runTestsForDescribeBlock (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-circus\build\jestAdapterInit.js:862:11)
+          at _runTestsForDescribeBlock (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-circus\build\jestAdapterInit.js:857:11)
+          at _runTestsForDescribeBlock (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-circus\build\jestAdapterInit.js:857:11)
+          at run (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-circus\build\jestAdapterInit.js:761:3)
+          at runAndTransformResultsToJestFormat (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-circus\build\jestAdapterInit.js:1918:21)
+          at jestAdapter (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-circus\build\runner.js:101:19)
+          at runTestInternal (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-runner\build\index.js:275:16)
+          at runTest (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-runner\build\index.js:343:7)
+
+    [0m [90m 182 |[39m             })[33m;[39m
+     [90m 183 |[39m         } [36mcatch[39m (error) {
+    [31m[1m>[22m[39m[90m 184 |[39m             console[33m.[39merror([32m'Error en topClientesProformas:'[39m[33m,[39m error)[33m;[39m
+     [90m     |[39m                     [31m[1m^[22m[39m
+     [90m 185 |[39m             res[33m.[39mstatus([35m500[39m)[33m.[39mjson({
+     [90m 186 |[39m                 success[33m:[39m [36mfalse[39m[33m,[39m
+     [90m 187 |[39m                 message[33m:[39m [32m'Error al obtener datos'[39m[0m
+
+      at ReporteController.error [as topClientesProformas] (src/controladores/reporteController.js:184:21)
+      at Object.<anonymous> (tests/controladores/reporteController.test.js:266:13)
+
+    console.log
+      Obteniendo KPIs separando proformas de ventas...
+
+      at ReporteController.log [as obtenerKPIs] (src/controladores/reporteController.js:195:21)
+
+    console.log
+      Total proformas: 10
+
+      at ReporteController.log [as obtenerKPIs] (src/controladores/reporteController.js:227:21)
+
+    console.log
+      Promedio proformas: 100.5
+
+      at ReporteController.log [as obtenerKPIs] (src/controladores/reporteController.js:248:21)
+
+    console.log
+      Total registros en VENTA: 5
+
+      at ReporteController.log [as obtenerKPIs] (src/controladores/reporteController.js:254:21)
+
+    console.log
+      Ventas del mes: 500
+
+      at ReporteController.log [as obtenerKPIs] (src/controladores/reporteController.js:289:21)
+
+    console.log
+      Estadísticas compiladas: {
+        proformas: {
+          total: 10,
+          pendientes: 3,
+          aprobadas: 4,
+          vencidas: 2,
+          convertidas: 1
+        },
+        ventas: { total: 5, completadas: 4, pendientes: 1 },
+        conversion: '20.00'
+      }
+
+      at ReporteController.log [as obtenerKPIs] (src/controladores/reporteController.js:314:21)
+
+    console.log
+      Obteniendo KPIs separando proformas de ventas...
+
+      at ReporteController.log [as obtenerKPIs] (src/controladores/reporteController.js:195:21)
+
+    console.log
+      Total proformas: 5
+
+      at ReporteController.log [as obtenerKPIs] (src/controladores/reporteController.js:227:21)
+
+    console.log
+      Promedio proformas: null
+
+      at ReporteController.log [as obtenerKPIs] (src/controladores/reporteController.js:248:21)
+
+    console.log
+      Total registros en VENTA: 0
+
+      at ReporteController.log [as obtenerKPIs] (src/controladores/reporteController.js:254:21)
+
+    console.log
+      Inicializando registros de VENTA desde FACTURA...
+
+      at ReporteController.log [as obtenerKPIs] (src/controladores/reporteController.js:257:25)
+
+    console.log
+      Registros de VENTA inicializados desde FACTURA
+
+      at ReporteController.log [as obtenerKPIs] (src/controladores/reporteController.js:273:29)
+
+    console.log
+      Ventas del mes: 0
+
+      at ReporteController.log [as obtenerKPIs] (src/controladores/reporteController.js:289:21)
+
+    console.log
+      Estadísticas compiladas: {
+        proformas: {
+          total: 5,
+          pendientes: 0,
+          aprobadas: 0,
+          vencidas: 0,
+          convertidas: 0
+        },
+        ventas: { total: 3, completadas: 0, pendientes: 0 },
+        conversion: '0.00'
+      }
+
+      at ReporteController.log [as obtenerKPIs] (src/controladores/reporteController.js:314:21)
+
+    console.log
+      Obteniendo KPIs separando proformas de ventas...
+
+      at ReporteController.log [as obtenerKPIs] (src/controladores/reporteController.js:195:21)
+
+    console.log
+      Total proformas: 2
+
+      at ReporteController.log [as obtenerKPIs] (src/controladores/reporteController.js:227:21)
+
+    console.log
+      Promedio proformas: null
+
+      at ReporteController.log [as obtenerKPIs] (src/controladores/reporteController.js:248:21)
+
+    console.log
+      Total registros en VENTA: 0
+
+      at ReporteController.log [as obtenerKPIs] (src/controladores/reporteController.js:254:21)
+
+    console.log
+      Inicializando registros de VENTA desde FACTURA...
+
+      at ReporteController.log [as obtenerKPIs] (src/controladores/reporteController.js:257:25)
+
+    console.log
+      Ventas del mes: 0
+
+      at ReporteController.log [as obtenerKPIs] (src/controladores/reporteController.js:289:21)
+
+    console.log
+      Estadísticas compiladas: {
+        proformas: {
+          total: 2,
+          pendientes: 0,
+          aprobadas: 0,
+          vencidas: 0,
+          convertidas: 0
+        },
+        ventas: { total: 0, completadas: 0, pendientes: 0 },
+        conversion: 0
+      }
+
+      at ReporteController.log [as obtenerKPIs] (src/controladores/reporteController.js:314:21)
+
+    console.log
+      Obteniendo KPIs separando proformas de ventas...
+
+      at ReporteController.log [as obtenerKPIs] (src/controladores/reporteController.js:195:21)
+
+    console.log
+      Total proformas: 10
+
+      at ReporteController.log [as obtenerKPIs] (src/controladores/reporteController.js:227:21)
+
+    console.log
+      Promedio proformas: 100.5
+
+      at ReporteController.log [as obtenerKPIs] (src/controladores/reporteController.js:248:21)
+
+    console.log
+      Total registros en VENTA: 5
+
+      at ReporteController.log [as obtenerKPIs] (src/controladores/reporteController.js:254:21)
+
+    console.log
+      Ventas del mes: 500
+
+      at ReporteController.log [as obtenerKPIs] (src/controladores/reporteController.js:289:21)
+
+    console.log
+      Estadísticas compiladas: {
+        proformas: {
+          total: 10,
+          pendientes: 3,
+          aprobadas: 4,
+          vencidas: 2,
+          convertidas: 1
+        },
+        ventas: { total: 5, completadas: 4, pendientes: 1 },
+        conversion: '20.00'
+      }
+
+      at ReporteController.log [as obtenerKPIs] (src/controladores/reporteController.js:314:21)
+
+    console.log
+      Obteniendo KPIs separando proformas de ventas...
+
+      at ReporteController.log [as obtenerKPIs] (src/controladores/reporteController.js:195:21)
+
+    console.log
+      Total proformas: 10
+
+      at ReporteController.log [as obtenerKPIs] (src/controladores/reporteController.js:227:21)
+
+    console.log
+      Promedio proformas: 100.5
+
+      at ReporteController.log [as obtenerKPIs] (src/controladores/reporteController.js:248:21)
+
+    console.log
+      Total registros en VENTA: 5
+
+      at ReporteController.log [as obtenerKPIs] (src/controladores/reporteController.js:254:21)
+
+    console.log
+      Ventas del mes: 500
+
+      at ReporteController.log [as obtenerKPIs] (src/controladores/reporteController.js:289:21)
+
+    console.log
+      Estadísticas compiladas: {
+        proformas: {
+          total: 10,
+          pendientes: 3,
+          aprobadas: 4,
+          vencidas: 2,
+          convertidas: 1
+        },
+        ventas: { total: 5, completadas: 4, pendientes: 1 },
+        conversion: '20.00'
+      }
+
+      at ReporteController.log [as obtenerKPIs] (src/controladores/reporteController.js:314:21)
+
+    console.log
+      Obteniendo KPIs separando proformas de ventas...
+
+      at ReporteController.log [as obtenerKPIs] (src/controladores/reporteController.js:195:21)
+
+    console.log
+      Total proformas: 10
+
+      at ReporteController.log [as obtenerKPIs] (src/controladores/reporteController.js:227:21)
+
+    console.log
+      Promedio proformas: 100.5
+
+      at ReporteController.log [as obtenerKPIs] (src/controladores/reporteController.js:248:21)
+
+    console.log
+      Total registros en VENTA: 5
+
+      at ReporteController.log [as obtenerKPIs] (src/controladores/reporteController.js:254:21)
+
+    console.log
+      Ventas del mes: 500
+
+      at ReporteController.log [as obtenerKPIs] (src/controladores/reporteController.js:289:21)
+
+    console.log
+      Estadísticas compiladas: {
+        proformas: {
+          total: 10,
+          pendientes: 3,
+          aprobadas: 4,
+          vencidas: 2,
+          convertidas: 1
+        },
+        ventas: { total: 5, completadas: 4, pendientes: 1 },
+        conversion: '20.00'
+      }
+
+      at ReporteController.log [as obtenerKPIs] (src/controladores/reporteController.js:314:21)
+
+    console.log
+      Obteniendo KPIs separando proformas de ventas...
+
+      at ReporteController.log [as obtenerKPIs] (src/controladores/reporteController.js:195:21)
+
+    console.log
+      Total proformas: 10
+
+      at ReporteController.log [as obtenerKPIs] (src/controladores/reporteController.js:227:21)
+
+    console.log
+      Promedio proformas: 100.5
+
+      at ReporteController.log [as obtenerKPIs] (src/controladores/reporteController.js:248:21)
+
+    console.log
+      Total registros en VENTA: 5
+
+      at ReporteController.log [as obtenerKPIs] (src/controladores/reporteController.js:254:21)
+
+    console.log
+      Ventas del mes: 500
+
+      at ReporteController.log [as obtenerKPIs] (src/controladores/reporteController.js:289:21)
+
+    console.log
+      Estadísticas compiladas: {
+        proformas: {
+          total: 10,
+          pendientes: 3,
+          aprobadas: 4,
+          vencidas: 2,
+          convertidas: 1
+        },
+        ventas: { total: 5, completadas: 4, pendientes: 1 },
+        conversion: '20.00'
+      }
+
+      at ReporteController.log [as obtenerKPIs] (src/controladores/reporteController.js:314:21)
+
+    console.log
+      Obteniendo KPIs separando proformas de ventas...
+
+      at ReporteController.log [as obtenerKPIs] (src/controladores/reporteController.js:195:21)
+
+    console.error
+      Error en obtenerKPIs: Error: KPI fail
+          at Object.<anonymous> (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\tests\controladores\reporteController.test.js:385:67)
+          at Promise.finally.completed (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-circus\build\jestAdapterInit.js:1557:28)
+          at new Promise (<anonymous>)
+          at callAsyncCircusFn (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-circus\build\jestAdapterInit.js:1497:10)
+          at _callCircusTest (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-circus\build\jestAdapterInit.js:1007:40)
+          at _runTest (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-circus\build\jestAdapterInit.js:947:3)
+          at E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-circus\build\jestAdapterInit.js:849:7
+          at _runTestsForDescribeBlock (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-circus\build\jestAdapterInit.js:862:11)
+          at _runTestsForDescribeBlock (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-circus\build\jestAdapterInit.js:857:11)
+          at _runTestsForDescribeBlock (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-circus\build\jestAdapterInit.js:857:11)
+          at run (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-circus\build\jestAdapterInit.js:761:3)
+          at runAndTransformResultsToJestFormat (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-circus\build\jestAdapterInit.js:1918:21)
+          at jestAdapter (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-circus\build\runner.js:101:19)
+          at runTestInternal (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-runner\build\index.js:275:16)
+          at runTest (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-runner\build\index.js:343:7)
+
+    [0m [90m 351 |[39m             })[33m;[39m
+     [90m 352 |[39m         } [36mcatch[39m (error) {
+    [31m[1m>[22m[39m[90m 353 |[39m             console[33m.[39merror([32m'Error en obtenerKPIs:'[39m[33m,[39m error)[33m;[39m
+     [90m     |[39m                     [31m[1m^[22m[39m
+     [90m 354 |[39m             res[33m.[39mstatus([35m500[39m)[33m.[39mjson({
+     [90m 355 |[39m                 success[33m:[39m [36mfalse[39m[33m,[39m
+     [90m 356 |[39m                 message[33m:[39m [32m'Error al obtener KPIs: '[39m [33m+[39m error[33m.[39mmessage[0m
+
+      at ReporteController.error [as obtenerKPIs] (src/controladores/reporteController.js:353:21)
+      at Object.<anonymous> (tests/controladores/reporteController.test.js:386:13)
+
+    console.log
+      === INICIO DIAGNÓSTICO VENTAS ===
+
+      at ReporteController.log [as ventasPorMes] (src/controladores/reporteController.js:408:21)
+
+    console.log
+      ¿Existe la tabla VENTA? SÍ
+
+      at ReporteController.log [as ventasPorMes] (src/controladores/reporteController.js:413:25)
+
+    console.log
+      Estructura de la tabla VENTA: [ 'IdVenta (int)' ]
+
+      at ReporteController.log [as ventasPorMes] (src/controladores/reporteController.js:417:29)
+
+    console.log
+      Triggers para tabla FACTURA: []
+
+      at ReporteController.log [as ventasPorMes] (src/controladores/reporteController.js:426:25)
+
+    console.log
+      Total de registros en VENTA: 5
+
+      at ReporteController.log [as ventasPorMes] (src/controladores/reporteController.js:433:21)
+
+    console.log
+      Muestra de registros en VENTA: [
+        {
+          "IdVenta": 1
+        }
+      ]
+
+      at ReporteController.log [as ventasPorMes] (src/controladores/reporteController.js:438:25)
+
+    console.log
+      Total de facturas existentes: 5
+
+      at ReporteController.log [as ventasPorMes] (src/controladores/reporteController.js:443:21)
+
+    console.log
+      Muestra de facturas existentes: [
+        {
+          "IdFactura": 1
+        }
+      ]
+
+      at ReporteController.log [as ventasPorMes] (src/controladores/reporteController.js:447:25)
+
+    console.log
+      Facturas que no están en VENTA: 0
+
+      at ReporteController.log [as ventasPorMes] (src/controladores/reporteController.js:486:25)
+
+    console.log
+      Ejecutando consulta para ventas por mes: 
+                      SELECT 
+                          DATE_FORMAT(FechaVenta, '%Y-%m') as mes,
+                          COUNT(*) as cantidad,
+                          SUM(Total) as total_ventas
+                      FROM VENTA 
+                      GROUP BY DATE_FORMAT(FechaVenta, '%Y-%m')
+                      ORDER BY mes ASC
+
+      at ReporteController.log [as ventasPorMes] (src/controladores/reporteController.js:516:21)
+
+    console.log
+      Resultados ventas por mes: [
+        {
+          "mes": "2025-01",
+          "cantidad": 3,
+          "total_ventas": 1500
+        }
+      ]
+
+      at ReporteController.log [as ventasPorMes] (src/controladores/reporteController.js:518:21)
+
+    console.log
+      === FIN DIAGNÓSTICO VENTAS (CON DATOS) ===
+
+      at ReporteController.log [as ventasPorMes] (src/controladores/reporteController.js:553:21)
+
+    console.log
+      === INICIO DIAGNÓSTICO VENTAS ===
+
+      at ReporteController.log [as ventasPorMes] (src/controladores/reporteController.js:408:21)
+
+    console.log
+      ¿Existe la tabla VENTA? SÍ
+
+      at ReporteController.log [as ventasPorMes] (src/controladores/reporteController.js:413:25)
+
+    console.log
+      Estructura de la tabla VENTA: [ 'IdVenta (int)' ]
+
+      at ReporteController.log [as ventasPorMes] (src/controladores/reporteController.js:417:29)
+
+    console.log
+      Triggers para tabla FACTURA: []
+
+      at ReporteController.log [as ventasPorMes] (src/controladores/reporteController.js:426:25)
+
+    console.log
+      Total de registros en VENTA: 0
+
+      at ReporteController.log [as ventasPorMes] (src/controladores/reporteController.js:433:21)
+
+    console.log
+      Total de facturas existentes: 2
+
+      at ReporteController.log [as ventasPorMes] (src/controladores/reporteController.js:443:21)
+
+    console.log
+      Muestra de facturas existentes: [
+        {
+          "IdFactura": 1
+        }
+      ]
+
+      at ReporteController.log [as ventasPorMes] (src/controladores/reporteController.js:447:25)
+
+    console.log
+      No hay registros en la tabla VENTA. Intentando insertar desde facturas existentes...
+
+      at ReporteController.log [as ventasPorMes] (src/controladores/reporteController.js:452:25)
+
+    console.log
+      Inicializando la tabla VENTA con datos de facturas existentes...
+
+      at ReporteController.log [as ventasPorMes] (src/controladores/reporteController.js:455:29)
+
+    console.log
+      Resultado de inserción en VENTA: { affectedRows: 2 }
+
+      at ReporteController.log [as ventasPorMes] (src/controladores/reporteController.js:469:29)
+
+    console.log
+      Se insertaron 2 registros en VENTA
+
+      at ReporteController.log [as ventasPorMes] (src/controladores/reporteController.js:470:29)
+
+    console.log
+      Total de registros en VENTA después de inserción: 2
+
+      at ReporteController.log [as ventasPorMes] (src/controladores/reporteController.js:474:29)
+
+    console.log
+      Ejecutando consulta para ventas por mes: 
+                      SELECT 
+                          DATE_FORMAT(FechaVenta, '%Y-%m') as mes,
+                          COUNT(*) as cantidad,
+                          SUM(Total) as total_ventas
+                      FROM VENTA 
+                      GROUP BY DATE_FORMAT(FechaVenta, '%Y-%m')
+                      ORDER BY mes ASC
+
+      at ReporteController.log [as ventasPorMes] (src/controladores/reporteController.js:516:21)
+
+    console.log
+      Resultados ventas por mes: [
+        {
+          "mes": "2025-01",
+          "cantidad": 2,
+          "total_ventas": 800
+        }
+      ]
+
+      at ReporteController.log [as ventasPorMes] (src/controladores/reporteController.js:518:21)
+
+    console.log
+      === FIN DIAGNÓSTICO VENTAS (CON DATOS) ===
+
+      at ReporteController.log [as ventasPorMes] (src/controladores/reporteController.js:553:21)
+
+    console.log
+      === INICIO DIAGNÓSTICO VENTAS ===
+
+      at ReporteController.log [as ventasPorMes] (src/controladores/reporteController.js:408:21)
+
+    console.log
+      ¿Existe la tabla VENTA? SÍ
+
+      at ReporteController.log [as ventasPorMes] (src/controladores/reporteController.js:413:25)
+
+    console.log
+      Estructura de la tabla VENTA: [ 'IdVenta (int)' ]
+
+      at ReporteController.log [as ventasPorMes] (src/controladores/reporteController.js:417:29)
+
+    console.log
+      Triggers para tabla FACTURA: []
+
+      at ReporteController.log [as ventasPorMes] (src/controladores/reporteController.js:426:25)
+
+    console.log
+      Total de registros en VENTA: 0
+
+      at ReporteController.log [as ventasPorMes] (src/controladores/reporteController.js:433:21)
+
+    console.log
+      Total de facturas existentes: 0
+
+      at ReporteController.log [as ventasPorMes] (src/controladores/reporteController.js:443:21)
+
+    console.log
+      No hay registros en la tabla VENTA. Intentando insertar desde facturas existentes...
+
+      at ReporteController.log [as ventasPorMes] (src/controladores/reporteController.js:452:25)
+
+    console.log
+      No hay facturas para migrar a VENTA
+
+      at ReporteController.log [as ventasPorMes] (src/controladores/reporteController.js:476:29)
+
+    console.log
+      Ejecutando consulta para ventas por mes: 
+                      SELECT 
+                          DATE_FORMAT(FechaVenta, '%Y-%m') as mes,
+                          COUNT(*) as cantidad,
+                          SUM(Total) as total_ventas
+                      FROM VENTA 
+                      GROUP BY DATE_FORMAT(FechaVenta, '%Y-%m')
+                      ORDER BY mes ASC
+
+      at ReporteController.log [as ventasPorMes] (src/controladores/reporteController.js:516:21)
+
+    console.log
+      Resultados ventas por mes: []
+
+      at ReporteController.log [as ventasPorMes] (src/controladores/reporteController.js:518:21)
+
+    console.log
+      No hay datos de ventas agrupados por mes. Generando datos de ejemplo...
+
+      at ReporteController.log [as ventasPorMes] (src/controladores/reporteController.js:522:25)
+
+    console.log
+      Registros en VENTA (sin agrupar): []
+
+      at ReporteController.log [as ventasPorMes] (src/controladores/reporteController.js:526:25)
+
+    console.log
+      Verificación de formato de fechas: []
+
+      at ReporteController.log [as ventasPorMes] (src/controladores/reporteController.js:530:25)
+
+    console.log
+      === FIN DIAGNÓSTICO VENTAS (SIN DATOS) ===
+
+      at ReporteController.log [as ventasPorMes] (src/controladores/reporteController.js:543:25)
+
+    console.log
+      === INICIO DIAGNÓSTICO VENTAS ===
+
+      at ReporteController.log [as ventasPorMes] (src/controladores/reporteController.js:408:21)
+
+    console.log
+      ¿Existe la tabla VENTA? SÍ
+
+      at ReporteController.log [as ventasPorMes] (src/controladores/reporteController.js:413:25)
+
+    console.log
+      Estructura de la tabla VENTA: [ 'IdVenta (int)' ]
+
+      at ReporteController.log [as ventasPorMes] (src/controladores/reporteController.js:417:29)
+
+    console.log
+      Triggers para tabla FACTURA: []
+
+      at ReporteController.log [as ventasPorMes] (src/controladores/reporteController.js:426:25)
+
+    console.log
+      Total de registros en VENTA: 3
+
+      at ReporteController.log [as ventasPorMes] (src/controladores/reporteController.js:433:21)
+
+    console.log
+      Muestra de registros en VENTA: [
+        {
+          "IdVenta": 1
+        }
+      ]
+
+      at ReporteController.log [as ventasPorMes] (src/controladores/reporteController.js:438:25)
+
+    console.log
+      Total de facturas existentes: 5
+
+      at ReporteController.log [as ventasPorMes] (src/controladores/reporteController.js:443:21)
+
+    console.log
+      Muestra de facturas existentes: [
+        {
+          "IdFactura": 1
+        }
+      ]
+
+      at ReporteController.log [as ventasPorMes] (src/controladores/reporteController.js:447:25)
+
+    console.log
+      Facturas que no están en VENTA: 2
+
+      at ReporteController.log [as ventasPorMes] (src/controladores/reporteController.js:486:25)
+
+    console.log
+      Agregando facturas faltantes a VENTA...
+
+      at ReporteController.log [as ventasPorMes] (src/controladores/reporteController.js:489:29)
+
+    console.log
+      Se insertaron 2 registros faltantes en VENTA
+
+      at ReporteController.log [as ventasPorMes] (src/controladores/reporteController.js:502:29)
+
+    console.log
+      Ejecutando consulta para ventas por mes: 
+                      SELECT 
+                          DATE_FORMAT(FechaVenta, '%Y-%m') as mes,
+                          COUNT(*) as cantidad,
+                          SUM(Total) as total_ventas
+                      FROM VENTA 
+                      GROUP BY DATE_FORMAT(FechaVenta, '%Y-%m')
+                      ORDER BY mes ASC
+
+      at ReporteController.log [as ventasPorMes] (src/controladores/reporteController.js:516:21)
+
+    console.log
+      Resultados ventas por mes: [
+        {
+          "mes": "2025-02",
+          "cantidad": 5,
+          "total_ventas": 2000
+        }
+      ]
+
+      at ReporteController.log [as ventasPorMes] (src/controladores/reporteController.js:518:21)
+
+    console.log
+      === FIN DIAGNÓSTICO VENTAS (CON DATOS) ===
+
+      at ReporteController.log [as ventasPorMes] (src/controladores/reporteController.js:553:21)
+
+    console.log
+      === INICIO DIAGNÓSTICO VENTAS ===
+
+      at ReporteController.log [as ventasPorMes] (src/controladores/reporteController.js:408:21)
+
+    console.error
+      Error al verificar estructura de tabla: tabla no existe
+
+    [0m [90m 418 |[39m                 }
+     [90m 419 |[39m             } [36mcatch[39m (err) {
+    [31m[1m>[22m[39m[90m 420 |[39m                 console[33m.[39merror([32m'Error al verificar estructura de tabla:'[39m[33m,[39m err[33m.[39mmessage)[33m;[39m
+     [90m     |[39m                         [31m[1m^[22m[39m
+     [90m 421 |[39m             }
+     [90m 422 |[39m
+     [90m 423 |[39m             [90m// Verificar triggers[39m[0m
+
+      at ReporteController.error [as ventasPorMes] (src/controladores/reporteController.js:420:25)
+      at Object.<anonymous> (tests/controladores/reporteController.test.js:490:13)
+
+    console.error
+      Error al verificar triggers: trigger error
+
+    [0m [90m 426 |[39m                 console[33m.[39mlog([32m'Triggers para tabla FACTURA:'[39m[33m,[39m triggers[33m.[39mmap(t [33m=>[39m t[33m.[39m[33mTrigger[39m))[33m;[39m
+     [90m 427 |[39m             } [36mcatch[39m (err) {
+    [31m[1m>[22m[39m[90m 428 |[39m                 console[33m.[39merror([32m'Error al verificar triggers:'[39m[33m,[39m err[33m.[39mmessage)[33m;[39m
+     [90m     |[39m                         [31m[1m^[22m[39m
+     [90m 429 |[39m             }
+     [90m 430 |[39m
+     [90m 431 |[39m             [90m// Primero verificamos si hay datos en la tabla VENTA[39m[0m
+
+      at ReporteController.error [as ventasPorMes] (src/controladores/reporteController.js:428:25)
+      at Object.<anonymous> (tests/controladores/reporteController.test.js:490:13)
+
+    console.log
+      Total de registros en VENTA: 1
+
+      at ReporteController.log [as ventasPorMes] (src/controladores/reporteController.js:433:21)
+
+    console.log
+      Muestra de registros en VENTA: [
+        {
+          "IdVenta": 1
+        }
+      ]
+
+      at ReporteController.log [as ventasPorMes] (src/controladores/reporteController.js:438:25)
+
+    console.log
+      Total de facturas existentes: 1
+
+      at ReporteController.log [as ventasPorMes] (src/controladores/reporteController.js:443:21)
+
+    console.log
+      Muestra de facturas existentes: [
+        {
+          "IdFactura": 1
+        }
+      ]
+
+      at ReporteController.log [as ventasPorMes] (src/controladores/reporteController.js:447:25)
+
+    console.log
+      Facturas que no están en VENTA: 0
+
+      at ReporteController.log [as ventasPorMes] (src/controladores/reporteController.js:486:25)
+
+    console.log
+      Ejecutando consulta para ventas por mes: 
+                      SELECT 
+                          DATE_FORMAT(FechaVenta, '%Y-%m') as mes,
+                          COUNT(*) as cantidad,
+                          SUM(Total) as total_ventas
+                      FROM VENTA 
+                      GROUP BY DATE_FORMAT(FechaVenta, '%Y-%m')
+                      ORDER BY mes ASC
+
+      at ReporteController.log [as ventasPorMes] (src/controladores/reporteController.js:516:21)
+
+    console.log
+      Resultados ventas por mes: [
+        {
+          "mes": "2025-03",
+          "cantidad": 1,
+          "total_ventas": 100
+        }
+      ]
+
+      at ReporteController.log [as ventasPorMes] (src/controladores/reporteController.js:518:21)
+
+    console.log
+      === FIN DIAGNÓSTICO VENTAS (CON DATOS) ===
+
+      at ReporteController.log [as ventasPorMes] (src/controladores/reporteController.js:553:21)
+
+    console.log
+      === INICIO DIAGNÓSTICO VENTAS ===
+
+      at ReporteController.log [as ventasPorMes] (src/controladores/reporteController.js:408:21)
+
+    console.error
+      Error al verificar estructura de tabla: inner fail
+
+    [0m [90m 418 |[39m                 }
+     [90m 419 |[39m             } [36mcatch[39m (err) {
+    [31m[1m>[22m[39m[90m 420 |[39m                 console[33m.[39merror([32m'Error al verificar estructura de tabla:'[39m[33m,[39m err[33m.[39mmessage)[33m;[39m
+     [90m     |[39m                         [31m[1m^[22m[39m
+     [90m 421 |[39m             }
+     [90m 422 |[39m
+     [90m 423 |[39m             [90m// Verificar triggers[39m[0m
+
+      at ReporteController.error [as ventasPorMes] (src/controladores/reporteController.js:420:25)
+      at Object.<anonymous> (tests/controladores/reporteController.test.js:503:13)
+
+    console.error
+      Error al verificar triggers: inner fail
+
+    [0m [90m 426 |[39m                 console[33m.[39mlog([32m'Triggers para tabla FACTURA:'[39m[33m,[39m triggers[33m.[39mmap(t [33m=>[39m t[33m.[39m[33mTrigger[39m))[33m;[39m
+     [90m 427 |[39m             } [36mcatch[39m (err) {
+    [31m[1m>[22m[39m[90m 428 |[39m                 console[33m.[39merror([32m'Error al verificar triggers:'[39m[33m,[39m err[33m.[39mmessage)[33m;[39m
+     [90m     |[39m                         [31m[1m^[22m[39m
+     [90m 429 |[39m             }
+     [90m 430 |[39m
+     [90m 431 |[39m             [90m// Primero verificamos si hay datos en la tabla VENTA[39m[0m
+
+      at ReporteController.error [as ventasPorMes] (src/controladores/reporteController.js:428:25)
+      at Object.<anonymous> (tests/controladores/reporteController.test.js:503:13)
+
+    console.error
+      Error en ventasPorMes: Error: Fallo general
+          at Object.<anonymous> (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\tests\controladores\reporteController.test.js:501:36)
+          at Promise.finally.completed (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-circus\build\jestAdapterInit.js:1557:28)
+          at new Promise (<anonymous>)
+          at callAsyncCircusFn (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-circus\build\jestAdapterInit.js:1497:10)
+          at _callCircusTest (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-circus\build\jestAdapterInit.js:1007:40)
+          at _runTest (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-circus\build\jestAdapterInit.js:947:3)
+          at E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-circus\build\jestAdapterInit.js:849:7
+          at _runTestsForDescribeBlock (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-circus\build\jestAdapterInit.js:862:11)
+          at _runTestsForDescribeBlock (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-circus\build\jestAdapterInit.js:857:11)
+          at _runTestsForDescribeBlock (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-circus\build\jestAdapterInit.js:857:11)
+          at run (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-circus\build\jestAdapterInit.js:761:3)
+          at runAndTransformResultsToJestFormat (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-circus\build\jestAdapterInit.js:1918:21)
+          at jestAdapter (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-circus\build\runner.js:101:19)
+          at runTestInternal (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-runner\build\index.js:275:16)
+          at runTest (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-runner\build\index.js:343:7)
+
+    [0m [90m 558 |[39m             })[33m;[39m
+     [90m 559 |[39m         } [36mcatch[39m (error) {
+    [31m[1m>[22m[39m[90m 560 |[39m             console[33m.[39merror([32m'Error en ventasPorMes:'[39m[33m,[39m error)[33m;[39m
+     [90m     |[39m                     [31m[1m^[22m[39m
+     [90m 561 |[39m             res[33m.[39mstatus([35m500[39m)[33m.[39mjson({
+     [90m 562 |[39m                 success[33m:[39m [36mfalse[39m[33m,[39m
+     [90m 563 |[39m                 message[33m:[39m [32m'Error al obtener datos de ventas: '[39m [33m+[39m error[33m.[39mmessage[0m
+
+      at ReporteController.error [as ventasPorMes] (src/controladores/reporteController.js:560:21)
+      at Object.<anonymous> (tests/controladores/reporteController.test.js:503:13)
+
+    console.log
+      === INICIO DIAGNÓSTICO VENTAS ===
+
+      at ReporteController.log [as ventasPorMes] (src/controladores/reporteController.js:408:21)
+
+    console.log
+      ¿Existe la tabla VENTA? NO
+
+      at ReporteController.log [as ventasPorMes] (src/controladores/reporteController.js:413:25)
+
+    console.log
+      Triggers para tabla FACTURA: []
+
+      at ReporteController.log [as ventasPorMes] (src/controladores/reporteController.js:426:25)
+
+    console.log
+      Total de registros en VENTA: 0
+
+      at ReporteController.log [as ventasPorMes] (src/controladores/reporteController.js:433:21)
+
+    console.log
+      Total de facturas existentes: 0
+
+      at ReporteController.log [as ventasPorMes] (src/controladores/reporteController.js:443:21)
+
+    console.log
+      No hay registros en la tabla VENTA. Intentando insertar desde facturas existentes...
+
+      at ReporteController.log [as ventasPorMes] (src/controladores/reporteController.js:452:25)
+
+    console.log
+      No hay facturas para migrar a VENTA
+
+      at ReporteController.log [as ventasPorMes] (src/controladores/reporteController.js:476:29)
+
+    console.log
+      Ejecutando consulta para ventas por mes: 
+                      SELECT 
+                          DATE_FORMAT(FechaVenta, '%Y-%m') as mes,
+                          COUNT(*) as cantidad,
+                          SUM(Total) as total_ventas
+                      FROM VENTA 
+                      GROUP BY DATE_FORMAT(FechaVenta, '%Y-%m')
+                      ORDER BY mes ASC
+
+      at ReporteController.log [as ventasPorMes] (src/controladores/reporteController.js:516:21)
+
+    console.log
+      Resultados ventas por mes: []
+
+      at ReporteController.log [as ventasPorMes] (src/controladores/reporteController.js:518:21)
+
+    console.log
+      No hay datos de ventas agrupados por mes. Generando datos de ejemplo...
+
+      at ReporteController.log [as ventasPorMes] (src/controladores/reporteController.js:522:25)
+
+    console.log
+      Registros en VENTA (sin agrupar): []
+
+      at ReporteController.log [as ventasPorMes] (src/controladores/reporteController.js:526:25)
+
+    console.log
+      Verificación de formato de fechas: []
+
+      at ReporteController.log [as ventasPorMes] (src/controladores/reporteController.js:530:25)
+
+    console.log
+      === FIN DIAGNÓSTICO VENTAS (SIN DATOS) ===
+
+      at ReporteController.log [as ventasPorMes] (src/controladores/reporteController.js:543:25)
+
+    console.log
+      === INICIO DIAGNÓSTICO TOP CLIENTES VENTAS ===
+
+      at ReporteController.log [as topClientesVentas] (src/controladores/reporteController.js:571:21)
+
+    console.log
+      Total registros en tabla VENTA: 5
+
+      at ReporteController.log [as topClientesVentas] (src/controladores/reporteController.js:575:21)
+
+    console.log
+      Ventas con relación a facturas: 5
+
+      at ReporteController.log [as topClientesVentas] (src/controladores/reporteController.js:583:21)
+
+    console.log
+      Facturas con relación a clientes: 5
+
+      at ReporteController.log [as topClientesVentas] (src/controladores/reporteController.js:591:21)
+
+    console.log
+      Total de registros para top clientes ventas: 5
+
+      at ReporteController.log [as topClientesVentas] (src/controladores/reporteController.js:601:21)
+
+    console.log
+      Ejecutando consulta para top clientes ventas
+
+      at ReporteController.log [as topClientesVentas] (src/controladores/reporteController.js:716:21)
+
+    console.log
+      Resultados top clientes ventas: [
+        {
+          "RazonSocial": "ACME",
+          "total_ventas": 5,
+          "total_monto": 3000,
+          "promedio_venta": 600
+        }
+      ]
+
+      at ReporteController.log [as topClientesVentas] (src/controladores/reporteController.js:718:21)
+
+    console.log
+      === FIN DIAGNÓSTICO TOP CLIENTES VENTAS (CON DATOS) ===
+
+      at ReporteController.log [as topClientesVentas] (src/controladores/reporteController.js:719:21)
+
+    console.log
+      === INICIO DIAGNÓSTICO TOP CLIENTES VENTAS ===
+
+      at ReporteController.log [as topClientesVentas] (src/controladores/reporteController.js:571:21)
+
+    console.log
+      Total registros en tabla VENTA: 0
+
+      at ReporteController.log [as topClientesVentas] (src/controladores/reporteController.js:575:21)
+
+    console.log
+      Ventas con relación a facturas: 0
+
+      at ReporteController.log [as topClientesVentas] (src/controladores/reporteController.js:583:21)
+
+    console.log
+      Facturas con relación a clientes: 0
+
+      at ReporteController.log [as topClientesVentas] (src/controladores/reporteController.js:591:21)
+
+    console.log
+      Total de registros para top clientes ventas: 0
+
+      at ReporteController.log [as topClientesVentas] (src/controladores/reporteController.js:601:21)
+
+    console.log
+      Diagnóstico de JOIN vacío:
+
+      at ReporteController.log [as topClientesVentas] (src/controladores/reporteController.js:604:25)
+
+    console.log
+      Clientes sin facturas: 0
+
+      at ReporteController.log [as topClientesVentas] (src/controladores/reporteController.js:613:25)
+
+    console.log
+      Facturas sin ventas: 0
+
+      at ReporteController.log [as topClientesVentas] (src/controladores/reporteController.js:622:25)
+
+    console.log
+      === FIN DIAGNÓSTICO TOP CLIENTES VENTAS (SIN DATOS) ===
+
+      at ReporteController.log [as topClientesVentas] (src/controladores/reporteController.js:679:25)
+
+    console.log
+      === INICIO DIAGNÓSTICO TOP CLIENTES VENTAS ===
+
+      at ReporteController.log [as topClientesVentas] (src/controladores/reporteController.js:571:21)
+
+    console.log
+      Total registros en tabla VENTA: 0
+
+      at ReporteController.log [as topClientesVentas] (src/controladores/reporteController.js:575:21)
+
+    console.log
+      Ventas con relación a facturas: 0
+
+      at ReporteController.log [as topClientesVentas] (src/controladores/reporteController.js:583:21)
+
+    console.log
+      Facturas con relación a clientes: 3
+
+      at ReporteController.log [as topClientesVentas] (src/controladores/reporteController.js:591:21)
+
+    console.log
+      Total de registros para top clientes ventas: 0
+
+      at ReporteController.log [as topClientesVentas] (src/controladores/reporteController.js:601:21)
+
+    console.log
+      Diagnóstico de JOIN vacío:
+
+      at ReporteController.log [as topClientesVentas] (src/controladores/reporteController.js:604:25)
+
+    console.log
+      Clientes sin facturas: 2
+
+      at ReporteController.log [as topClientesVentas] (src/controladores/reporteController.js:613:25)
+
+    console.log
+      Facturas sin ventas: 3
+
+      at ReporteController.log [as topClientesVentas] (src/controladores/reporteController.js:622:25)
+
+    console.log
+      Insertando ventas para facturas sin registro...
+
+      at ReporteController.log [as topClientesVentas] (src/controladores/reporteController.js:626:29)
+
+    console.log
+      Se insertaron 3 registros en VENTA
+
+      at ReporteController.log [as topClientesVentas] (src/controladores/reporteController.js:639:29)
+
+    console.log
+      Total después de inserción: 3
+
+      at ReporteController.log [as topClientesVentas] (src/controladores/reporteController.js:648:29)
+
+    console.log
+      Ejecutando consulta para top clientes ventas después de arreglar
+
+      at ReporteController.log [as topClientesVentas] (src/controladores/reporteController.js:666:33)
+
+    console.log
+      Resultados top clientes ventas: [
+        {
+          "RazonSocial": "Fix Corp",
+          "total_ventas": 2,
+          "total_monto": 1000,
+          "promedio_venta": 500
+        }
+      ]
+
+      at ReporteController.log [as topClientesVentas] (src/controladores/reporteController.js:668:33)
+
+    console.log
+      === FIN DIAGNÓSTICO TOP CLIENTES VENTAS (DATOS ARREGLADOS) ===
+
+      at ReporteController.log [as topClientesVentas] (src/controladores/reporteController.js:669:33)
+
+    console.log
+      === INICIO DIAGNÓSTICO TOP CLIENTES VENTAS ===
+
+      at ReporteController.log [as topClientesVentas] (src/controladores/reporteController.js:571:21)
+
+    console.log
+      Total registros en tabla VENTA: 0
+
+      at ReporteController.log [as topClientesVentas] (src/controladores/reporteController.js:575:21)
+
+    console.log
+      Ventas con relación a facturas: 0
+
+      at ReporteController.log [as topClientesVentas] (src/controladores/reporteController.js:583:21)
+
+    console.log
+      Facturas con relación a clientes: 0
+
+      at ReporteController.log [as topClientesVentas] (src/controladores/reporteController.js:591:21)
+
+    console.log
+      Total de registros para top clientes ventas: 0
+
+      at ReporteController.log [as topClientesVentas] (src/controladores/reporteController.js:601:21)
+
+    console.log
+      Diagnóstico de JOIN vacío:
+
+      at ReporteController.log [as topClientesVentas] (src/controladores/reporteController.js:604:25)
+
+    console.log
+      Clientes sin facturas: 0
+
+      at ReporteController.log [as topClientesVentas] (src/controladores/reporteController.js:613:25)
+
+    console.log
+      Facturas sin ventas: 2
+
+      at ReporteController.log [as topClientesVentas] (src/controladores/reporteController.js:622:25)
+
+    console.log
+      Insertando ventas para facturas sin registro...
+
+      at ReporteController.log [as topClientesVentas] (src/controladores/reporteController.js:626:29)
+
+    console.log
+      Se insertaron 2 registros en VENTA
+
+      at ReporteController.log [as topClientesVentas] (src/controladores/reporteController.js:639:29)
+
+    console.log
+      Total después de inserción: 0
+
+      at ReporteController.log [as topClientesVentas] (src/controladores/reporteController.js:648:29)
+
+    console.log
+      === FIN DIAGNÓSTICO TOP CLIENTES VENTAS (SIN DATOS) ===
+
+      at ReporteController.log [as topClientesVentas] (src/controladores/reporteController.js:679:25)
+
+    console.log
+      === INICIO DIAGNÓSTICO TOP CLIENTES VENTAS ===
+
+      at ReporteController.log [as topClientesVentas] (src/controladores/reporteController.js:571:21)
+
+    console.log
+      Total registros en tabla VENTA: 3
+
+      at ReporteController.log [as topClientesVentas] (src/controladores/reporteController.js:575:21)
+
+    console.log
+      Ventas con relación a facturas: 3
+
+      at ReporteController.log [as topClientesVentas] (src/controladores/reporteController.js:583:21)
+
+    console.log
+      Facturas con relación a clientes: 3
+
+      at ReporteController.log [as topClientesVentas] (src/controladores/reporteController.js:591:21)
+
+    console.log
+      Total de registros para top clientes ventas: 3
+
+      at ReporteController.log [as topClientesVentas] (src/controladores/reporteController.js:601:21)
+
+    console.log
+      Ejecutando consulta para top clientes ventas
+
+      at ReporteController.log [as topClientesVentas] (src/controladores/reporteController.js:716:21)
+
+    console.log
+      Resultados top clientes ventas: []
+
+      at ReporteController.log [as topClientesVentas] (src/controladores/reporteController.js:718:21)
+
+    console.log
+      === FIN DIAGNÓSTICO TOP CLIENTES VENTAS (CON DATOS) ===
+
+      at ReporteController.log [as topClientesVentas] (src/controladores/reporteController.js:719:21)
+
+    console.log
+      === INICIO DIAGNÓSTICO TOP CLIENTES VENTAS ===
+
+      at ReporteController.log [as topClientesVentas] (src/controladores/reporteController.js:571:21)
+
+    console.log
+      Total registros en tabla VENTA: 3
+
+      at ReporteController.log [as topClientesVentas] (src/controladores/reporteController.js:575:21)
+
+    console.log
+      Ventas con relación a facturas: 3
+
+      at ReporteController.log [as topClientesVentas] (src/controladores/reporteController.js:583:21)
+
+    console.log
+      Facturas con relación a clientes: 3
+
+      at ReporteController.log [as topClientesVentas] (src/controladores/reporteController.js:591:21)
+
+    console.log
+      Total de registros para top clientes ventas: 3
+
+      at ReporteController.log [as topClientesVentas] (src/controladores/reporteController.js:601:21)
+
+    console.log
+      Ejecutando consulta para top clientes ventas
+
+      at ReporteController.log [as topClientesVentas] (src/controladores/reporteController.js:716:21)
+
+    console.log
+      Resultados top clientes ventas: []
+
+      at ReporteController.log [as topClientesVentas] (src/controladores/reporteController.js:718:21)
+
+    console.log
+      === FIN DIAGNÓSTICO TOP CLIENTES VENTAS (CON DATOS) ===
+
+      at ReporteController.log [as topClientesVentas] (src/controladores/reporteController.js:719:21)
+
+    console.log
+      === INICIO DIAGNÓSTICO TOP CLIENTES VENTAS ===
+
+      at ReporteController.log [as topClientesVentas] (src/controladores/reporteController.js:571:21)
+
+    console.log
+      Total registros en tabla VENTA: 3
+
+      at ReporteController.log [as topClientesVentas] (src/controladores/reporteController.js:575:21)
+
+    console.log
+      Ventas con relación a facturas: 3
+
+      at ReporteController.log [as topClientesVentas] (src/controladores/reporteController.js:583:21)
+
+    console.log
+      Facturas con relación a clientes: 3
+
+      at ReporteController.log [as topClientesVentas] (src/controladores/reporteController.js:591:21)
+
+    console.log
+      Total de registros para top clientes ventas: 3
+
+      at ReporteController.log [as topClientesVentas] (src/controladores/reporteController.js:601:21)
+
+    console.log
+      Ejecutando consulta para top clientes ventas
+
+      at ReporteController.log [as topClientesVentas] (src/controladores/reporteController.js:716:21)
+
+    console.log
+      Resultados top clientes ventas: []
+
+      at ReporteController.log [as topClientesVentas] (src/controladores/reporteController.js:718:21)
+
+    console.log
+      === FIN DIAGNÓSTICO TOP CLIENTES VENTAS (CON DATOS) ===
+
+      at ReporteController.log [as topClientesVentas] (src/controladores/reporteController.js:719:21)
+
+    console.log
+      === INICIO DIAGNÓSTICO TOP CLIENTES VENTAS ===
+
+      at ReporteController.log [as topClientesVentas] (src/controladores/reporteController.js:571:21)
+
+    console.log
+      Total registros en tabla VENTA: 3
+
+      at ReporteController.log [as topClientesVentas] (src/controladores/reporteController.js:575:21)
+
+    console.log
+      Ventas con relación a facturas: 3
+
+      at ReporteController.log [as topClientesVentas] (src/controladores/reporteController.js:583:21)
+
+    console.log
+      Facturas con relación a clientes: 3
+
+      at ReporteController.log [as topClientesVentas] (src/controladores/reporteController.js:591:21)
+
+    console.log
+      Total de registros para top clientes ventas: 3
+
+      at ReporteController.log [as topClientesVentas] (src/controladores/reporteController.js:601:21)
+
+    console.log
+      Ejecutando consulta para top clientes ventas
+
+      at ReporteController.log [as topClientesVentas] (src/controladores/reporteController.js:716:21)
+
+    console.log
+      Resultados top clientes ventas: []
+
+      at ReporteController.log [as topClientesVentas] (src/controladores/reporteController.js:718:21)
+
+    console.log
+      === FIN DIAGNÓSTICO TOP CLIENTES VENTAS (CON DATOS) ===
+
+      at ReporteController.log [as topClientesVentas] (src/controladores/reporteController.js:719:21)
+
+    console.log
+      === INICIO DIAGNÓSTICO TOP CLIENTES VENTAS ===
+
+      at ReporteController.log [as topClientesVentas] (src/controladores/reporteController.js:571:21)
+
+    console.error
+      Error en topClientesVentas: Error: ventas fail
+          at Object.<anonymous> (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\tests\controladores\reporteController.test.js:635:46)
+          at Promise.finally.completed (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-circus\build\jestAdapterInit.js:1557:28)
+          at new Promise (<anonymous>)
+          at callAsyncCircusFn (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-circus\build\jestAdapterInit.js:1497:10)
+          at _callCircusTest (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-circus\build\jestAdapterInit.js:1007:40)
+          at _runTest (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-circus\build\jestAdapterInit.js:947:3)
+          at E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-circus\build\jestAdapterInit.js:849:7
+          at _runTestsForDescribeBlock (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-circus\build\jestAdapterInit.js:862:11)
+          at _runTestsForDescribeBlock (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-circus\build\jestAdapterInit.js:857:11)
+          at _runTestsForDescribeBlock (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-circus\build\jestAdapterInit.js:857:11)
+          at run (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-circus\build\jestAdapterInit.js:761:3)
+          at runAndTransformResultsToJestFormat (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-circus\build\jestAdapterInit.js:1918:21)
+          at jestAdapter (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-circus\build\runner.js:101:19)
+          at runTestInternal (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-runner\build\index.js:275:16)
+          at runTest (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-runner\build\index.js:343:7)
+
+    [0m [90m 724 |[39m             })[33m;[39m
+     [90m 725 |[39m         } [36mcatch[39m (error) {
+    [31m[1m>[22m[39m[90m 726 |[39m             console[33m.[39merror([32m'Error en topClientesVentas:'[39m[33m,[39m error)[33m;[39m
+     [90m     |[39m                     [31m[1m^[22m[39m
+     [90m 727 |[39m             res[33m.[39mstatus([35m500[39m)[33m.[39mjson({
+     [90m 728 |[39m                 success[33m:[39m [36mfalse[39m[33m,[39m
+     [90m 729 |[39m                 message[33m:[39m [32m'Error al obtener datos de ventas por cliente: '[39m [33m+[39m error[33m.[39mmessage[0m
+
+      at ReporteController.error [as topClientesVentas] (src/controladores/reporteController.js:726:21)
+      at Object.<anonymous> (tests/controladores/reporteController.test.js:636:13)
+
+    console.log
+      === INICIANDO DIAGNÓSTICO COMPLETO DE VENTA ===
+
+      at ReporteController.log [as diagnosticoVenta] (src/controladores/reporteController.js:737:21)
+
+    console.log
+      === FIN DIAGNÓSTICO COMPLETO DE VENTA ===
+
+      at ReporteController.log [as diagnosticoVenta] (src/controladores/reporteController.js:806:21)
+
+    console.log
+      === INICIANDO DIAGNÓSTICO COMPLETO DE VENTA ===
+
+      at ReporteController.log [as diagnosticoVenta] (src/controladores/reporteController.js:737:21)
+
+    console.log
+      === FIN DIAGNÓSTICO COMPLETO DE VENTA ===
+
+      at ReporteController.log [as diagnosticoVenta] (src/controladores/reporteController.js:806:21)
+
+    console.log
+      === INICIANDO DIAGNÓSTICO COMPLETO DE VENTA ===
+
+      at ReporteController.log [as diagnosticoVenta] (src/controladores/reporteController.js:737:21)
+
+    console.error
+      Error en diagnósticoVenta: Error: diagnostico fail
+          at Object.<anonymous> (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\tests\controladores\reporteController.test.js:682:46)
+          at Promise.finally.completed (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-circus\build\jestAdapterInit.js:1557:28)
+          at new Promise (<anonymous>)
+          at callAsyncCircusFn (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-circus\build\jestAdapterInit.js:1497:10)
+          at _callCircusTest (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-circus\build\jestAdapterInit.js:1007:40)
+          at _runTest (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-circus\build\jestAdapterInit.js:947:3)
+          at E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-circus\build\jestAdapterInit.js:849:7
+          at _runTestsForDescribeBlock (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-circus\build\jestAdapterInit.js:862:11)
+          at _runTestsForDescribeBlock (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-circus\build\jestAdapterInit.js:857:11)
+          at _runTestsForDescribeBlock (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-circus\build\jestAdapterInit.js:857:11)
+          at run (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-circus\build\jestAdapterInit.js:761:3)
+          at runAndTransformResultsToJestFormat (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-circus\build\jestAdapterInit.js:1918:21)
+          at jestAdapter (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-circus\build\runner.js:101:19)
+          at runTestInternal (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-runner\build\index.js:275:16)
+          at runTest (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-runner\build\index.js:343:7)
+
+    [0m [90m 811 |[39m             })[33m;[39m
+     [90m 812 |[39m         } [36mcatch[39m (error) {
+    [31m[1m>[22m[39m[90m 813 |[39m             console[33m.[39merror([32m'Error en diagnósticoVenta:'[39m[33m,[39m error)[33m;[39m
+     [90m     |[39m                     [31m[1m^[22m[39m
+     [90m 814 |[39m             res[33m.[39mstatus([35m500[39m)[33m.[39mjson({
+     [90m 815 |[39m                 success[33m:[39m [36mfalse[39m[33m,[39m
+     [90m 816 |[39m                 message[33m:[39m [32m'Error al realizar diagnóstico: '[39m [33m+[39m error[33m.[39mmessage[0m
+
+      at ReporteController.error [as diagnosticoVenta] (src/controladores/reporteController.js:813:21)
+      at Object.<anonymous> (tests/controladores/reporteController.test.js:683:13)
+
+    console.log
+      Obteniendo proformas vencidas...
+
+      at ReporteController.log [as proformasVencidas] (src/controladores/reporteController.js:824:21)
+
+    console.log
+      Proformas vencidas encontradas: 1
+
+      at ReporteController.log [as proformasVencidas] (src/controladores/reporteController.js:832:21)
+
+    console.log
+      Obteniendo proformas vencidas...
+
+      at ReporteController.log [as proformasVencidas] (src/controladores/reporteController.js:824:21)
+
+    console.log
+      Proformas vencidas encontradas: 0
+
+      at ReporteController.log [as proformasVencidas] (src/controladores/reporteController.js:832:21)
+
+    console.log
+      Obteniendo proformas vencidas...
+
+      at ReporteController.log [as proformasVencidas] (src/controladores/reporteController.js:824:21)
+
+    console.error
+      Error en proformasVencidas: Error: vencidas fail
+          at Object.<anonymous> (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\tests\controladores\reporteController.test.js:714:67)
+          at Promise.finally.completed (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-circus\build\jestAdapterInit.js:1557:28)
+          at new Promise (<anonymous>)
+          at callAsyncCircusFn (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-circus\build\jestAdapterInit.js:1497:10)
+          at _callCircusTest (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-circus\build\jestAdapterInit.js:1007:40)
+          at _runTest (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-circus\build\jestAdapterInit.js:947:3)
+          at E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-circus\build\jestAdapterInit.js:849:7
+          at _runTestsForDescribeBlock (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-circus\build\jestAdapterInit.js:862:11)
+          at _runTestsForDescribeBlock (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-circus\build\jestAdapterInit.js:857:11)
+          at _runTestsForDescribeBlock (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-circus\build\jestAdapterInit.js:857:11)
+          at run (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-circus\build\jestAdapterInit.js:761:3)
+          at runAndTransformResultsToJestFormat (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-circus\build\jestAdapterInit.js:1918:21)
+          at jestAdapter (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-circus\build\runner.js:101:19)
+          at runTestInternal (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-runner\build\index.js:275:16)
+          at runTest (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-runner\build\index.js:343:7)
+
+    [0m [90m 847 |[39m             })[33m;[39m
+     [90m 848 |[39m         } [36mcatch[39m (error) {
+    [31m[1m>[22m[39m[90m 849 |[39m             console[33m.[39merror([32m'Error en proformasVencidas:'[39m[33m,[39m error)[33m;[39m
+     [90m     |[39m                     [31m[1m^[22m[39m
+     [90m 850 |[39m             res[33m.[39mstatus([35m500[39m)[33m.[39mjson({
+     [90m 851 |[39m                 success[33m:[39m [36mfalse[39m[33m,[39m
+     [90m 852 |[39m                 message[33m:[39m [32m'Error al obtener proformas vencidas: '[39m [33m+[39m error[33m.[39mmessage[0m
+
+      at ReporteController.error [as proformasVencidas] (src/controladores/reporteController.js:849:21)
+      at Object.<anonymous> (tests/controladores/reporteController.test.js:715:13)
+
+    console.log
+      Obteniendo estadísticas de proformas...
+
+      at ReporteController.log [as estadisticasProformas] (src/controladores/reporteController.js:860:21)
+
+    console.log
+      Estadísticas de proformas: [ { Estado: 'PENDIENTE', cantidad: 5 } ]
+
+      at ReporteController.log [as estadisticasProformas] (src/controladores/reporteController.js:868:21)
+
+    console.log
+      Obteniendo estadísticas de proformas...
+
+      at ReporteController.log [as estadisticasProformas] (src/controladores/reporteController.js:860:21)
+
+    console.error
+      Error en estadisticasProformas: Error: stats fail
+          at Object.<anonymous> (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\tests\controladores\reporteController.test.js:731:67)
+          at Promise.finally.completed (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-circus\build\jestAdapterInit.js:1557:28)
+          at new Promise (<anonymous>)
+          at callAsyncCircusFn (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-circus\build\jestAdapterInit.js:1497:10)
+          at _callCircusTest (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-circus\build\jestAdapterInit.js:1007:40)
+          at _runTest (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-circus\build\jestAdapterInit.js:947:3)
+          at E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-circus\build\jestAdapterInit.js:849:7
+          at _runTestsForDescribeBlock (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-circus\build\jestAdapterInit.js:862:11)
+          at _runTestsForDescribeBlock (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-circus\build\jestAdapterInit.js:857:11)
+          at _runTestsForDescribeBlock (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-circus\build\jestAdapterInit.js:857:11)
+          at run (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-circus\build\jestAdapterInit.js:761:3)
+          at runAndTransformResultsToJestFormat (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-circus\build\jestAdapterInit.js:1918:21)
+          at jestAdapter (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-circus\build\runner.js:101:19)
+          at runTestInternal (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-runner\build\index.js:275:16)
+          at runTest (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-runner\build\index.js:343:7)
+
+    [0m [90m 873 |[39m             })[33m;[39m
+     [90m 874 |[39m         } [36mcatch[39m (error) {
+    [31m[1m>[22m[39m[90m 875 |[39m             console[33m.[39merror([32m'Error en estadisticasProformas:'[39m[33m,[39m error)[33m;[39m
+     [90m     |[39m                     [31m[1m^[22m[39m
+     [90m 876 |[39m             res[33m.[39mstatus([35m500[39m)[33m.[39mjson({
+     [90m 877 |[39m                 success[33m:[39m [36mfalse[39m[33m,[39m
+     [90m 878 |[39m                 message[33m:[39m [32m'Error al obtener estadísticas de proformas: '[39m [33m+[39m error[33m.[39mmessage[0m
+
+      at ReporteController.error [as estadisticasProformas] (src/controladores/reporteController.js:875:21)
+      at Object.<anonymous> (tests/controladores/reporteController.test.js:732:13)
+
+    console.error
+      Error en proformasRecientes: Error: recientes fail
+          at Object.<anonymous> (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\tests\controladores\reporteController.test.js:746:46)
+          at Promise.finally.completed (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-circus\build\jestAdapterInit.js:1557:28)
+          at new Promise (<anonymous>)
+          at callAsyncCircusFn (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-circus\build\jestAdapterInit.js:1497:10)
+          at _callCircusTest (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-circus\build\jestAdapterInit.js:1007:40)
+          at _runTest (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-circus\build\jestAdapterInit.js:947:3)
+          at E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-circus\build\jestAdapterInit.js:849:7
+          at _runTestsForDescribeBlock (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-circus\build\jestAdapterInit.js:862:11)
+          at _runTestsForDescribeBlock (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-circus\build\jestAdapterInit.js:857:11)
+          at _runTestsForDescribeBlock (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-circus\build\jestAdapterInit.js:857:11)
+          at run (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-circus\build\jestAdapterInit.js:761:3)
+          at runAndTransformResultsToJestFormat (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-circus\build\jestAdapterInit.js:1918:21)
+          at jestAdapter (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-circus\build\runner.js:101:19)
+          at runTestInternal (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-runner\build\index.js:275:16)
+          at runTest (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-runner\build\index.js:343:7)
+
+    [0m [90m 895 |[39m             res[33m.[39mjson({ success[33m:[39m [36mtrue[39m[33m,[39m data[33m:[39m resultados })[33m;[39m
+     [90m 896 |[39m         } [36mcatch[39m (error) {
+    [31m[1m>[22m[39m[90m 897 |[39m             console[33m.[39merror([32m'Error en proformasRecientes:'[39m[33m,[39m error)[33m;[39m
+     [90m     |[39m                     [31m[1m^[22m[39m
+     [90m 898 |[39m             res[33m.[39mstatus([35m500[39m)[33m.[39mjson({ success[33m:[39m [36mfalse[39m[33m,[39m message[33m:[39m [32m'Error al obtener proformas'[39m })[33m;[39m
+     [90m 899 |[39m         }
+     [90m 900 |[39m     }[0m
+
+      at ReporteController.error [as proformasRecientes] (src/controladores/reporteController.js:897:21)
+      at Object.<anonymous> (tests/controladores/reporteController.test.js:747:13)
+
+    console.error
+      Error en auditoriaReciente: Error: audit fail
+          at Object.<anonymous> (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\tests\controladores\reporteController.test.js:764:57)
+          at Promise.finally.completed (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-circus\build\jestAdapterInit.js:1557:28)
+          at new Promise (<anonymous>)
+          at callAsyncCircusFn (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-circus\build\jestAdapterInit.js:1497:10)
+          at _callCircusTest (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-circus\build\jestAdapterInit.js:1007:40)
+          at _runTest (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-circus\build\jestAdapterInit.js:947:3)
+          at E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-circus\build\jestAdapterInit.js:849:7
+          at _runTestsForDescribeBlock (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-circus\build\jestAdapterInit.js:862:11)
+          at _runTestsForDescribeBlock (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-circus\build\jestAdapterInit.js:857:11)
+          at _runTestsForDescribeBlock (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-circus\build\jestAdapterInit.js:857:11)
+          at run (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-circus\build\jestAdapterInit.js:761:3)
+          at runAndTransformResultsToJestFormat (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-circus\build\jestAdapterInit.js:1918:21)
+          at jestAdapter (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-circus\build\runner.js:101:19)
+          at runTestInternal (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-runner\build\index.js:275:16)
+          at runTest (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-runner\build\index.js:343:7)
+
+    [0m [90m 907 |[39m             res[33m.[39mjson({ success[33m:[39m [36mtrue[39m[33m,[39m data[33m:[39m registros })[33m;[39m
+     [90m 908 |[39m         } [36mcatch[39m (error) {
+    [31m[1m>[22m[39m[90m 909 |[39m             console[33m.[39merror([32m'Error en auditoriaReciente:'[39m[33m,[39m error)[33m;[39m
+     [90m     |[39m                     [31m[1m^[22m[39m
+     [90m 910 |[39m             res[33m.[39mstatus([35m500[39m)[33m.[39mjson({ success[33m:[39m [36mfalse[39m[33m,[39m message[33m:[39m [32m'Error al obtener auditoría'[39m })[33m;[39m
+     [90m 911 |[39m         }
+     [90m 912 |[39m     }[0m
+
+      at ReporteController.error [as auditoriaReciente] (src/controladores/reporteController.js:909:21)
+      at Object.<anonymous> (tests/controladores/reporteController.test.js:765:13)
+
+    console.error
+      Error en cuentasPorCobrar: Error: cobrar fail
+          at Object.<anonymous> (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\tests\controladores\reporteController.test.js:794:46)
+          at Promise.finally.completed (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-circus\build\jestAdapterInit.js:1557:28)
+          at new Promise (<anonymous>)
+          at callAsyncCircusFn (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-circus\build\jestAdapterInit.js:1497:10)
+          at _callCircusTest (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-circus\build\jestAdapterInit.js:1007:40)
+          at _runTest (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-circus\build\jestAdapterInit.js:947:3)
+          at E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-circus\build\jestAdapterInit.js:849:7
+          at _runTestsForDescribeBlock (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-circus\build\jestAdapterInit.js:862:11)
+          at _runTestsForDescribeBlock (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-circus\build\jestAdapterInit.js:857:11)
+          at _runTestsForDescribeBlock (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-circus\build\jestAdapterInit.js:857:11)
+          at run (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-circus\build\jestAdapterInit.js:761:3)
+          at runAndTransformResultsToJestFormat (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-circus\build\jestAdapterInit.js:1918:21)
+          at jestAdapter (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-circus\build\runner.js:101:19)
+          at runTestInternal (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-runner\build\index.js:275:16)
+          at runTest (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-runner\build\index.js:343:7)
+
+    [0m [90m 974 |[39m             })[33m;[39m
+     [90m 975 |[39m         } [36mcatch[39m (error) {
+    [31m[1m>[22m[39m[90m 976 |[39m             console[33m.[39merror([32m'Error en cuentasPorCobrar:'[39m[33m,[39m error)[33m;[39m
+     [90m     |[39m                     [31m[1m^[22m[39m
+     [90m 977 |[39m             res[33m.[39mstatus([35m500[39m)[33m.[39mjson({
+     [90m 978 |[39m                 success[33m:[39m [36mfalse[39m[33m,[39m
+     [90m 979 |[39m                 message[33m:[39m [32m'Error al obtener cuentas por cobrar: '[39m [33m+[39m error[33m.[39mmessage[0m
+
+      at ReporteController.error [as cuentasPorCobrar] (src/controladores/reporteController.js:976:21)
+      at Object.<anonymous> (tests/controladores/reporteController.test.js:795:13)
+
+PASS tests/controladores/loginController.test.js
+  ● Console
+
+    console.error
+      Error en el login: Error: Database error
+          at Object.<anonymous> (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\tests\controladores\loginController.test.js:90:50)
+          at Promise.finally.completed (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-circus\build\jestAdapterInit.js:1557:28)
+          at new Promise (<anonymous>)
+          at callAsyncCircusFn (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-circus\build\jestAdapterInit.js:1497:10)
+          at _callCircusTest (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-circus\build\jestAdapterInit.js:1007:40)
+          at _runTest (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-circus\build\jestAdapterInit.js:947:3)
+          at E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-circus\build\jestAdapterInit.js:849:7
+          at _runTestsForDescribeBlock (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-circus\build\jestAdapterInit.js:862:11)
+          at _runTestsForDescribeBlock (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-circus\build\jestAdapterInit.js:857:11)
+          at _runTestsForDescribeBlock (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-circus\build\jestAdapterInit.js:857:11)
+          at run (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-circus\build\jestAdapterInit.js:761:3)
+          at runAndTransformResultsToJestFormat (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-circus\build\jestAdapterInit.js:1918:21)
+          at jestAdapter (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-circus\build\runner.js:101:19)
+          at runTestInternal (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-runner\build\index.js:275:16)
+          at runTest (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-runner\build\index.js:343:7)
+
+    [0m [90m 40 |[39m         }
+     [90m 41 |[39m     } [36mcatch[39m (error) {
+    [31m[1m>[22m[39m[90m 42 |[39m         console[33m.[39merror([32m'Error en el login:'[39m[33m,[39m error)[33m;[39m
+     [90m    |[39m                 [31m[1m^[22m[39m
+     [90m 43 |[39m         res[33m.[39mrender([32m'login/login'[39m[33m,[39m { error[33m:[39m [32m'Error interno del servidor.'[39m })[33m;[39m
+     [90m 44 |[39m     }
+     [90m 45 |[39m }[33m;[39m[0m
+
+      at Object.error [as procesarLogin] (src/controladores/loginController.js:42:17)
+      at Object.<anonymous> (tests/controladores/loginController.test.js:92:13)
+
+PASS tests/controladores/menuControlador.test.js
+  ● Console
+
+    console.error
+      Error al contar clientes: TypeError: Cannot read properties of undefined (reading 't')
+          at Object.t [as mostrarMenu] (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\src\controladores\menuControlador.js:33:42)
+          at Object.<anonymous> (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\tests\controladores\menuControlador.test.js:36:13)
+
+    [0m [90m 32 |[39m             [36mconst[39m [c] [33m=[39m [36mawait[39m pool[33m.[39mquery([32m`SELECT COUNT(*) as t FROM CLIENTE WHERE Estado = 'ACTIVO' ${filterWhere}`[39m)[33m;[39m
+     [90m 33 |[39m             estadisticas[33m.[39mclientes [33m=[39m c[[35m0[39m][33m.[39mt[33m;[39m
+    [31m[1m>[22m[39m[90m 34 |[39m         } [36mcatch[39m (err) { console[33m.[39merror([32m'Error al contar clientes:'[39m[33m,[39m err)[33m;[39m }
+     [90m    |[39m                                 [31m[1m^[22m[39m
+     [90m 35 |[39m
+     [90m 36 |[39m         [36mtry[39m {
+     [90m 37 |[39m             [36mconst[39m [e] [33m=[39m [36mawait[39m pool[33m.[39mquery([32m`SELECT COUNT(*) as t FROM EMPLEADO WHERE Estado = 'ACTIVO'`[39m)[33m;[39m[0m
+
+      at Object.error [as mostrarMenu] (src/controladores/menuControlador.js:34:33)
+      at Object.<anonymous> (tests/controladores/menuControlador.test.js:36:13)
+
+    console.error
+      Error al contar empleados: TypeError: Cannot read properties of undefined (reading 't')
+          at Object.t [as mostrarMenu] (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\src\controladores\menuControlador.js:38:43)
+          at Object.<anonymous> (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\tests\controladores\menuControlador.test.js:36:13)
+
+    [0m [90m 37 |[39m             [36mconst[39m [e] [33m=[39m [36mawait[39m pool[33m.[39mquery([32m`SELECT COUNT(*) as t FROM EMPLEADO WHERE Estado = 'ACTIVO'`[39m)[33m;[39m
+     [90m 38 |[39m             estadisticas[33m.[39mempleados [33m=[39m e[[35m0[39m][33m.[39mt[33m;[39m
+    [31m[1m>[22m[39m[90m 39 |[39m         } [36mcatch[39m (err) { console[33m.[39merror([32m'Error al contar empleados:'[39m[33m,[39m err)[33m;[39m }
+     [90m    |[39m                                 [31m[1m^[22m[39m
+     [90m 40 |[39m
+     [90m 41 |[39m         [36mtry[39m {
+     [90m 42 |[39m             [36mconst[39m [p] [33m=[39m [36mawait[39m pool[33m.[39mquery([32m`SELECT COUNT(*) as t FROM PROFORMA WHERE 1=1 ${filterWhere}`[39m)[33m;[39m[0m
+
+      at Object.error [as mostrarMenu] (src/controladores/menuControlador.js:39:33)
+      at Object.<anonymous> (tests/controladores/menuControlador.test.js:36:13)
+
+    console.error
+      Error al contar proformas: TypeError: Cannot read properties of undefined (reading 't')
+          at Object.t [as mostrarMenu] (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\src\controladores\menuControlador.js:43:43)
+          at Object.<anonymous> (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\tests\controladores\menuControlador.test.js:36:13)
+
+    [0m [90m 42 |[39m             [36mconst[39m [p] [33m=[39m [36mawait[39m pool[33m.[39mquery([32m`SELECT COUNT(*) as t FROM PROFORMA WHERE 1=1 ${filterWhere}`[39m)[33m;[39m
+     [90m 43 |[39m             estadisticas[33m.[39mproformas [33m=[39m p[[35m0[39m][33m.[39mt[33m;[39m
+    [31m[1m>[22m[39m[90m 44 |[39m         } [36mcatch[39m (err) { console[33m.[39merror([32m'Error al contar proformas:'[39m[33m,[39m err)[33m;[39m }
+     [90m    |[39m                                 [31m[1m^[22m[39m
+     [90m 45 |[39m
+     [90m 46 |[39m         [36mtry[39m {
+     [90m 47 |[39m             [36mconst[39m [pr] [33m=[39m [36mawait[39m pool[33m.[39mquery([32m`SELECT COUNT(*) as t FROM PRODUCTO WHERE Estado = 'ACTIVO'`[39m)[33m;[39m[0m
+
+      at Object.error [as mostrarMenu] (src/controladores/menuControlador.js:44:33)
+      at Object.<anonymous> (tests/controladores/menuControlador.test.js:36:13)
+
+    console.error
+      Error al contar productos: TypeError: Cannot read properties of undefined (reading 't')
+          at Object.t [as mostrarMenu] (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\src\controladores\menuControlador.js:48:44)
+          at Object.<anonymous> (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\tests\controladores\menuControlador.test.js:36:13)
+
+    [0m [90m 47 |[39m             [36mconst[39m [pr] [33m=[39m [36mawait[39m pool[33m.[39mquery([32m`SELECT COUNT(*) as t FROM PRODUCTO WHERE Estado = 'ACTIVO'`[39m)[33m;[39m
+     [90m 48 |[39m             estadisticas[33m.[39mproductos [33m=[39m pr[[35m0[39m][33m.[39mt[33m;[39m
+    [31m[1m>[22m[39m[90m 49 |[39m         } [36mcatch[39m (err) { console[33m.[39merror([32m'Error al contar productos:'[39m[33m,[39m err)[33m;[39m }
+     [90m    |[39m                                 [31m[1m^[22m[39m
+     [90m 50 |[39m
+     [90m 51 |[39m         [90m// Actividad de proformas por dia de la semana (ultimos 7 dias)[39m
+     [90m 52 |[39m         [36mlet[39m actividadSemanal [33m=[39m [[35m0[39m[33m,[39m [35m0[39m[33m,[39m [35m0[39m[33m,[39m [35m0[39m[33m,[39m [35m0[39m[33m,[39m [35m0[39m[33m,[39m [35m0[39m][33m;[39m [90m// Lun, Mar, Mie, Jue, Vie, Sab, Dom[39m[0m
+
+      at Object.error [as mostrarMenu] (src/controladores/menuControlador.js:49:33)
+      at Object.<anonymous> (tests/controladores/menuControlador.test.js:36:13)
+
+    console.error
+      Error al contar facturas: TypeError: Cannot read properties of undefined (reading 'total')
+          at Object.total [as mostrarMenu] (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\src\controladores\menuControlador.js:132:37)
+          at Object.<anonymous> (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\tests\controladores\menuControlador.test.js:36:13)
+
+    [0m [90m 132 |[39m             totalFacturas [33m=[39m rows[[35m0[39m][33m.[39mtotal[33m;[39m
+     [90m 133 |[39m         } [36mcatch[39m (err) {
+    [31m[1m>[22m[39m[90m 134 |[39m             console[33m.[39merror([32m'Error al contar facturas:'[39m[33m,[39m err)[33m;[39m
+     [90m     |[39m                     [31m[1m^[22m[39m
+     [90m 135 |[39m         }
+     [90m 136 |[39m
+     [90m 137 |[39m         [90m// Auditoria reciente para dashboard[39m[0m
+
+      at Object.error [as mostrarMenu] (src/controladores/menuControlador.js:134:21)
+      at Object.<anonymous> (tests/controladores/menuControlador.test.js:36:13)
+
+    console.log
+      ✓ Auditoria cargada: 0 registros
+
+      at Object.log [as mostrarMenu] (src/controladores/menuControlador.js:142:21)
+
+    console.log
+      ✓ Auditoria cargada: 0 registros
+
+      at Object.log [as mostrarMenu] (src/controladores/menuControlador.js:142:21)
+
+    console.error
+      Error al contar clientes: TypeError: Cannot read properties of undefined (reading 't')
+          at Object.t [as mostrarMenu] (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\src\controladores\menuControlador.js:33:42)
+          at Object.<anonymous> (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\tests\controladores\menuControlador.test.js:90:13)
+
+    [0m [90m 32 |[39m             [36mconst[39m [c] [33m=[39m [36mawait[39m pool[33m.[39mquery([32m`SELECT COUNT(*) as t FROM CLIENTE WHERE Estado = 'ACTIVO' ${filterWhere}`[39m)[33m;[39m
+     [90m 33 |[39m             estadisticas[33m.[39mclientes [33m=[39m c[[35m0[39m][33m.[39mt[33m;[39m
+    [31m[1m>[22m[39m[90m 34 |[39m         } [36mcatch[39m (err) { console[33m.[39merror([32m'Error al contar clientes:'[39m[33m,[39m err)[33m;[39m }
+     [90m    |[39m                                 [31m[1m^[22m[39m
+     [90m 35 |[39m
+     [90m 36 |[39m         [36mtry[39m {
+     [90m 37 |[39m             [36mconst[39m [e] [33m=[39m [36mawait[39m pool[33m.[39mquery([32m`SELECT COUNT(*) as t FROM EMPLEADO WHERE Estado = 'ACTIVO'`[39m)[33m;[39m[0m
+
+      at Object.error [as mostrarMenu] (src/controladores/menuControlador.js:34:33)
+      at Object.<anonymous> (tests/controladores/menuControlador.test.js:90:13)
+
+    console.error
+      Error al contar empleados: TypeError: Cannot read properties of undefined (reading 't')
+          at Object.t [as mostrarMenu] (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\src\controladores\menuControlador.js:38:43)
+          at Object.<anonymous> (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\tests\controladores\menuControlador.test.js:90:13)
+
+    [0m [90m 37 |[39m             [36mconst[39m [e] [33m=[39m [36mawait[39m pool[33m.[39mquery([32m`SELECT COUNT(*) as t FROM EMPLEADO WHERE Estado = 'ACTIVO'`[39m)[33m;[39m
+     [90m 38 |[39m             estadisticas[33m.[39mempleados [33m=[39m e[[35m0[39m][33m.[39mt[33m;[39m
+    [31m[1m>[22m[39m[90m 39 |[39m         } [36mcatch[39m (err) { console[33m.[39merror([32m'Error al contar empleados:'[39m[33m,[39m err)[33m;[39m }
+     [90m    |[39m                                 [31m[1m^[22m[39m
+     [90m 40 |[39m
+     [90m 41 |[39m         [36mtry[39m {
+     [90m 42 |[39m             [36mconst[39m [p] [33m=[39m [36mawait[39m pool[33m.[39mquery([32m`SELECT COUNT(*) as t FROM PROFORMA WHERE 1=1 ${filterWhere}`[39m)[33m;[39m[0m
+
+      at Object.error [as mostrarMenu] (src/controladores/menuControlador.js:39:33)
+      at Object.<anonymous> (tests/controladores/menuControlador.test.js:90:13)
+
+    console.error
+      Error al contar proformas: TypeError: Cannot read properties of undefined (reading 't')
+          at Object.t [as mostrarMenu] (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\src\controladores\menuControlador.js:43:43)
+          at Object.<anonymous> (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\tests\controladores\menuControlador.test.js:90:13)
+
+    [0m [90m 42 |[39m             [36mconst[39m [p] [33m=[39m [36mawait[39m pool[33m.[39mquery([32m`SELECT COUNT(*) as t FROM PROFORMA WHERE 1=1 ${filterWhere}`[39m)[33m;[39m
+     [90m 43 |[39m             estadisticas[33m.[39mproformas [33m=[39m p[[35m0[39m][33m.[39mt[33m;[39m
+    [31m[1m>[22m[39m[90m 44 |[39m         } [36mcatch[39m (err) { console[33m.[39merror([32m'Error al contar proformas:'[39m[33m,[39m err)[33m;[39m }
+     [90m    |[39m                                 [31m[1m^[22m[39m
+     [90m 45 |[39m
+     [90m 46 |[39m         [36mtry[39m {
+     [90m 47 |[39m             [36mconst[39m [pr] [33m=[39m [36mawait[39m pool[33m.[39mquery([32m`SELECT COUNT(*) as t FROM PRODUCTO WHERE Estado = 'ACTIVO'`[39m)[33m;[39m[0m
+
+      at Object.error [as mostrarMenu] (src/controladores/menuControlador.js:44:33)
+      at Object.<anonymous> (tests/controladores/menuControlador.test.js:90:13)
+
+    console.error
+      Error al contar productos: TypeError: Cannot read properties of undefined (reading 't')
+          at Object.t [as mostrarMenu] (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\src\controladores\menuControlador.js:48:44)
+          at Object.<anonymous> (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\tests\controladores\menuControlador.test.js:90:13)
+
+    [0m [90m 47 |[39m             [36mconst[39m [pr] [33m=[39m [36mawait[39m pool[33m.[39mquery([32m`SELECT COUNT(*) as t FROM PRODUCTO WHERE Estado = 'ACTIVO'`[39m)[33m;[39m
+     [90m 48 |[39m             estadisticas[33m.[39mproductos [33m=[39m pr[[35m0[39m][33m.[39mt[33m;[39m
+    [31m[1m>[22m[39m[90m 49 |[39m         } [36mcatch[39m (err) { console[33m.[39merror([32m'Error al contar productos:'[39m[33m,[39m err)[33m;[39m }
+     [90m    |[39m                                 [31m[1m^[22m[39m
+     [90m 50 |[39m
+     [90m 51 |[39m         [90m// Actividad de proformas por dia de la semana (ultimos 7 dias)[39m
+     [90m 52 |[39m         [36mlet[39m actividadSemanal [33m=[39m [[35m0[39m[33m,[39m [35m0[39m[33m,[39m [35m0[39m[33m,[39m [35m0[39m[33m,[39m [35m0[39m[33m,[39m [35m0[39m[33m,[39m [35m0[39m][33m;[39m [90m// Lun, Mar, Mie, Jue, Vie, Sab, Dom[39m[0m
+
+      at Object.error [as mostrarMenu] (src/controladores/menuControlador.js:49:33)
+      at Object.<anonymous> (tests/controladores/menuControlador.test.js:90:13)
+
+    console.error
+      Error al contar facturas: TypeError: Cannot read properties of undefined (reading 'total')
+          at Object.total [as mostrarMenu] (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\src\controladores\menuControlador.js:132:37)
+          at Object.<anonymous> (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\tests\controladores\menuControlador.test.js:90:13)
+
+    [0m [90m 132 |[39m             totalFacturas [33m=[39m rows[[35m0[39m][33m.[39mtotal[33m;[39m
+     [90m 133 |[39m         } [36mcatch[39m (err) {
+    [31m[1m>[22m[39m[90m 134 |[39m             console[33m.[39merror([32m'Error al contar facturas:'[39m[33m,[39m err)[33m;[39m
+     [90m     |[39m                     [31m[1m^[22m[39m
+     [90m 135 |[39m         }
+     [90m 136 |[39m
+     [90m 137 |[39m         [90m// Auditoria reciente para dashboard[39m[0m
+
+      at Object.error [as mostrarMenu] (src/controladores/menuControlador.js:134:21)
+      at Object.<anonymous> (tests/controladores/menuControlador.test.js:90:13)
+
+    console.log
+      ✓ Auditoria cargada: 0 registros
+
+      at Object.log [as mostrarMenu] (src/controladores/menuControlador.js:142:21)
+
+    console.error
+      Error general al obtener estadisticas: TypeError: Cannot read properties of null (reading 'periodo')
+          at Object.periodo [as mostrarMenu] (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\src\controladores\menuControlador.js:10:35)
+          at Object.mostrarMenu (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\tests\controladores\menuControlador.test.js:110:35)
+          at Promise.finally.completed (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-circus\build\jestAdapterInit.js:1557:28)
+          at new Promise (<anonymous>)
+          at callAsyncCircusFn (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-circus\build\jestAdapterInit.js:1497:10)
+          at _callCircusTest (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-circus\build\jestAdapterInit.js:1007:40)
+          at _runTest (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-circus\build\jestAdapterInit.js:947:3)
+          at E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-circus\build\jestAdapterInit.js:849:7
+          at _runTestsForDescribeBlock (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-circus\build\jestAdapterInit.js:862:11)
+          at _runTestsForDescribeBlock (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-circus\build\jestAdapterInit.js:857:11)
+          at _runTestsForDescribeBlock (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-circus\build\jestAdapterInit.js:857:11)
+          at run (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-circus\build\jestAdapterInit.js:761:3)
+          at runAndTransformResultsToJestFormat (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-circus\build\jestAdapterInit.js:1918:21)
+          at jestAdapter (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-circus\build\runner.js:101:19)
+          at runTestInternal (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-runner\build\index.js:275:16)
+          at runTest (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-runner\build\index.js:343:7)
+
+    [0m [90m 167 |[39m         })[33m;[39m
+     [90m 168 |[39m     } [36mcatch[39m (error) {
+    [31m[1m>[22m[39m[90m 169 |[39m         console[33m.[39merror([32m'Error general al obtener estadisticas:'[39m[33m,[39m error)[33m;[39m
+     [90m     |[39m                 [31m[1m^[22m[39m
+     [90m 170 |[39m         res[33m.[39mrender([32m'menu/principal'[39m[33m,[39m {
+     [90m 171 |[39m             estadisticas[33m:[39m { clientes[33m:[39m [35m0[39m[33m,[39m empleados[33m:[39m [35m0[39m[33m,[39m proformas[33m:[39m [35m0[39m[33m,[39m productos[33m:[39m [35m0[39m }[33m,[39m
+     [90m 172 |[39m             actividadSemanal[33m:[39m [33mJSON[39m[33m.[39mstringify([[35m0[39m[33m,[39m [35m0[39m[33m,[39m [35m0[39m[33m,[39m [35m0[39m[33m,[39m [35m0[39m[33m,[39m [35m0[39m[33m,[39m [35m0[39m])[33m,[39m[0m
+
+      at Object.error [as mostrarMenu] (src/controladores/menuControlador.js:169:17)
+      at Object.mostrarMenu (tests/controladores/menuControlador.test.js:110:35)
+
+PASS tests/modelos/Proforma.test.js
+  ● Console
+
+    console.log
+      Verificando proformas vencidas...
+
+      at Proforma.log [as verificarProformasVencidas] (src/modelos/Proforma.js:52:21)
+
+    console.log
+      Proformas actualizadas a VENCIDA: 5
+
+      at Proforma.log [as verificarProformasVencidas] (src/modelos/Proforma.js:71:21)
+
+    console.log
+      Verificando proformas vencidas...
+
+      at Proforma.log [as verificarProformasVencidas] (src/modelos/Proforma.js:52:21)
+
+    console.error
+      Error en Proforma.verificarProformasVencidas: Error: DB error
+          at Object.<anonymous> (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\tests\modelos\Proforma.test.js:35:46)
+          at Promise.finally.completed (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-circus\build\jestAdapterInit.js:1557:28)
+          at new Promise (<anonymous>)
+          at callAsyncCircusFn (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-circus\build\jestAdapterInit.js:1497:10)
+          at _callCircusTest (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-circus\build\jestAdapterInit.js:1007:40)
+          at _runTest (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-circus\build\jestAdapterInit.js:947:3)
+          at E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-circus\build\jestAdapterInit.js:849:7
+          at _runTestsForDescribeBlock (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-circus\build\jestAdapterInit.js:862:11)
+          at _runTestsForDescribeBlock (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-circus\build\jestAdapterInit.js:857:11)
+          at _runTestsForDescribeBlock (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-circus\build\jestAdapterInit.js:857:11)
+          at run (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-circus\build\jestAdapterInit.js:761:3)
+          at runAndTransformResultsToJestFormat (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-circus\build\jestAdapterInit.js:1918:21)
+          at jestAdapter (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-circus\build\runner.js:101:19)
+          at runTestInternal (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-runner\build\index.js:275:16)
+          at runTest (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-runner\build\index.js:343:7)
+
+    [0m [90m 73 |[39m             [36mreturn[39m resultado[33m.[39maffectedRows[33m;[39m
+     [90m 74 |[39m         } [36mcatch[39m (error) {
+    [31m[1m>[22m[39m[90m 75 |[39m             console[33m.[39merror([32m'Error en Proforma.verificarProformasVencidas:'[39m[33m,[39m error)[33m;[39m
+     [90m    |[39m                     [31m[1m^[22m[39m
+     [90m 76 |[39m             [36mthrow[39m error[33m;[39m
+     [90m 77 |[39m         }
+     [90m 78 |[39m     }[0m
+
+      at Proforma.error [as verificarProformasVencidas] (src/modelos/Proforma.js:75:21)
+      at Object.<anonymous> (tests/modelos/Proforma.test.js:36:13)
+
+    console.error
+      Error en Proforma.generarCodigo: Error: db down
+          at Object.<anonymous> (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\tests\modelos\Proforma.test.js:86:46)
+          at Promise.finally.completed (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-circus\build\jestAdapterInit.js:1557:28)
+          at new Promise (<anonymous>)
+          at callAsyncCircusFn (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-circus\build\jestAdapterInit.js:1497:10)
+          at _callCircusTest (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-circus\build\jestAdapterInit.js:1007:40)
+          at _runTest (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-circus\build\jestAdapterInit.js:947:3)
+          at E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-circus\build\jestAdapterInit.js:849:7
+          at _runTestsForDescribeBlock (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-circus\build\jestAdapterInit.js:862:11)
+          at _runTestsForDescribeBlock (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-circus\build\jestAdapterInit.js:857:11)
+          at _runTestsForDescribeBlock (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-circus\build\jestAdapterInit.js:857:11)
+          at run (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-circus\build\jestAdapterInit.js:761:3)
+          at runAndTransformResultsToJestFormat (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-circus\build\jestAdapterInit.js:1918:21)
+          at jestAdapter (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-circus\build\runner.js:101:19)
+          at runTestInternal (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-runner\build\index.js:275:16)
+          at runTest (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-runner\build\index.js:343:7)
+
+    [0m [90m 155 |[39m             [36mreturn[39m codigo[33m;[39m
+     [90m 156 |[39m         } [36mcatch[39m (error) {
+    [31m[1m>[22m[39m[90m 157 |[39m             console[33m.[39merror([32m'Error en Proforma.generarCodigo:'[39m[33m,[39m error)[33m;[39m
+     [90m     |[39m                     [31m[1m^[22m[39m
+     [90m 158 |[39m             [90m// Fallback seguro[39m
+     [90m 159 |[39m             [36mreturn[39m [32m'PROF-'[39m [33m+[39m [33mString[39m([33mDate[39m[33m.[39mnow())[33m.[39mslice([33m-[39m[35m4[39m)[33m;[39m
+     [90m 160 |[39m         }[0m
+
+      at Proforma.error [as generarCodigo] (src/modelos/Proforma.js:157:21)
+      at Object.<anonymous> (tests/modelos/Proforma.test.js:87:28)
+
+    console.log
+      Obteniendo lista de proformas...
+
+      at Proforma.log [as listar] (src/modelos/Proforma.js:165:21)
+
+    console.log
+      Proforma creada con ID: 1
+
+      at Proforma.log [as crear] (src/modelos/Proforma.js:251:21)
+
+    console.log
+      Detalle agregado para producto: 1
+
+      at Proforma.log [as crear] (src/modelos/Proforma.js:271:33)
+
+    console.log
+      Proforma y detalles creados exitosamente
+
+      at Proforma.log [as crear] (src/modelos/Proforma.js:278:21)
+
+    console.error
+      Error en Proforma.crear: Error: fail prof
+          at Object.<anonymous> (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\tests\modelos\Proforma.test.js:127:56)
+          at Promise.finally.completed (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-circus\build\jestAdapterInit.js:1557:28)
+          at new Promise (<anonymous>)
+          at callAsyncCircusFn (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-circus\build\jestAdapterInit.js:1497:10)
+          at _callCircusTest (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-circus\build\jestAdapterInit.js:1007:40)
+          at _runTest (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-circus\build\jestAdapterInit.js:947:3)
+          at E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-circus\build\jestAdapterInit.js:849:7
+          at _runTestsForDescribeBlock (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-circus\build\jestAdapterInit.js:862:11)
+          at _runTestsForDescribeBlock (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-circus\build\jestAdapterInit.js:857:11)
+          at _runTestsForDescribeBlock (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-circus\build\jestAdapterInit.js:857:11)
+          at run (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-circus\build\jestAdapterInit.js:761:3)
+          at runAndTransformResultsToJestFormat (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-circus\build\jestAdapterInit.js:1918:21)
+          at jestAdapter (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-circus\build\runner.js:101:19)
+          at runTestInternal (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-runner\build\index.js:275:16)
+          at runTest (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-runner\build\index.js:343:7)
+
+    [0m [90m 281 |[39m             [90m// Revertir transacción en caso de error[39m
+     [90m 282 |[39m             [36mawait[39m connection[33m.[39mrollback()[33m;[39m
+    [31m[1m>[22m[39m[90m 283 |[39m             console[33m.[39merror([32m'Error en Proforma.crear:'[39m[33m,[39m error)[33m;[39m
+     [90m     |[39m                     [31m[1m^[22m[39m
+     [90m 284 |[39m             [36mthrow[39m error[33m;[39m
+     [90m 285 |[39m         } [36mfinally[39m {
+     [90m 286 |[39m             [90m// Liberar conexión[39m[0m
+
+      at Proforma.error (src/modelos/Proforma.js:283:21)
+      at Object.<anonymous> (tests/modelos/Proforma.test.js:129:13)
+
+    console.log
+      Proforma obtenida por ID: {
+        IdProforma: 1,
+        FechaEmision: '2026-03-09T13:31:59.495Z',
+        ValidezOferta: 10,
+        Estado: 'PENDIENTE'
+      }
+
+      at Proforma.log [as obtenerPorId] (src/modelos/Proforma.js:302:21)
+
+    console.log
+      Detalles obtenidos: 1
+
+      at Proforma.log [as obtenerPorId] (src/modelos/Proforma.js:329:21)
+
+    console.log
+      Proforma actualizada
+
+      at Proforma.log [as actualizar] (src/modelos/Proforma.js:369:21)
+
+    console.log
+      Detalles anteriores eliminados
+
+      at Proforma.log [as actualizar] (src/modelos/Proforma.js:374:21)
+
+    console.log
+      Nuevo detalle agregado para producto: 2
+
+      at Proforma.log [as actualizar] (src/modelos/Proforma.js:394:33)
+
+    console.log
+      Proforma y detalles actualizados exitosamente
+
+      at Proforma.log [as actualizar] (src/modelos/Proforma.js:401:21)
+
+    console.error
+      Error en Proforma.actualizar: Error: error en update
+          at Object.<anonymous> (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\tests\modelos\Proforma.test.js:175:56)
+          at Promise.finally.completed (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-circus\build\jestAdapterInit.js:1557:28)
+          at new Promise (<anonymous>)
+          at callAsyncCircusFn (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-circus\build\jestAdapterInit.js:1497:10)
+          at _callCircusTest (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-circus\build\jestAdapterInit.js:1007:40)
+          at _runTest (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-circus\build\jestAdapterInit.js:947:3)
+          at E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-circus\build\jestAdapterInit.js:849:7
+          at _runTestsForDescribeBlock (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-circus\build\jestAdapterInit.js:862:11)
+          at _runTestsForDescribeBlock (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-circus\build\jestAdapterInit.js:857:11)
+          at _runTestsForDescribeBlock (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-circus\build\jestAdapterInit.js:857:11)
+          at run (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-circus\build\jestAdapterInit.js:761:3)
+          at runAndTransformResultsToJestFormat (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-circus\build\jestAdapterInit.js:1918:21)
+          at jestAdapter (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-circus\build\runner.js:101:19)
+          at runTestInternal (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-runner\build\index.js:275:16)
+          at runTest (E:\6 CICLO\CURSO JUEVES\PROYECTO-TESIS-NUEVO\PROYECTO-TESIS\node_modules\jest-runner\build\index.js:343:7)
+
+    [0m [90m 404 |[39m             [90m// Revertir transacción en caso de error[39m
+     [90m 405 |[39m             [36mawait[39m connection[33m.[39mrollback()[33m;[39m
+    [31m[1m>[22m[39m[90m 406 |[39m             console[33m.[39merror([32m'Error en Proforma.actualizar:'[39m[33m,[39m error)[33m;[39m
+     [90m     |[39m                     [31m[1m^[22m[39m
+     [90m 407 |[39m             [36mthrow[39m error[33m;[39m
+     [90m 408 |[39m         } [36mfinally[39m {
+     [90m 409 |[39m             [90m// Liberar conexión[39m[0m
+
+      at Proforma.error [as actualizar] (src/modelos/Proforma.js:406:21)
+      at Object.<anonymous> (tests/modelos/Proforma.test.js:177:13)
+
+    console.log
+      Proforma inactivada (anulada)
+
+      at Proforma.log [as eliminar] (src/modelos/Proforma.js:419:21)
+
+    console.log
+      Proforma inactivada exitosamente
+
+      at Proforma.log [as eliminar] (src/modelos/Proforma.js:420:21)
+
+    console.log
+      Proforma obtenida por código: { IdProforma: 1, Codigo: 'PRF-A' }
+
+      at Proforma.log [as obtenerPorCodigo] (src/modelos/Proforma.js:447:21)
+
+PASS tests/modelos/Empleado.test.js
+PASS tests/modelos/Producto.test.js
+PASS tests/modelos/Cliente.test.js
+PASS tests/modelos/Auditoria.test.js
+----------------------------|---------|----------|---------|---------|-------------------------------------------------------------------
+File                        | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s                                                 
+----------------------------|---------|----------|---------|---------|-------------------------------------------------------------------
+All files                   |   23.11 |    22.13 |   22.85 |   23.16 |                                                                   
+ bd                         |     100 |      100 |     100 |     100 |                                                                   
+  conexion.js               |     100 |      100 |     100 |     100 |                                                                   
+ controladores              |   21.09 |    15.09 |   18.07 |   20.98 |                                                                   
+  asistenciaController.js   |       0 |        0 |       0 |       0 | 1-603                                                             
+  auditoriaController.js    |       0 |        0 |       0 |       0 | 1-27                                                              
+  clienteController.js      |       0 |        0 |       0 |       0 | 1-113                                                             
+  contratoController.js     |       0 |        0 |       0 |       0 | 1-397                                                             
+  empleadoController.js     |       0 |        0 |       0 |       0 | 1-105                                                             
+  empresaController.js      |       0 |        0 |       0 |       0 | 1-160                                                             
+  facturaController.js      |       0 |        0 |       0 |       0 | 1-1112                                                            
+  loginController.js        |   86.11 |    81.25 |     100 |   86.11 | 20-21,27-28,51                                                    
+  menuControlador.js        |   84.26 |    58.33 |     100 |   85.54 | 13,17,19,69,88,105,121-125,144-145,153                            
+  pagoController.js         |       0 |        0 |       0 |       0 | 1-405                                                             
+  productoController.js     |       0 |        0 |       0 |       0 | 1-184                                                             
+  proformaController.js     |       0 |        0 |       0 |       0 | 1-414                                                             
+  proveedorController.js    |       0 |        0 |       0 |       0 | 1-168                                                             
+  recuperarControlador.js   |       0 |        0 |       0 |       0 | 1-37                                                              
+  remuneracionController.js |       0 |        0 |       0 |       0 | 1-132                                                             
+  reporteController.js      |   99.68 |    94.69 |   95.45 |     100 | 77-81,470,502,639                                                 
+  rolController.js          |       0 |      100 |       0 |       0 | 1-56                                                              
+  usuarioController.js      |       0 |        0 |       0 |       0 | 1-107                                                             
+ middleware                 |       0 |        0 |       0 |       0 |                                                                   
+  auditoria.js              |       0 |        0 |       0 |       0 | 1-27                                                              
+  auth.js                   |       0 |        0 |       0 |       0 | 2-102                                                             
+  methodOverride.js         |       0 |      100 |     100 |       0 | 2-4                                                               
+  notificacion.js           |       0 |        0 |       0 |       0 | 1-107                                                             
+ modelos                    |   30.07 |    28.28 |   33.55 |   30.25 |                                                                   
+  Asistencia.js             |       0 |        0 |       0 |       0 | 1-332                                                             
+  Auditoria.js              |     100 |      100 |     100 |     100 |                                                                   
+  Cliente.js                |     100 |     92.3 |     100 |     100 | 45                                                                
+  Contrato.js               |       0 |        0 |       0 |       0 | 1-300                                                             
+  Empleado.js               |   80.76 |      100 |     100 |   80.76 | 27,41,64,87,96                                                    
+  Empresa.js                |       0 |        0 |       0 |       0 | 1-136                                                             
+  Factura.js                |       0 |        0 |       0 |       0 | 1-1031                                                            
+  Notificacion.js           |       0 |        0 |       0 |       0 | 1-53                                                              
+  Pago.js                   |       0 |        0 |       0 |       0 | 1-77                                                              
+  Producto.js               |     100 |      100 |     100 |     100 |                                                                   
+  Proforma.js               |   84.21 |    90.36 |   91.66 |   84.21 | 12-34,44-45,97-98,128-129,194,214-215,312,333-334,422-423,467-468 
+  Proveedor.js              |       0 |        0 |       0 |       0 | 1-173                                                             
+  Remuneracion.js           |       0 |        0 |       0 |       0 | 1-79                                                              
+  Rol.js                    |       0 |        0 |       0 |       0 | 1-33                                                              
+  Usuario.js                |   87.95 |    86.36 |     100 |   87.95 | 40,90,133,148,161,188-194                                         
+  recuperarModelo.js        |       0 |        0 |       0 |       0 | 1-25                                                              
+ publico/js                 |       0 |        0 |       0 |       0 |                                                                   
+  layout.js                 |       0 |        0 |       0 |       0 | 5-356                                                             
+  paginacion.js             |       0 |        0 |       0 |       0 | 15-75                                                             
+  scripts.js                |       0 |        0 |       0 |       0 |                                                                   
+ rutas                      |    2.92 |        0 |    3.33 |     2.6 |                                                                   
+  asistenciaRoutes.js       |       0 |      100 |     100 |       0 | 1-26                                                              
+  auditoriaRoutes.js        |       0 |      100 |     100 |       0 | 1-9                                                               
+  clienteRoutes.js          |       0 |      100 |     100 |       0 | 1-17                                                              
+  contratoRoutes.js         |       0 |      100 |     100 |       0 | 1-26                                                              
+  empleadoRoutes.js         |       0 |      100 |     100 |       0 | 1-27                                                              
+  empresaRoutes.js          |       0 |      100 |     100 |       0 | 1-17                                                              
+  facturaRoutes.js          |       0 |      100 |       0 |       0 | 1-139                                                             
+  loginRoutes.js            |     100 |      100 |     100 |     100 |                                                                   
+  menuRutas.js              |       0 |      100 |     100 |       0 | 1-12                                                              
+  notificacionRoutes.js     |       0 |        0 |       0 |       0 | 1-76                                                              
+  pagoRoutes.js             |       0 |      100 |     100 |       0 | 1-25                                                              
+  productoRoutes.js         |       0 |      100 |     100 |       0 | 1-24                                                              
+  proformaRoutes.js         |       0 |      100 |     100 |       0 | 1-19                                                              
+  proveedorRoutes.js        |       0 |      100 |     100 |       0 | 1-18                                                              
+  recuperarRutas.js         |       0 |      100 |     100 |       0 | 1-14                                                              
+  remuneracionRoutes.js     |       0 |      100 |     100 |       0 | 1-16                                                              
+  reporteRoutes.js          |       0 |      100 |     100 |       0 | 1-33                                                              
+  rolRoutes.js              |       0 |      100 |     100 |       0 | 1-16                                                              
+  usuarioRoutes.js          |       0 |      100 |     100 |       0 | 1-16                                                              
+ servicios                  |   94.96 |    83.59 |     100 |   99.23 |                                                                   
+  emailService.js           |   94.96 |    83.59 |     100 |   99.23 | 185                                                               
+----------------------------|---------|----------|---------|---------|-------------------------------------------------------------------
+
+Test Suites: 1 failed, 10 passed, 11 total
+Tests:       1 failed, 186 passed, 187 total
+Snapshots:   0 total
+Time:        3.07 s
+Ran all test suites.

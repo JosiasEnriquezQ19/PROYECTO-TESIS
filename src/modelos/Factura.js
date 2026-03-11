@@ -489,7 +489,6 @@ class Factura {
             const verificaciones = {
                 facturaExiste: false,
                 tieneVentas: false,
-                tieneContratos: false,
                 detalles: 0,
                 puedeEliminar: false,
                 razon: ''
@@ -515,13 +514,6 @@ class Factura {
             );
             verificaciones.tieneVentas = ventas[0].total > 0;
 
-            // Verificar si tiene contratos asociados
-            const [contratos] = await this.conexion.execute(
-                'SELECT COUNT(*) as total FROM CONTRATO WHERE IdFactura = ?',
-                [idFactura]
-            );
-            verificaciones.tieneContratos = contratos[0].total > 0;
-
             // Contar detalles
             const [detalles] = await this.conexion.execute(
                 'SELECT COUNT(*) as total FROM DETALLE_FACTURA WHERE IdFactura = ?',
@@ -532,11 +524,10 @@ class Factura {
             // Determinar si puede eliminar (siempre se puede eliminar, pero informamos qué se afectará)
             verificaciones.puedeEliminar = true;
 
-            if (verificaciones.tieneVentas || verificaciones.tieneContratos) {
+            if (verificaciones.tieneVentas) {
                 verificaciones.razon = 'La factura tiene registros asociados que serán modificados: ';
                 const afectados = [];
                 if (verificaciones.tieneVentas) afectados.push(`${ventas[0].total} venta(s)`);
-                if (verificaciones.tieneContratos) afectados.push(`${contratos[0].total} contrato(s)`);
                 verificaciones.razon += afectados.join(', ');
             } else {
                 verificaciones.razon = 'La factura puede eliminarse sin afectar otros registros';

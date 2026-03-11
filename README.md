@@ -4,7 +4,7 @@ Sistema web para la gestión de proformas, clientes, ventas y reportes analític
 
 ## Características
 
-- Gestión de entidades: Proformas, Clientes, Productos, Facturas, Pagos, Empleados, Contratos, Roles y Usuarios.
+- Gestión de entidades: Proformas, Clientes, Productos, Facturas, Pagos, Empleados, Roles y Usuarios.
 - Panel de reportes con KPIs y gráficos (proformas, estados, top clientes, ventas mensuales).
 - Autenticación (login) y middleware de autorización.
 - Plantillas EJS con diseño de menú y estilos personalizados.
